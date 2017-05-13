@@ -40,15 +40,15 @@
   <ItemGroup>
     <Reference Include="Aspose.Slides, Version=7.9.0.0, Culture=neutral, PublicKeyToken=00725b1ceb58d0a9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>PDFViewer\Dll\Aspose.Slides.dll</HintPath>
+      <HintPath>..\web\Dll\Aspose.Slides.dll</HintPath>
     </Reference>
     <Reference Include="Aspose.Words, Version=11.3.0.0, Culture=neutral, PublicKeyToken=47d5d0e1ef9d080b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>PDFViewer\Dll\Aspose.Words.dll</HintPath>
+      <HintPath>..\web\Dll\Aspose.Words.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=4.1.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>PDFViewer\Dll\itextsharp.dll</HintPath>
+      <HintPath>..\web\Dll\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
