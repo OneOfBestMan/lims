@@ -8,9 +8,10 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>登陆</title>
-    <link href='@Url.Content("~/Content/XINDECSS/MainStyle.css")' rel="stylesheet" type="text/css" />
-    <link href='@Url.Content("~/Content/XINDECSS/ColorStyle.css")' rel="stylesheet" type="text/css" />
-    <link href='@Url.Content("~/Content/XINDECSS/LayoutStyle.css")' rel="stylesheet" type="text/css" />
+
+    <link href="~/Skins/css/style.css" rel="stylesheet" />
+    <link href="~/Skins/css/login.css" rel="stylesheet" type="text/css" />
+ 
 
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-1.8.2.min.js")'></script>
     <script type="text/javascript">
@@ -45,8 +46,7 @@
                         if (data == "OK") {
                             window.location.href = "/Home/Index";
                         } else {
-                            alert(data);
-                            window.location.href = "/Login/Login";
+                            $("#error").show();
                         }
                     }
                 });
@@ -68,16 +68,27 @@
         }
         </script>
 </head>
-<body style=" background-color:#09446b;">
-    <div class="layout">
-        <div class="LoginMain">
-            <ul>
-                <li><span>账户：</span><input type="text" id="UserName" class="txt_login" value=""/></li>
-                <li><span>密码：</span><input type="password" id="UserPassword" class="txt_login"  value=""/></li>
-                <li style="padding-top:5px;"><input type="button" id="btnLogin" value="" class="btn_login" /></li>
-                <li style="padding-top:25px;">版权所有：海油发展配餐服务公司</li>
-            </ul>
+<body  >
+ 
+    <div class="login">
+        <div class="con">
+           
+            <div class="lg"><img src="~/Skins/images/dlg.png" width="990" height="54" /></div>
+            <div class="ck">
+                <div class="tp lf"><img src="~/Skins/images/a1.jpg" width="495" height="433" /></div>
+                <div class="nr rt">
+                    <h3>用户登录 <em>UserLogin</em></h3>
+                    <div class="dl">
+                        <input type="text" class="hy" id="UserName" placeholder="您的账号/手机号/邮箱" />
+                        <input type="password" class="mm" id="UserPassword" placeholder="请输入登陆密码" />
+                        <p id="error" style="display:none">账号或密码错误！请重新填写</p>
+                    </div>
+                    <input type="button" id="btnLogin" class="an" value="登 陆" />
+                </div>
+            </div>
+            <div class="bq">CopyRight @@2014-2017   中海油能源发展股份有限公司配餐服务分公司</div>
         </div>
     </div>
+
 </body>
 </html>
