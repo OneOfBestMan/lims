@@ -1,6 +1,7 @@
 ﻿@model Model.OriginalRecord.E_tb_OriginalRecord
 @{
     ViewBag.Title = "OriginalRecordList";
+    Layout = "~/Views/Share/_LayOut.cshtml";
 }
 
 <!DOCTYPE html>
@@ -10,12 +11,10 @@
     <title>原始记录列表</title>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/default/easyui.css")'/>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/icon.css")'/>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/demo.css")'/>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/uploader/uploadify.css")' />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")'  />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")'  />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Content/XINDECSS/MainStyle.css")'/>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-1.8.2.min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/jquery.easyui.min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/locale/easyui-lang-zh_CN.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/uploader/jquery.uploadify.min.js")'></script>
@@ -27,7 +26,6 @@
     <script type="text/javascript" src='@Url.Content("~/Scripts/My97DatePicker/WdatePicker.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")'></script>
 
-    @*<script src="../../Scripts/jquery-1.8.2.js" type="text/javascript"></script>*@
     <script type="text/javascript">
         
         var SearchUrl="/OriginalRecord/GetList?pageNumber=1&pageSize=20&RecordID="+@Model.RecordID;

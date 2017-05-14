@@ -1,6 +1,6 @@
 ﻿@model Model.tb_Device
 @{
-    Layout = null;
+    Layout = "~/Views/Share/_LayOut.cshtml";
 }
 
 <!DOCTYPE html>
@@ -10,10 +10,8 @@
     <title>仪器设备</title>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/default/easyui.css")'>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/icon.css")'>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/demo.css")'>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/uploader/uploadify.css")' />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")'  />
-    <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-1.8.2.min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/jquery.easyui.min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/locale/easyui-lang-zh_CN.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/uploader/jquery.uploadify.min.js")'></script>
@@ -142,10 +140,6 @@
     </script>
     <style type="text/css">
         .divList {
-            position: absolute;
-            top: 40px;
-            left: 1px;
-            z-index: 99;
             width: 1048px;
         }
 
@@ -175,12 +169,12 @@
 </head>
 <body style="background-color: transparent; overflow: auto;">
     <!--新增-->
-    <div id="dlg" class="easyui-dialog" title="设备管理" data-options="iconCls:'icon-save'" style="width: 620px; height: 390px; padding: 0px; position: absolute; z-index: 999; left: 5px;">
+    <div id="dlg" class="easyui-dialog" title="设备管理" data-options="iconCls:'icon-save'" style="width: 620px; height: 390px; padding: 0px; ">
         <iframe style="overflow-x: scroll; overflow-y: hidden; border: 0; height: 350px; width: 600px;" name="doDevicefm"></iframe>
     </div>
     <!--End 新增-->
 
-    <div style="background: #faf1e8; height: 30px; width: 100%; top: 1px; position: absolute; z-index: 99; left: 1px;">
+    <div style="background: #faf1e8; height: 30px; width: 100%;">
         <table align="left" width="100%" height="27px">
             <tr>
                 <td width="1029" style="font-family: '宋体'; font-size: 12px; color: #10607c;">当前位置：设备管理<img style="text-align:center;vertical-align:middle;height:10px" src='@Url.Content("~/Content/Images/位置.png")' />设备管理 </td>
