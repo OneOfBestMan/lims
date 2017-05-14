@@ -21,7 +21,6 @@ namespace Web.Controllers
         T_tb_ElectronicsMagazine tElectronicsMagazine = new T_tb_ElectronicsMagazine(); //电子杂志
         
         // GET: /Home/
-        [Verification]
         public ActionResult Index()
         {
             //获取实验室数据

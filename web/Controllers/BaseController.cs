@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Model.PersonnelManage;
 using BLL.RoleManage;
 using Model.RoleManage;
+using BLL.PersonnelManage;
 
 namespace Web.Controllers
 {
@@ -28,8 +29,24 @@ namespace Web.Controllers
             //判断用户是否为空
             if (CurrentUserInfo == null)
             {
-                filterContext.HttpContext.Response.Redirect("/Login/Login");
-                filterContext.HttpContext.Response.End();
+                if (filterContext.HttpContext.Response.Cookies["lims.uid"].Value == null || filterContext.HttpContext.Response.Cookies["lims.passport"].Value == null)
+                {
+                    filterContext.Result = new RedirectResult("/Login/login");
+                }
+                else
+                {
+                    string passportinfo = filterContext.HttpContext.Response.Cookies["lims.passport"].Value;
+                    string uid = filterContext.HttpContext.Response.Cookies["lims.uid"].Value;
+                    E_tb_InPersonnel eInPersonnel = new T_tb_InPersonnel().GetModel(Convert.ToInt32(uid));
+                    if (passportinfo == Comp.Utils.Md5(eInPersonnel.PersonnelID + eInPersonnel.UserName + eInPersonnel.PassWord))
+                    {
+                        filterContext.HttpContext.Session["UserInfo"] = new T_tb_InPersonnel().Login(eInPersonnel.UserName, eInPersonnel.PassWord);
+                    }
+                    else
+                    {
+                        filterContext.Result = new RedirectResult("/Login/login");
+                    }
+                }
                 return;
             }
 

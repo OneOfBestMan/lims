@@ -7,6 +7,7 @@ using Common;
 using Model.PersonnelManage;
 using BLL.PersonnelManage;
 using System.Web.Security;
+using Comp;
 
 namespace Web.Controllers
 {
@@ -53,6 +54,18 @@ namespace Web.Controllers
             if (eInPersonnel != null)
             {
                 Session["UserInfo"] = eInPersonnel;
+
+                //添加登陆Cookies  若出入安全考虑应该进行加密处理
+                HttpCookie cookie = new HttpCookie("lims.passport");
+                cookie.Value = Utils.Md5(eInPersonnel.PersonnelID.ToString() + eInPersonnel.UserName.ToString() + eInPersonnel.PassWord.ToString(), 32);
+                cookie.Expires = DateTime.Now.AddDays(1);
+                Response.Cookies.Add(cookie);
+
+                cookie = new HttpCookie("lims.uid");
+                cookie.Value = eInPersonnel.PersonnelID.ToString();
+                cookie.Expires = DateTime.Now.AddDays(1);
+                Response.Cookies.Add(cookie);
+
                 FormsAuthentication.SetAuthCookie(eInPersonnel.UserName, false);
                 UserInfoError = "OK";
             }
