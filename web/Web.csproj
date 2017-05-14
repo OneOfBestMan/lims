@@ -562,6 +562,7 @@
     <Content Include="Scripts\Highcharts\themes\gray.js" />
     <Content Include="Scripts\Highcharts\themes\grid.js" />
     <Content Include="Scripts\Highcharts\themes\skies.js" />
+    <None Include="Properties\PublishProfiles\zyj_config.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />

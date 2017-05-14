@@ -7,6 +7,7 @@ using Model.PersonnelManage;
 using BLL.RoleManage;
 using Model.RoleManage;
 using BLL.PersonnelManage;
+using Comp;
 
 namespace Web.Controllers
 {
@@ -38,7 +39,7 @@ namespace Web.Controllers
                     string passportinfo = filterContext.HttpContext.Response.Cookies["lims.passport"].Value;
                     string uid = filterContext.HttpContext.Response.Cookies["lims.uid"].Value;
                     E_tb_InPersonnel eInPersonnel = new T_tb_InPersonnel().GetModel(Convert.ToInt32(uid));
-                    if (passportinfo == Comp.Utils.Md5(eInPersonnel.PersonnelID + eInPersonnel.UserName + eInPersonnel.PassWord))
+                    if (passportinfo == Utils.Md5(eInPersonnel.PersonnelID + eInPersonnel.UserName + eInPersonnel.PassWord))
                     {
                         filterContext.HttpContext.Session["UserInfo"] = new T_tb_InPersonnel().Login(eInPersonnel.UserName, eInPersonnel.PassWord);
                     }
