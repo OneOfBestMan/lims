@@ -157,6 +157,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attribute\MyAuthorizeAttribute.cs" />
+    <Compile Include="Attribute\VerificationAttribute.cs" />
     <Compile Include="Controllers\ActionController.cs" />
     <Compile Include="Controllers\AreaController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -1784,6 +1785,7 @@
     <Content Include="Skins\artDialog\test\title.html" />
     <Content Include="Skins\artDialog\webpack.config.js" />
     <Content Include="Skins\css\huiyuan.css" />
+    <Content Include="Skins\css\layout.css" />
     <Content Include="Skins\css\login.css" />
     <Content Include="Skins\css\style.css" />
     <Content Include="Skins\images\a1.jpg" />

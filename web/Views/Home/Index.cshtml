@@ -1,20 +1,249 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@model Model.Default.E_Default
+@using System.Data;
+
+@{
+    ViewBag.Title = "实验室管理系统";
+    Layout = "~/Views/Share/_LayOut.cshtml";
 }
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+    <link href="/skins/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/skins/css/huiyuan.css" rel="stylesheet" type="text/css" />
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title>实验室管理系统</title>
-</head>
-<frameset id="layoutframe" rows="140,*,27" cols="*" frameborder="NO" border="0" framespacing="0">
-    <frame src='@Url.Action("Top","Home")' name="topFrame" scrolling="no" noresize="noresize"></frame>
-    <frameset id="attachucp" cols="211,11,*" rows="*" framespacing="0" border="0" frameborder="no" name="attachucp" >
-        <frame src='@Url.Action("Left","Home")' name="leftFrame" frameborder="no" scrolling="auto" noresize="noresize"></frame>
-        <frame id="leftbar" scrolling="no" noresize="noresize" name="switchFrame" src='@Url.Action("Bar","Home")'></frame>
-        <frame noresize="noresize" border="0" name="mainFrame" id="mainFrame" src='@Url.Action("Default","Home")'></frame>
-    </frameset>
-    <frame src='@Url.Action("Bottom","Home")' name="bottomFrame" scrolling="no" noresize="noresize"></frame>
-</frameset>
-</html>
+    @*<script src="/skins/js/jquery-1.8.3.min.js"></script>*@
+
+    <script src="/skins/js/jquery.SuperSlide.js"></script>
+
+    <script type="text/javascript">
+    window.onload = function(){
+　  $(".hy_lf").css("height",$(".hy_nr").innerHeight());
+  }
+    </script>
+    <script type="text/javascript">
+  $(document).ready(function() {
+	$(".hy_lf ul li").click(function() {
+	  $(this).addClass("on");
+	  $(this).siblings().removeClass("on");
+	  $(this).find(".hy_ej").slideToggle(function(){
+        if($(this).is(':hidden')) {
+          $(this).parent("li").removeClass("on");
+        }
+	  });
+	  $(this).siblings().find(".hy_ej").slideUp();
+    });
+  });
+    </script>
+
+    <div class="hy_con">
+        <div class="hy_nr">
+            <div class="hy_rt">
+                <div class="hy_zc">
+                    <div class="hy_bn">
+                        <a href="javascript:void(0);" class="prev"></a>
+                        <a href="javascript:void(0);" class="next"></a>
+                        <div class="hd">
+                            <ul></ul>
+                        </div>
+                        <div class="bd">
+                            <ul>
+                                <li><img src="/skins/images/ban.jpg" /></li>
+                                <li><img src="/skins/images/ban.jpg" /></li>
+                                <li><img src="/skins/images/ban.jpg" /></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+          jQuery(".hy_bn").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",autoPlay:true,scroll:1,interTime:3000});
+                    </script>
+                    <div class="clear"></div>
+                    <div class="hy_bg">
+                        <h3><span>检验报告</span><a href="#">More>></a></h3>
+                        <ul>
+                            <li>
+                                <span><a href="#">[下载]</a></span>
+                                <a href="#">蔬菜（港区员工食堂、港区海工食堂、特种设备食堂、运输食堂）JC20150930—001<i>2017年2月19日</i></a>
+                            </li>
+                            <li>
+                                <span><a href="#">[下载]</a></span>
+                                <a href="#">蔬菜（港区员工食堂、港区海工食堂、特种设备食堂、运输食堂）JC20150930—001<i>2017年2月19日</i></a>
+                            </li>
+                            <li>
+                                <span><a href="#">[下载]</a></span>
+                                <a href="#">蔬菜（港区员工食堂、港区海工食堂、特种设备食堂、运输食堂）JC20150930—001<i>2017年2月19日</i></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="hy_rw">
+                        <h3><span>实验任务</span><a href="#">More>></a></h3>
+                        <ul>
+                            <li>
+                                <span><a href="#">主检</a></span>
+                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                            </li>
+                            <li>
+                                <span><a href="#">主检</a></span>
+                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                            </li>
+                            <li>
+                                <span><a href="#">主检</a></span>
+                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                            </li>
+                            <li>
+                                <span><a href="#">主检</a></span>
+                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                            </li>
+                            <li>
+                                <span><a href="#">主检</a></span>
+                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                            </li>
+                            <li>
+                                <span><a href="#">主检</a></span>
+                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="hy_tx">
+                        <h3><span>实验任务</span><a href="#">More>></a></h3>
+                        <ul>
+                            <li>
+                                <span>有效期：2015/05/10</span>
+                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                            </li>
+                            <li>
+                                <span>有效期：2015/05/10</span>
+                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                            </li>
+                            <li>
+                                <span>有效期：2015/05/10</span>
+                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                            </li>
+                            <li>
+                                <span>有效期：2015/05/10</span>
+                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                            </li>
+                            <li>
+                                <span>有效期：2015/05/10</span>
+                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                            </li>
+                            <li style="border-bottom:1px dashed #fff;">
+                                <span>有效期：2015/05/10</span>
+                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="hy_yp">
+                        <h3><span>易耗品</span><a href="#">More>></a></h3>
+                        <ul>
+                            <li>
+                                <span>库存：<em>0</em></span>
+                                <a href="#">一次性培养器皿【90*15ML】【个】<i>2017-2-28</i></a>
+                            </li>
+                            <li>
+                                <span>库存：<em>0</em></span>
+                                <a href="#">一次性培养器皿【90*15ML】【个】<i>2017-2-28</i></a>
+                            </li>
+                            <li>
+                                <span>库存：<em>0</em></span>
+                                <a href="#">一次性培养器皿【90*15ML】【个】<i>2017-2-28</i></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="hy_jl">
+                        <h3><span>计量检定</span><a href="#">More>></a></h3>
+                        <ul>
+                            <li>
+                                <span>检定日期：2016-5-20</span>
+                                <a href="#">不锈钢压力蒸汽灭菌器安全阀</a>
+                            </li>
+                            <li>
+                                <span>检定日期：2016-5-20</span>
+                                <a href="#">不锈钢压力蒸汽灭菌器安全阀</a>
+                            </li>
+                            <li>
+                                <span>检定日期：2016-5-20</span>
+                                <a href="#">不锈钢压力蒸汽灭菌器安全阀</a>
+                            </li>
+                            <li>
+                                <span>检定日期：2016-5-20</span>
+                                <a href="#">不锈钢压力蒸汽灭菌器安全阀</a>
+                            </li>
+                            <li>
+                                <span>检定日期：2016-5-20</span>
+                                <a href="#">不锈钢压力蒸汽灭菌器安全阀</a>
+                            </li>
+                            <li>
+                                <span>检定日期：2016-5-20</span>
+                                <a href="#">不锈钢压力蒸汽灭菌器安全阀</a>
+                            </li>
+                            <li>
+                                <span>检定日期：2016-5-20</span>
+                                <a href="#">不锈钢压力蒸汽灭菌器安全阀</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="hy_yc">
+                    <div class="hy_news">
+                        <h3><span>通知公告</span><a href="#">MORE>></a></h3>
+                        <ul>
+                            <li><span>2017/06/17</span><a href="#">火的趣味实验绝对难得一见</a></li>
+                            <li><span>2017/06/17</span><a href="#">建设项目系统管理化学实验背景免费下载</a></li>
+                            <li><span>2017/06/17</span><a href="#">小实验不仅能很好的培养幼儿及少儿的动手动脑的能力,还能让我...</a></li>
+                            <li><span>2017/06/17</span><a href="#">探寻科学秘密,收罗科学真相</a></li>
+                            <li><span>2017/06/17</span><a href="#">用铅笔做电路小实验方法与步骤</a></li>
+                            <li><span>2017/06/17</span><a href="#">趣味物理小实验：“烧暗”灯泡</a></li>
+                            <li><span>2017/06/17</span><a href="#">趣味物理实验 公有理还是婆有理</a></li>
+                            <li><span>2017/06/17</span><a href="#">铁屑充磁和去磁 小学生物理小实验做法图解教程</a></li>
+                            <li><span>2017/06/17</span><a href="#">小学生物理小实验 两种简易验电器的制作方法</a></li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="hy_jh">
+                        <h3><span>试验计划</span><a href="#">More>></a></h3>
+                        <div class="tw">
+                            <div class="tp"><a href="#"><img src="/skins/images/a2.jpg" width="150" height="140" /></a></div>
+                            <div class="wz">
+                                <a href="#">蔬菜（NP35-2WHPB）NP35-2CEPJC20150930—014 农残（快速) ...</a>
+                                <span>2017-2-28 更新 ...</span>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="tw">
+                            <div class="tp"><a href="#"><img src="/skins/images/a3.jpg" width="150" height="140" /></a></div>
+                            <div class="wz">
+                                <a href="#">蔬菜（NP35-2WHPB）NP35-2CEPJC20150930—014 农残（快速) ...</a>
+                                <span>2017-2-28 更新 ...</span>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="tw">
+                            <div class="tp"><a href="#"><img src="/skins/images/a4.jpg" width="150" height="140" /></a></div>
+                            <div class="wz">
+                                <a href="#">蔬菜（NP35-2WHPB）NP35-2CEPJC20150930—014 农残（快速) ...</a>
+                                <span>2017-2-28 更新 ...</span>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="tw">
+                            <div class="tp"><a href="#"><img src="/skins/images/a5.jpg" width="150" height="140" /></a></div>
+                            <div class="wz">
+                                <a href="#">蔬菜（NP35-2WHPB）NP35-2CEPJC20150930—014 农残（快速) ...</a>
+                                <span>2017-2-28 更新 ...</span>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <ul>
+                            <li><a href="#">蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014 农残（快速 ...) </a></li>
+                            <li><a href="#">蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014 农残（快速 ...) </a></li>
+                            <li><a href="#">蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014 农残（快速 ...) </a></li>
+                            <li><a href="#">蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014 农残（快速 ...) </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hy_ft">CopyRight @@2014-2017 中海油能源发展股份有限公司配餐服务分公司</div>
+        </div>
+    </div>

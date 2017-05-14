@@ -2,21 +2,16 @@
 @using System.Data;
 @{
     ViewBag.Title = "Default";
+    Layout = "~/Views/Share/_LayOut.cshtml";
 }
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
     <link href='@Url.Content("~/Content/XINDECSS/MainStyle.css")' rel="stylesheet" type="text/css" />
     <link href='@Url.Content("~/Content/XINDECSS/ColorStyle.css")' rel="stylesheet" type="text/css" />
     <link href='@Url.Content("~/Content/XINDECSS/LayoutStyle.css")' rel="stylesheet" type="text/css" />
     <link href='@Url.Content("~/Content/XINDECSS/DefaultStyle.css")' rel="stylesheet" type="text/css" />
-
     <script src='@Url.Content("~/Scripts/jquery-1.8.2.js")' type="text/javascript"></script>
     <script src='@Url.Content("~/Scripts/Js/JSDemo.js")' type="text/javascript"></script>
     <script src='@Url.Content("~/Scripts/Js/jquery_nav.js")' type="text/javascript"></script>
-
     @*<script src="../../Scripts/jquery-1.8.2.js" type="text/javascript"></script>*@
     <script type="text/javascript">
         $(function () {
@@ -32,7 +27,6 @@
             });
         });
     </script>
-
     <!-- 动态显示当前时间 -->
     <script type="text/javascript">
         function initArray() {
@@ -60,7 +54,6 @@
         }
         ShowTime();
     </script>
-
     <!--时时刷新实验室使用状态-->
     <script type="text/javascript">
         //获取实验室数据列表
@@ -97,7 +90,6 @@
         }
         RefLaboratory();
     </script>
-
     <!--时时刷新图片数据-->
     <script type="text/javascript">
         //大图列表
@@ -155,8 +147,6 @@
         RefMinImg();
     </script>
 
-</head>
-<body>
     <div class="layout_bg">
         <div class="layout">
             <div class="Title">
@@ -517,8 +507,6 @@
             </div>
         </div>
     </div>
-
-
     <!--浮动层提醒内容-->
     <style type="text/css">
         .tk {
@@ -658,6 +646,7 @@
             }
         });
     </script>
+
     <div class="tk">
         <div style="position: relative;">
             <div class="tk_center">
@@ -669,8 +658,8 @@
                     <ul>
                         <li class="tk_li_over" cid="tk_main_1">实验计划</li>
                         <li cid="tk_main_2" class="">药品</li>
-                        <li cid="tk_main_3" class=" ">易耗品</li>
-                        <li cid="tk_main_4" class=" ">计量管理</li>
+                        <li cid="tk_main_3" class="">易耗品</li>
+                        <li cid="tk_main_4" class="">计量管理</li>
                     </ul>
                 </div>
                 <div id="tk_main_1" class="tk_center_list" style="display: block;">
@@ -689,20 +678,6 @@
                                 }
                             }
                         }
-                        @*@{
-                            List<Model.ExpePlan.E_tb_ExpePlan> expList = ViewData["expList"] as List<Model.ExpePlan.E_tb_ExpePlan>;
-                            if (expList != null && expList.Count > 0)
-                            {
-                                foreach (Model.ExpePlan.E_tb_ExpePlan item in expList)
-                                {
-                            <li>
-                                <span class="riqi">@item.ProjectName</span>
-                                <span class="nr">@item.TaskNo</span>
-                                <span class="banzu">@item.InspectTime.Value.ToShortDateString()</span>
-                            </li>
-                                }
-                            }
-                        }*@
                     </ul>
                 </div>
                 <div id="tk_main_2" class="tk_center_list" style="display: none;">
@@ -769,5 +744,3 @@
             </div>
         </div>
     </div>
-</body>
-</html>

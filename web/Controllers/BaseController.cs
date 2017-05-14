@@ -28,7 +28,9 @@ namespace Web.Controllers
             //判断用户是否为空
             if (CurrentUserInfo == null)
             {
-                Response.Redirect("/Login/Login");
+                filterContext.HttpContext.Response.Redirect("/Login/Login");
+                filterContext.HttpContext.Response.End();
+                return;
             }
 
 
