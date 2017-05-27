@@ -38,9 +38,9 @@ namespace DAL
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("insert into tb_Measure(");
-            strSql.Append("deviceName,standard,assetCode,deviceCode,buyDate,useDate,oValue,deperciation,periodVerification,lastVerification,verification,nextVerification,technologyState,problem,useCompany,usePerson,createUser,createDate,updateUser,updateDate,temp1,temp2,companyName,verificationCompany,phoneNumber,isDevice,measureType,device_Id)");
+            strSql.Append("deviceName,standard,assetCode,deviceCode,buyDate,useDate,oValue,deperciation,periodVerification,lastVerification,verification,nextVerification,technologyState,problem,useCompany,usePerson,createUser,createDate,updateUser,updateDate,temp1,temp2,companyName,verificationCompany,phoneNumber,isDevice,measureType,device_Id,iscall)");
             strSql.Append(" values (");
-            strSql.Append("@deviceName,@standard,@assetCode,@deviceCode,@buyDate,@useDate,@oValue,@deperciation,@periodVerification,@lastVerification,@verification,@nextVerification,@technologyState,@problem,@useCompany,@usePerson,@createUser,@createDate,@updateUser,@updateDate,@temp1,@temp2,@companyName,@verificationCompany,@phoneNumber,@isDevice,@measureType,@device_Id)");
+            strSql.Append("@deviceName,@standard,@assetCode,@deviceCode,@buyDate,@useDate,@oValue,@deperciation,@periodVerification,@lastVerification,@verification,@nextVerification,@technologyState,@problem,@useCompany,@usePerson,@createUser,@createDate,@updateUser,@updateDate,@temp1,@temp2,@companyName,@verificationCompany,@phoneNumber,@isDevice,@measureType,@device_Id,@iscall)");
             strSql.Append(";select @@IDENTITY");
             SqlParameter[] parameters = {
 					new SqlParameter("@deviceName", SqlDbType.NVarChar,-1),
@@ -70,7 +70,8 @@ namespace DAL
 					new SqlParameter("@phoneNumber", SqlDbType.NVarChar,-1),
 					new SqlParameter("@isDevice", SqlDbType.NVarChar,-1),
 					new SqlParameter("@measureType", SqlDbType.NVarChar,50),
-                    new SqlParameter("@device_Id", SqlDbType.Int,4)};
+                    new SqlParameter("@device_Id", SqlDbType.Int,4),
+                    new SqlParameter("@iscall", SqlDbType.Int,4)};
             parameters[0].Value = model.deviceName;
             parameters[1].Value = model.standard;
             parameters[2].Value = model.assetCode;
@@ -99,6 +100,7 @@ namespace DAL
             parameters[25].Value = model.isDevice;
             parameters[26].Value = model.measureType;
             parameters[27].Value = model.Device_Id;
+            parameters[28].Value = model.IsCall;
             object obj = DbHelperSQL.GetSingle(strSql.ToString(), parameters);
             if (obj == null)
             {
@@ -143,7 +145,8 @@ namespace DAL
             strSql.Append("phoneNumber=@phoneNumber,");
             strSql.Append("isDevice=@isDevice,");
             strSql.Append("measureType=@measureType,");
-            strSql.Append("deviceId=@deviceId");
+            strSql.Append("device_Id=@device_Id,");
+            strSql.Append("iscall=@iscall");
             strSql.Append(" where id=@id");
             SqlParameter[] parameters = {
 					new SqlParameter("@deviceName", SqlDbType.NVarChar,-1),
@@ -173,8 +176,9 @@ namespace DAL
 					new SqlParameter("@phoneNumber", SqlDbType.NVarChar,-1),
 					new SqlParameter("@isDevice", SqlDbType.NVarChar,-1),
 					new SqlParameter("@measureType", SqlDbType.NVarChar,50),
-                    new SqlParameter("@deviceId", SqlDbType.Int,4),
-					new SqlParameter("@id", SqlDbType.Int,4)};
+                    new SqlParameter("@device_Id", SqlDbType.Int,4),
+                       new SqlParameter("@iscall", SqlDbType.Int,4),
+                    new SqlParameter("@id", SqlDbType.Int,4)};
             parameters[0].Value = model.deviceName;
             parameters[1].Value = model.standard;
             parameters[2].Value = model.assetCode;
@@ -203,7 +207,8 @@ namespace DAL
             parameters[25].Value = model.isDevice;
             parameters[26].Value = model.measureType;
             parameters[27].Value = model.Device_Id;
-            parameters[28].Value = model.id;
+            parameters[28].Value = model.IsCall;
+            parameters[29].Value = model.id;
 
             int rows = DbHelperSQL.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
@@ -410,6 +415,10 @@ namespace DAL
                 if (row["device_Id"] != null && row["device_Id"].ToString() != "")
                 {
                     model.Device_Id = int.Parse(row["device_Id"].ToString());
+                }
+                if (row["IsCall"] != null && row["IsCall"].ToString() != "")
+                {
+                    model.IsCall = int.Parse(row["IsCall"].ToString());
                 }
             }
             return model;

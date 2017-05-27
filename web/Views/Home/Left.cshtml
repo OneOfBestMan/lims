@@ -79,7 +79,8 @@
             {<li><a href='@Url.Action("DrugCheck", "Drug")' target="mainFrame">药品盘点</a></li>}
             @if (Convert.ToBoolean(ViewData["20bf97b3"]))
             {<li><a href='@Url.Action("DrugReport", "Drug")' target="mainFrame">药品统计</a></li>}
-            <li><a href='@Url.Action("DrugLock", "Drug")' target="mainFrame">药品柜管理</a></li>
+           @if (Convert.ToBoolean(ViewData["3ea74d13"])) { 
+            <li><a href='@Url.Action("DrugLock", "Drug")' target="mainFrame">药品柜管理</a></li>}
         </ul>
         @if (Convert.ToBoolean(ViewData["f2719eab"]))
         {<h2><a href="javascript:void(0);" class="a_bg3">仪器设备</a></h2>}

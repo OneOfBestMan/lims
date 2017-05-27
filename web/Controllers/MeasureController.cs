@@ -110,7 +110,7 @@ namespace Web.Controllers
                     }
                 }
             }
-            catch
+            catch(Exception e)
             {
                 flag = "0";
             }

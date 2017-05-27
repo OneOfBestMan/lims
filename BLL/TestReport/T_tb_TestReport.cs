@@ -76,9 +76,10 @@ namespace BLL.TestReport
         /// <summary>
         /// 获得前几行数据
         /// </summary>
-        public DataSet GetList(int Top, string strWhere, string filedOrder)
+        public List<E_tb_TestReport> GetList(int Top, string strWhere, string filedOrder)
         {
-            return dal.GetList(Top, strWhere, filedOrder);
+            DataSet ds = dal.GetList(Top, strWhere, filedOrder);
+            return DataTableToList(ds.Tables[0]);
         }
         /// <summary>
         /// 获得数据列表

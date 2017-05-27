@@ -262,7 +262,11 @@ namespace Web.Controllers
 
                 stream = PublicClass.ExportReportToExcel(dt);
             }
-            catch { }
+               catch (Exception e)
+            {
+
+               // throw;
+            }
             #endregion
 
             string filename = "实验统计列表" + DateTime.Now.ToFileTime() + ".xls";

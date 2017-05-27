@@ -34,7 +34,7 @@
             }
         }
         function click_Edit(_itemId) {
-            window.parent.mainFrame.location.href = '@Url.Action("doSanitationInfo", "Supplier")' + "?_supplierId=@ViewBag._supplierId&id=" + _itemId;
+            window.location.href = '@Url.Action("doSanitationInfo", "Supplier")' + "?_supplierId=@ViewBag._supplierId&id=" + _itemId;
         }
 
         function click_Search() {

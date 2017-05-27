@@ -105,7 +105,7 @@ namespace Web.Controllers
 
             try
             {
-                dt = tExpePlan.GetListByPage(strWhere, "", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
+                dt = tExpePlan.GetListByPage(strWhere, "InspectTime desc", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
             }
             catch { }
             string strJson = PublicClass.ToJson(dt, total);
@@ -126,7 +126,7 @@ namespace Web.Controllers
             ViewData["PlanTypeList"] = this.GetPlanTypeList(false);
             ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("").Tables[0], "ProjectID", "ProjectName", false);
             ViewData["PersonnelList"] = PageTools.GetSelectList(tInPersonnel.GetList(" AreaID=" + CurrentUserInfo.AreaID.ToString()).Tables[0], "PersonnelID", "PersonnelName", false);
-            ViewData["SampleList"] = PageTools.GetSelectList(tSample.GetList(" handleUser='' order by id ").Tables[0], "id", "name", false);
+            ViewData["SampleList"] = PageTools.GetSelectList(tSample.GetList(" (handleUser='' or handleUser is null) order by id ").Tables[0], "id", "name", false);
             ViewBag.PersonnelID = CurrentUserInfo.PersonnelID;
             ViewBag.AreaAddr = tArea.GetModel(int.Parse(CurrentUserInfo.AreaID.ToString())).AreaName;
             ViewBag.SampleID = 0;

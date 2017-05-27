@@ -157,7 +157,7 @@
                     $.getJSON(url, getjsonsucceed);
                 }
                 function getjsonsucceed(data) {
-                    window.parent.mainFrame.location.href = '@Url.Action("vpoffice", "Documents")' + "?filename=" + data + "&_pname=" + _itemName + "&_ptype=MSDS文档预览";
+                    window.location.href = '@Url.Action("vpoffice", "Documents")' + "?filename=" + data + "&_pname=" + _itemName + "&_ptype=MSDS文档预览";
         }
 
         function click_certificate(_itemId) {

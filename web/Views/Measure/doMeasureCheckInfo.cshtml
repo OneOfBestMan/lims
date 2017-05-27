@@ -188,7 +188,10 @@
             listmeasureType.Add(new SelectListItem() { Text = "计量", Value = "计量" });
             listmeasureType.Add(new SelectListItem() { Text = "送检", Value = "送检" });
             listmeasureType.Add(new SelectListItem() { Text = "自校", Value = "自校" });
-            
+
+            List<SelectListItem> listIsVerification = new List<SelectListItem>();
+            listIsVerification.Add(new SelectListItem() { Text = "否", Value = "0", Selected = true });
+            listIsVerification.Add(new SelectListItem() { Text = "是", Value = "1" });
         }
         @using (Ajax.BeginForm("doMeasureInfoCU", "Measure", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "uploadfrm" }))
         {
@@ -333,6 +336,12 @@
                     <td width="90px" align="right" style="vertical-align: top;">备注：</td>
                     <td colspan="3" align="left">
                         @Html.TextBoxFor(m => m.companyName, new { @style = "width:490px" })
+                    </td>
+                </tr>
+                <tr>
+                    <td width="130px" align="right" style="vertical-align: top;">是否提醒：</td>
+                    <td>
+                        @Html.DropDownListFor(m => m.IsCall, listIsVerification)
                     </td>
                 </tr>
                 <tr>

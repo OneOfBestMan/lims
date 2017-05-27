@@ -271,5 +271,9 @@ namespace Model
             get { return _measuretype; }
         }
         #endregion Model
+        /// <summary>
+        /// 是否检定 默认值为0
+        /// </summary>
+        public int IsCall { get; set; }
     }
 }

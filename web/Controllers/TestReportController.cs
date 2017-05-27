@@ -453,6 +453,35 @@ namespace Web.Controllers
             string iFile = "" + model.FilePath;
             return Json(iFile, JsonRequestBehavior.AllowGet);
         }
+        public FilePathResult DownById(int id) {
+            ProcessStartInfo Pss = new ProcessStartInfo();
+            Pss.FileName = Server.MapPath("/HtmlToPDF/wkhtmltopdf.exe");
+            var eTestReport = tTestReport.GetModel(id);
+            string strUrl = System.Configuration.ConfigurationManager.AppSettings["HostName"].ToString() + "/ReportView/TestReportView?ReportID=" + id;//Request.UserHostName
+            //string FileName = Guid.NewGuid() + ".pdf";
+            string FileName = UrnHtml(eTestReport.SampleNum) + ".pdf";
+            string FilePath = Server.MapPath("/TestReportPDF/" + FileName);
+            Pss.Arguments = string.Format("{0} {1}", "\"" + strUrl + "\"", "\"" + FilePath + "\"");
+            Pss.UseShellExecute = false;
+            Pss.StandardOutputEncoding = Encoding.UTF8;
+            Pss.RedirectStandardInput = true;
+            Pss.RedirectStandardOutput = true;
+
+            bool bresult = false;
+            using (Process PS = new Process())
+            {
+                PS.StartInfo = Pss;
+                PS.Start();
+                PS.WaitForExit();
+                if (PS.ExitCode == 0)
+                {
+                    bresult = true;
+                    PS.Close();
+                }
+            }
+            
+            return File(FilePath, "application/octet-stream", eTestReport.SampleNum+eTestReport.SampleName + ".pdf");
+        }
 
         public JsonResult ExpPDF(int id)
         {
@@ -565,6 +594,7 @@ namespace Web.Controllers
                 dt = tTestReport.GetListByPage(strWhere, "TestTime DESC", 1, 10000, ref total).Tables[0];
             }
             catch { }
+            var strs = "批量下载-";
             string[] iFile = new string[1];
             if (dt != null && dt.Rows.Count > 0)
             {
@@ -576,17 +606,21 @@ namespace Web.Controllers
                     string strUrl = System.Configuration.ConfigurationManager.AppSettings["HostName"].ToString() + "/ReportView/TestReportView?ReportID=" + dt.Rows[i]["ReportID"];//Request.UserHostName
                     var eTestReport = tTestReport.GetModel(Convert.ToInt32(dt.Rows[i]["ReportID"]));
                     //string FileName = Guid.NewGuid() + ".pdf";
-
+                    if (i == 0) {
+                        strs += eTestReport.SampleName;
+                    }
                     string FileName = UrnHtml(eTestReport.SampleNum) + ".pdf";
                     string FilePath = Server.MapPath("/TestReportPDF/" + FileName);
                     Pss.Arguments = string.Format("{0} {1}", "\"" + strUrl + "\"", "\"" + FilePath + "\"");
                     Pss.UseShellExecute = false;
                     Pss.RedirectStandardInput = true;
                     Pss.RedirectStandardOutput = true;
+              
 
                     bool bresult = false;
                     using (Process PS = new Process())
                     {
+                      
                         PS.StartInfo = Pss;
                         PS.Start();
                         PS.WaitForExit();
@@ -600,7 +634,7 @@ namespace Web.Controllers
                 }
             }
 
-            var strs = DateTime.Now.ToFileTime().ToString();
+        
             string oFile = AppDomain.CurrentDomain.BaseDirectory + "UpFile//DownLoads//" + strs + ".zip";
             PublicClass.CompressFiles(iFile, oFile);
             return File(oFile, "application/octet-stream", strs + ".zip");

@@ -10,6 +10,9 @@ using BLL.News;
 using Model.PersonnelManage;
 using Model.Default;
 using Web.Attribute;
+using BLL;
+using BLL.TestReport;
+using BLL.ExpePlan;
 
 namespace Web.Controllers
 {
@@ -58,39 +61,39 @@ namespace Web.Controllers
             #region 药品、易耗品、计量管理、实验计划首页提醒
             try
             {
-                ViewData["expList"] = new List<Model.ExpePlan.E_tb_ExpePlan>();
-                string expwhere = " (InspectTime - getdate()) <= 2 and (InspectTime - getdate()) > 0 ";
-                expwhere += string.Format(" and AreaID = {0} ", CurrentUserInfo.AreaID);
-                List<Model.ExpePlan.E_tb_ExpePlan> expList = new BLL.ExpePlan.T_tb_ExpePlan().GetModelList(expwhere);
-                ViewData["expList"] = expList;
+                //ViewData["expList"] = new List<Model.ExpePlan.E_tb_ExpePlan>();
+                //string expwhere = " (InspectTime - getdate()) <= 2 and (InspectTime - getdate()) > 0 ";
+                //expwhere += string.Format(" and AreaID = {0} ", CurrentUserInfo.AreaID);
+                //List<Model.ExpePlan.E_tb_ExpePlan> expList = new BLL.ExpePlan.T_tb_ExpePlan().GetModelList(expwhere);
+                //ViewData["expList"] = expList;
 
-                //ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetUNFinishList();
-                //张伟修改，增加统计委外未完成的数据
-                ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetAllUNFinishList();
-
+                ////ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetUNFinishList();
+                ////张伟修改，增加统计委外未完成的数据
+                //ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetAllUNFinishList();
+                ViewData["_expList"] = new T_tb_ExpePlan().GetList(8, "status=0", "InspectTime desc");
             }
             catch
             {
 
             }
-            try
-            {
-                ViewData["drugList"] = new List<Model.tb_DrugIN>();
-                string durgwhere = " (validDate - getdate()) <= 9 and (validDate - getdate()) > 0 ";
-                durgwhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID);
-                List<Model.tb_DrugIN> druglist = new BLL.tb_DrugINBLL().GetModelList(durgwhere);
-                ViewData["drugList"] = druglist;
-            }
-            catch
-            {
+            //try
+            //{
+            //    ViewData["drugList"] = new List<Model.tb_DrugIN>();
+            //    string durgwhere = " (validDate - getdate()) <= 9 and (validDate - getdate()) > 0 ";
+            //    durgwhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID);
+            //    List<Model.tb_DrugIN> druglist = new BLL.tb_DrugINBLL().GetModelList(durgwhere);
+            //    ViewData["drugList"] = druglist;
+            //}
+            //catch
+            //{
 
-            }
+            //}
 
             try
             {
                 ViewData["easyConsumelist"] = new List<Model.tb_EasyConsumeIN>();
                 string easyConsumewhere = " (validDate - getdate()) <= 9 and (validDate - getdate()) > 0 ";
-                easyConsumewhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID);
+                easyConsumewhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", CurrentUserInfo.AreaID);
                 List<Model.tb_EasyConsumeIN> easyConsumelist = new BLL.tb_EasyConsumeINBLL().GetModelList(easyConsumewhere);
                 ViewData["easyConsumelist"] = easyConsumelist;
             }
@@ -98,17 +101,21 @@ namespace Web.Controllers
             {
             }
 
-            try
-            {
-                ViewData["booklist"] = new List<Model.tb_BookBorrow>();
-                string bookwhere = " (convert(datetime,temp2) - getdate()) <= 9 and (convert(datetime,temp2) - getdate()) > 0 ";
-                bookwhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID);
-                List<Model.tb_BookBorrow> booklist = new BLL.tb_BookBorrowBLL().GetModelList(bookwhere);
-                ViewData["booklist"] = booklist;
-            }
-            catch
-            {
-            }
+            //try
+            //{
+            //    ViewData["booklist"] = new List<Model.tb_BookBorrow>();
+            //    string bookwhere = " (convert(datetime,temp2) - getdate()) <= 9 and (convert(datetime,temp2) - getdate()) > 0 ";
+            //    bookwhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID);
+            //    List<Model.tb_BookBorrow> booklist = new BLL.tb_BookBorrowBLL().GetModelList(bookwhere);
+            //    ViewData["booklist"] = booklist;
+            //}
+            //catch
+            //{
+            //}
+
+            ViewData["measurelist"] =new tb_MeasureBLL().GetList(7, string.Format("  createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID), " nextVerification desc");
+            ViewData["testreportlist"] = new T_tb_TestReport().GetList(3, " examinePersonnelID >0", " UpdateTime desc");
+
             #endregion
             return View(eDefault);
 

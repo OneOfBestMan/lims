@@ -116,7 +116,7 @@
             }
         }
         function click_Edit(_itemId) {
-            window.parent.mainFrame.location.href = '@Url.Action("doEasyConsumeOUTInfo", "EasyConsume")' + "?id=" + _itemId;
+            window.location.href = '@Url.Action("doEasyConsumeOUTInfo", "EasyConsume")' + "?id=" + _itemId;
         }
         function click_Search() {
             var _stype = $('#ddl_search').val();

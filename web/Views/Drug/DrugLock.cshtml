@@ -44,7 +44,7 @@
                     $.getJSON(actionurl,
                         function (data) {
                             if (data == "删除成功！") {
-                                window.parent.mainFrame.location.href = '@Url.Action("DrugLock", "Drug")';
+                                window.location.href = '@Url.Action("DrugLock", "Drug")';
                             }
                         });
                     } else {
