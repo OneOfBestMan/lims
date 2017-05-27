@@ -116,7 +116,13 @@
                 },
                 rowStyler:function(index,row){   
                    
-                    if(!row.ApprovalPersonnelName){
+                    //if(!row.ApprovalPersonnelName){
+                      
+                    //        return 'background-color:yellow;';   
+                      
+                    //}
+                    if(!row.examinePersonnelName){
+
                         if (GetDateDiff(row.TestTime)>14){   
                             return 'background-color:yellow;';   
                         }  
