@@ -236,7 +236,7 @@
                 @if (Model != null && Model.id > 0)
                 {
                     Model.tb_EasyConsume tb_easyconsume = new BLL.tb_EasyConsumeBLL().GetModel(Model.eId.Value);
-                    Model.tb_EasyConsumeIN tb_easyconsumein = new BLL.tb_EasyConsumeINBLL().GetModel(Convert.ToInt32(Model.temp2));
+                    Model.tb_EasyConsumeIN tb_easyconsumein = new BLL.tb_EasyConsumeINBLL().GetModel(Comp.Utils.GetInt(Model.temp2));
                     <tr>
                     <td width="90px" align="right">易耗品：</td>
                     <td align="left">
@@ -249,10 +249,10 @@
                 <tr>
                     <td width="110" align="right" valign="middle">选择批次：</td>
                     <td align="left">
-                        有效期：@tb_easyconsumein.validDate.Value.ToShortDateString() 生产日期：@tb_easyconsumein.productDate.Value.ToShortDateString()
+                        有效期：@(tb_easyconsumein!=null? tb_easyconsumein.validDate.Value.ToShortDateString():"") 生产日期：@(tb_easyconsumein!=null?tb_easyconsumein.productDate.Value.ToShortDateString():"")
                     </td>
                     <td width="90px" align="right">库存数量：</td>
-                    <td align="left" id="EasyConsumeIN_dwsl">@tb_easyconsumein.temp2</td>
+                    <td align="left" id="EasyConsumeIN_dwsl">@(tb_easyconsumein!=null?tb_easyconsumein.temp2:"")</td>
                 </tr>
                     <tr>
                     <td width="90px" align="right">出库日期：</td>

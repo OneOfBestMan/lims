@@ -49,12 +49,14 @@
                     {
                         field: 'Edit', title: '编辑', align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["1cefdda3"]' == "False") { return ""; }
                             return "<a href='javascript:void(0)' onclick='Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='/Content/Images/xiugai.png' /></a>";
                         }
                     },
                     {
                         field: 'Delete', title: '删除', align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["1cefdda3"]' == "False") { return ""; }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"/Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -153,7 +155,12 @@
                 <td align="right"style="width:70px;">姓名：</td>
                 <td align="left" style="width:160px;" ><input style="border: 1px solid #3496d6;" width="150px" type="text" id="txt_Search" /></td>
                 <td width="67px"><a href="javascript:void(0)" onclick="click_Search()"><img height="20px" src="/Content/Images/chaxun.png" /></a></td>
-                <td align="left" width="67px"><a href="javascript:void(0)" onclick="Add()"><img src="/Content/Images/xinzeng.png" height="20px" /></a></td>
+                <td align="left" width="67px">
+@if (Convert.ToBoolean(ViewData["1cefdda3"]))
+{
+                    <a href="javascript:void(0)" onclick="Add()"><img src="/Content/Images/xinzeng.png" height="20px" /></a>
+}
+                </td>
                 <td align="right"></td>
             </tr>
         </table>

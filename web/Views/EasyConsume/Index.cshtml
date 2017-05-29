@@ -37,13 +37,19 @@
                     {
                         field: 'Edit', title: '编辑', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["57b34583"]' == "False") {
+                                return "";
+                            }
                             var url = '@Url.Action("doEasyConsumeInfo", "EasyConsume")' + "?id=" + row.id;
-                            return "<a href='" + url + "' target='mainFrame' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/EasyConsume/doEasyConsumeInfo?id=" + row.id + "','编辑')\"  ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                         }
                     },
                     {
                         field: 'Delete', title: '删除', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["57b34583"]' == "False") {
+                                return "";
+                            }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -152,8 +158,13 @@
                                     <img height="20px" src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
                             </td>
                             <td align="right">&nbsp;
-                                <a href='@Url.Action("doEasyConsumeInfo", "EasyConsume", new { @id = 0 })' target='mainFrame' >
-                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" /></a>
+                                @if (Convert.ToBoolean(ViewData["57b34583"]))
+{
+
+    <a href='javascript:void(0)' onclick="showwindow('/EasyConsume/doEasyConsumeInfo/0', '添加')" >
+        <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" />
+    </a>
+}
                             </td>
                         </tr>
                     </table>

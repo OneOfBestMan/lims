@@ -41,8 +41,11 @@
                     {
                         field: 'Edit', title: '编辑', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["9b1e116f"]' == "False") {
+                                return "";
+                            }
                             var url = '@Url.Action("doDrugInfo", "Drug")' + "?id=" + row.id;
-                            return "<a href='" + url + "' target='mainFrame' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugInfo/" + row.id + "','编辑')\" ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                         }
                     },
                     {
@@ -54,6 +57,9 @@
                     {
                         field: 'Delete', title: '删除', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["9b1e116f"]' == "False") {
+                                return "";
+                            }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -201,8 +207,13 @@
                                     <img src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
                             </td>
                             <td align="right">
-                                <a href='@Url.Action("doDrugInfo", "Drug", new { @id = 0 })' target='mainFrame' >
-                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' /></a>
+                               @if (Convert.ToBoolean(ViewData["9b1e116f"]))
+{
+
+    <a href='javascript:void(0)' onclick="showwindow('/Drug/doDrugInfo/0','添加')">
+        <img src='@Url.Content("~/Content/Images/xinzeng.png")' />
+    </a>
+}
                                 <a href='javascrpt:void(0)' target='mainFrame' id="exportExcel">
                                     <img src='@Url.Content("~/Content/Images/导出Excel.png")' /></a>
 

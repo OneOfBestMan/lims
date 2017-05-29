@@ -74,13 +74,19 @@
                     {
                         field: 'Edit', title: '编辑', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["f55d3083"]' == "False") {
+                                return "";
+                            }
                             var url = '@Url.Action("doDrugInUpdate", "Drug")' + "?id=" + row.id;
-                            return "<a href='" + url + "' target='mainFrame' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugInUpdate?id=" + row.id + "','编辑')\"  ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                         }
                     },
                     {
                         field: 'Delete', title: '删除', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["f55d3083"]' == "False") {
+                                return "";
+                            }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -214,8 +220,13 @@
                             </td>
                             <td>&nbsp;</td>
                             <td align="right" width="60px">
-                                <a href='@Url.Action("doDrugInAdd", "Drug")' target='mainFrame'><img src='@Url.Content("~/Content/Images/xinzeng.png")'/></a>
-                            </td>
+
+                                @if (Convert.ToBoolean(ViewData["f55d3083"]))
+{
+
+    <a href='javascript:void(0)' onclick="showwindow('/Drug/doDrugInAdd', '添加')"><img src='@Url.Content("~/Content/Images/xinzeng.png")' /></a>
+}
+                             </td>
                             <td width="60px" align="right">
                                 <a href='@Url.Action("Export_DrugIN", "Drug")' ><img src='@Url.Content("~/Content/Images/导出Excel.png")'/></a>
                             </td>

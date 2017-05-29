@@ -81,12 +81,18 @@
                                         {
                                             field: 'Edit', title: '编辑', width: 40, align: 'center',
                                             formatter: function (value, row, index) {
+                                                if ('@ViewData["b40529e9"]' == "False") {
+                                                    return "";
+                                                }
                                                 return "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                                             }
                                         },
                                         {
                                             field: 'Delete', title: '删除', width: 40, align: 'center',
                                             formatter: function (value, row, index) {
+                                                if ('@ViewData["b40529e9"]' == "False") {
+                                                    return "";
+                                                }
                                                 var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                                                 return linkstr;
                                             }
@@ -116,7 +122,8 @@
             }
         }
         function click_Edit(_itemId) {
-            window.location.href = '@Url.Action("doEasyConsumeOUTInfo", "EasyConsume")' + "?id=" + _itemId;
+          //  window.location.href = '@Url.Action("doEasyConsumeOUTInfo", "EasyConsume")' + "?id=" + _itemId;
+            showwindow('/EasyConsume/doEasyConsumeOUTInfo?id=' + _itemId, '编辑');
         }
         function click_Search() {
             var _stype = $('#ddl_search').val();
@@ -207,8 +214,11 @@
                             <td width="160px">
                                 <a href="javascript:void(0)" onclick="click_Search()">
                                     <img height="20px" src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
+                                @if (Convert.ToBoolean(ViewData["b40529e9"]))
+                                    {
                                 <a href="javascript:void(0)" onclick="click_Edit(0)">
                                     <img alt="" src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" /></a>
+                                    }
                             </td>
                             <td align="right">
                                 &nbsp;

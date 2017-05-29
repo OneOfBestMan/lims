@@ -71,8 +71,11 @@
                     {
                         field: 'Edit', title: '操作', width: 100, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["9d2eb602"]' == "False") {
+                                return "";
+                            }
                             var editurl = '@Url.Action("doDrugCheck","Drug")' + "?id=" + row.id;
-                            return "<a href='" + editurl + "' target='mainFrame' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>" + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + "<a href='javascript:void(0)' target='mainFrame' ><img width='18px' height='18' alt='删除' src='../../Content/Images/shanchu.png' /></a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugCheck?id=" + row.id + "','操作')\"  ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                         }
                     }
                 ]]
@@ -198,8 +201,11 @@
                         <tr>
                             <td align="right" colspan="5">
                                 <a href="javascript:void(0)" onclick="click_Check()"><img src='@Url.Content("~/Content/Images/盘点.png")' /></a>
+                                @if (Convert.ToBoolean(ViewData["9d2eb602"]))
+                                {
+                               
                                 <a href="javascript:void(0)" onclick="click_AllAudit()"><img src='@Url.Content("~/Content/Images/批量审核.png")' /></a>
-                              
+                                }
                             </td>
                         </tr>
                     </table>

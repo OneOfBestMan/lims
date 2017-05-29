@@ -86,13 +86,15 @@
                     {
                         field: 'Edit', title: '编辑', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["aadf1e6b"]' == "False") { return ""; }
                             var url = '@Url.Action("doSampleInfo", "Sample")' + "?id=" + row.id;
-                            return "<a href='" + url + "' target='mainFrame' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Sample/doSampleInfo?id=" + row.id + "','编辑')\"  ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                         }
                     },
                     {
                         field: 'Destroy', title: '销毁', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["aadf1e6b"]' == "False") { return ""; }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Destroy(" + row.id + ")\" ><img width='18px' height='18' alt=\"销毁\" src=\"../../Content/Images/xiaohui.png\" /></a>";
                             return linkstr;
                         }
@@ -100,6 +102,7 @@
                     {
                         field: 'Delete', title: '删除', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["aadf1e6b"]' == "False") { return ""; }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -303,10 +306,14 @@
                             <td width="220px">
                                 <a href="javascript:void(0)" onclick="click_Search()">
                                     <img height="20px" src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
-                                <a href='@Url.Action("doSampleInfo", "Sample", new { @id = 0 })' target='mainFrame' >
-                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" /></a>
+                               @if (Convert.ToBoolean(ViewData["aadf1e6b"]))
+{
+    <a href='javascript:void(0)' onclick="showwindow('/Sample/doSampleInfo?id=0', '添加')"  >
+        <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" />
+    </a>
                                 <a href="javascript:void(0)" onclick="click_BatchDestory()">
                                     <img height="20px" src='@Url.Content("~/Content/Images/plxiaohui.png")' /></a>
+                                }
                             </td>
                             <td align="right">
                                 <a href='javascrpt:void(0)' target='mainFrame' id="exportExcel">

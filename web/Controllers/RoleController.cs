@@ -113,10 +113,10 @@ namespace Web.Controllers
             string res_s = "";
             //你想要在视图中得到的值  
             string strChecked = this.ActionIsChecked(RoleActionList, model.ActionID);
-            //if (RoleActionList.Where(p=>p.ActionID==model.ActionID).Count()>0)
-            //{
-            //    strChecked = "true";
-            //}
+            if (RoleActionList.Where(p => p.ActionID == model.ActionID).Count() > 0)
+            {
+                strChecked = "true";
+            }
 
             res_s += "{\"id\":\"" + model.ActionID + "\",\"text\":\"" + model.ActionName+"("+model.ActionCode+")" + "\",\"checked\":" + strChecked;
 

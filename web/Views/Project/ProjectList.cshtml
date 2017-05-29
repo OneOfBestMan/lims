@@ -49,6 +49,7 @@
                     {
                         field: 'Edit', title: '编辑', align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["b97c7837"]' == "False") { return ""; }
                             return "<a href='javascript:void(0)' onclick='Edit(" + row.ProjectID + ")' ><img width='18px' height='18' alt='修改' src='/Content/Images/xiugai.png' /></a>";
                         }
                     },
@@ -61,6 +62,7 @@
                     {
                         field: 'Delete', title: '删除', align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["b97c7837"]' == "False") { return ""; }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"Delete(" + row.ProjectID + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"/Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -217,7 +219,12 @@
                     @Html.DropDownListFor(m => m.LaboratoryID, ViewData["LaboratoryList"] as SelectList, new { @id = "Input_Search_4", @style = "display:none" })
                 </td>
                 <td width="70px"><a href="javascript:void(0)" onclick="click_Search()"><img height="20px" src="/Content/Images/chaxun.png" /></a></td>
-                <td align="left" width="67px"><a href="javascript:void(0)" onclick="Add()"><img src="/Content/Images/xinzeng.png" height="20px" /></a></td>
+                <td align="left" width="67px">
+                    @if (Convert.ToBoolean(ViewData["b97c7837"]))
+                    {
+                <a href="javascript:void(0)" onclick="Add()"><img src="/Content/Images/xinzeng.png" height="20px" /></a>
+                    }
+                </td>
                 <td align="right">
                     &nbsp;&nbsp;
                     @*<a href="/Laboratory/LaboratoryList"><img src="/Content/Images/fanhui.png" height="20px" /></a>*@

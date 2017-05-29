@@ -94,7 +94,10 @@
             {<li><a href='@Url.Action("DeviceOUT", "Device")' target="mainFrame">仪器设备出库</a></li>}
             @if (Convert.ToBoolean(ViewData["8e0fd1ad"]))
             {<li><a href='@Url.Action("DeviceLog", "Device")' target="mainFrame">仪器设备盘点</a></li>}
-            <li><a href='@Url.Action("MeasureCheck", "Measure")' target="mainFrame">计量管理</a></li>                                                            
+                     @if (Convert.ToBoolean(ViewData["cfc6b5d4"]))
+                     { 
+            <li><a href='@Url.Action("MeasureCheck", "Measure")' target="mainFrame">计量管理</a></li>      
+                     }                                                      
 @*<li><a href="#">仪器设备统计</a></li>*@
         </ul>
         @if (Convert.ToBoolean(ViewData["e3251ffe"]))
@@ -131,14 +134,16 @@
         <ul style="display: none;">
             @if (Convert.ToBoolean(ViewData["458cf6bf"]))
             {<li><a href='@Url.Action("LaboratoryList", "Laboratory")' target="mainFrame">实验室信息</a></li>}
+            @if (Convert.ToBoolean(ViewData["3af01951"])) { 
             <li><a href='@Url.Action("ProjectList", "Project")' target="mainFrame">项目一览</a></li>
+            }
             <li><a href='@Url.Action("ExpePlanList", "ExpePlan")' target="mainFrame">实验计划</a></li>
             @if (Convert.ToBoolean(ViewData["68b56a25"]))
             {<li><a href='@Url.Action("OriginalRecordList", "OriginalRecord")' target="mainFrame">原始记录</a></li>}
             @if (Convert.ToBoolean(ViewData["722a5e1c"]))
             {<li><a href='@Url.Action("TestReportList", "TestReport")' target="mainFrame">检验报告</a></li>}
             @if (Convert.ToBoolean(ViewData["4208340c"]))
-            {<li><a href='@Url.Action("ExpeStatisticsList", "ExpeStatistics")' target="mainFrame">实验统计</a></li>}                                                                            
+            {<li><a href='@Url.Action("ExpeStatisticsList", "ExpeStatistics")' target="mainFrame">实验统计</a></li>}
         </ul>
         @if (Convert.ToBoolean(ViewData["7076b0bd"]))
         {<h2><a href='javascript:void(0);' class="a_bg8">样品管理</a></h2>}

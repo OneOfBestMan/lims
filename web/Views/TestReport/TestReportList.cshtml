@@ -29,7 +29,7 @@
     </style>
     <script type="text/javascript">
         $(document).ready(function () {
-            var SearchUrl="/TestReport/GetList?pageNumber=1&pageSize=20&ReportID="+@Model.ReportID;
+            var SearchUrl="/TestReport/GetList?pageNumber=1&pageSize=15&ReportID="+@Model.ReportID;
             $('#dgtable').datagrid({
                 url: SearchUrl,
                 pagination: true, //分页控件  
@@ -132,8 +132,8 @@
             });
             var p = $('#dgtable').datagrid('getPager');
             $(p).pagination({
-                pageSize: 50, //每页显示的记录条数，默认为10  
-                pageList: [10, 20, 50, 100], //可以设置每页记录条数的列表  
+                pageSize: 15, //每页显示的记录条数，默认为10  
+                pageList: [15, 20, 50], //可以设置每页记录条数的列表  
                 onSelectPage: function (pageNumber, pageSize) {
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
                     tablequeryParams.pageNumber = pageNumber;

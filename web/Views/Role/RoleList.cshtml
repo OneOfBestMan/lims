@@ -30,6 +30,7 @@
             $('#HidRoleID').val(InfoID);
             $('#ActionTree').tree({
                 checkbox: true,
+                cascadeCheck: false,
                 url: "/Role/InitTree?InfoID="+InfoID
             });
             $('#EditRolePurview').dialog('open');

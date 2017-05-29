@@ -95,6 +95,7 @@ function BindDDLDir() {
 /**********************结束 Treeview*************************/
 var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel).PersonnelID)';
         var _lid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel).AreaID)';
+       // var curd=@Convert.ToBoolean(ViewData["7ff4e3e6"]);
         $(function () {
             $('#dlg_Tree').dialog('close');
             $('#dgtable').datagrid({
@@ -157,10 +158,15 @@ var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel)
                     {
                         field: 'Edit', title: '编辑', width: 50, align: 'center',
                         formatter: function (value, row, index) {
-                            //return "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
-                            var _editURL = "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
-                            _editURL = isLimitTrue(row.id, row.doc_CreateUser, "edit", _editURL);
-                            return _editURL;
+                            if ('@ViewData["7ff4e3e6"]' == 'False') {
+                                return "";
+                            }
+                                //return "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                                var _editURL = "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                                _editURL = isLimitTrue(row.id, row.doc_CreateUser, "edit", _editURL);
+                                return _editURL;
+                          
+
                         }
                     },
                     {
@@ -194,6 +200,9 @@ var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel)
                     {
                         field: 'Delete', title: '删除', width: 50, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["7ff4e3e6"]' == 'False') {
+                                return "";
+                            }
                             //var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             //return linkstr;
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
@@ -682,8 +691,12 @@ var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel)
                                 <a href="javascript:void(0)" onclick="click_search()">
                                 <img src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
                             </td>
-                            <td align="right"><a href="javascript:void(0)" onclick="click_New()">
-                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' /></a></td>
+                            <td align="right">
+@if (Convert.ToBoolean(ViewData["7ff4e3e6"]))
+{ 
+                            <a href="javascript:void(0)" onclick="click_New()">
+                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' /></a>}
+                            </td>
                         </tr>
                     </table>
                 </td>

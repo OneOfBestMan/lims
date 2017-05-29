@@ -77,18 +77,24 @@
                     {
                         field: 'Edit', title: '归还', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["0ef5181c"]' == "False") {
+                                return "";
+                            }
                             if (row.status == 1) {
-                                return "<a href='javascript:void(0)' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                                return "";
                             }
                             else {
                                 var url = '@Url.Action("doBorrowManageUpdate", "Book")' + "?id=" + row.id;
-                                return "<a href='" + url + "' target='mainFrame'><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                                return "<a href='javascript:void(0)' onclick=\"showwindow('/Book/doBorrowManageUpdate?id=" + row.id + "','编辑')\" ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                             }
                         }
                     },
                     {
                         field: 'Delete', title: '删除', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["0ef5181c"]' == "False") {
+                                return "";
+                            }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -220,8 +226,14 @@
                             <td width="160px">
                                 <a href="javascript:void(0)" onclick="click_Search()">
                                     <img height="20px" src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
-                                <a href='@Url.Action("doBorrowManageAdd", "Book")' target="mainFrame">
-                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" /></a>
+                                @if (Convert.ToBoolean(ViewData["0ef5181c"]))
+{
+
+
+    <a href='javascript:void(0)' onclick="showwindow('/Book/doBorrowManageAdd?id=0', '添加')" >
+        <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" />
+    </a>
+}
                             </td>
                             <td align="right">&nbsp;
                                 @*<a href="javascript:void(0)" onclick="$('#dlg').dialog('open')">

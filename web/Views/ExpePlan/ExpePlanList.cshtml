@@ -59,6 +59,7 @@
                     {
                         field: 'Edit', title: '编辑', align: 'center',width:70,
                         formatter: function (value, row, index) {
+                            if ('@ViewData["4935c772"]' == "False") {return "";}
                             return row.Status ==1 ?"":"<a href='javascript:void(0)' onclick='Edit(" + row.PlanID + ")' ><img width='18px' height='18' alt='修改' src='/Content/Images/xiugai.png' /></a>";
                             //return "<a href='javascript:void(0)' onclick='Edit(" + row.PlanID + ")' ><img width='18px' height='18' alt='修改' src='/Content/Images/xiugai.png' /></a>";
                         }
@@ -66,6 +67,7 @@
                     {
                         field: 'Delete', title: '删除', align: 'center',width:70,
                         formatter: function (value, row, index) {
+                            if ('@ViewData["4935c772"]' == "False") {return "";}
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"Delete(" + row.PlanID + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"/Content/Images/shanchu.png\" /></a>";
                             return row.Status ==1 ?"":linkstr;
                         }
@@ -262,7 +264,7 @@
                                     <img height="20px" src="/Content/Images/chaxun.png" /></a>
                             </td>
                             <td width="70px">
-                                @if (ViewData["ApprovalPersonnelName"] == "")
+                                @if (ViewData["ApprovalPersonnelName"] == "" && Convert.ToBoolean(ViewData["4935c772"]))
                                 {
                                 <a href="javascript:void(0)" onclick="Add()">
                                     <img src="/Content/Images/xinzeng.png" height="20px" /></a>

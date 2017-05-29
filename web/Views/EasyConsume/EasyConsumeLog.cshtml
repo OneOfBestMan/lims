@@ -141,8 +141,13 @@
                             <td width="160px">
                                 <a href="javascript:void(0)" onclick="click_Search()">
                                     <img height="20px" src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
+                                @if (Convert.ToBoolean(ViewData["f7121152"]))
+{
+
+
                                 <a href="javascript:void(0)" onclick="click_Edit(0)">
                                     <img alt="" src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" /></a>
+}
                             </td>
                             <td align="right">&nbsp;
                                 @*<a href="javascript:void(0)" onclick="click_Edit(0)">

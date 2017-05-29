@@ -108,12 +108,16 @@
                                 }
                             </td>
                             <td align="right">
-                                <a href='@Url.Action("doDrugLockInfo", "Drug", new { @id = 0 })' target='mainFrame' >
-                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' />
-                                </a>
+                                @if (Convert.ToBoolean(ViewData["2d3fc650"]))
+{
+
+    <a href='javascript:void(0)' onclick="showwindow('/Drug/doDrugLockInfo/0', '添加')">
+        <img src='@Url.Content("~/Content/Images/xinzeng.png")' />
+    </a>
                                 <a href="javascript:void(0)" onclick="onclick_deleteLock()">
                                     <img src='@Url.Content("~/Content/Images/delete.png")' />
                                 </a>
+                                }
                             </td>
                         </tr>
                     </table>
@@ -140,12 +144,15 @@
                                     if (druglock != null)
                                     {
                                     <td align="center">
+
                                         <table>
                                             <tr>
                                                 <td align="center">
-                                                    <a href='@Url.Action("doDrugLockInfo", "Drug", new { @id = druglock.id })' target="mainFrame">
+
+                                                    <a href='javascript:void(0)' onclick="showwindow('/Drug/doDrugLockInfo/@druglock.id', '详情')" >
                                                         <img src='@Url.Content("~/Content/Images/Lock/" + druglock.lockType + druglock.mark + ".png")' height="136" width="100" alt="@druglock.mark" />
                                                     </a>
+
                                                 </td>
                                             </tr>
                                             <tr>
@@ -155,6 +162,7 @@
                                                 </td>
                                             </tr>
                                         </table>
+
                                     </td>
                                     }
                                     else

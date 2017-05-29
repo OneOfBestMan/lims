@@ -47,12 +47,19 @@
                     {
                         field: 'Edit', title: '编辑', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                  
+                            if ('@ViewData["ed359c0a"]' == "False") {
+                                return "";
+                            }
                             return "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                         }
                     },
                     {
                         field: 'Delete', title: '删除', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["ed359c0a"]' == "False") {
+                                return "";
+                            }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             return linkstr;
                         }
@@ -172,8 +179,11 @@
                             <td width="160px">
                                 <a href="javascript:void(0)" onclick="click_Search()">
                                     <img height="20px" src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
+                                @if (Convert.ToBoolean(ViewData["ed359c0a"]))
+                                {
                                 <a href="javascript:void(0)" onclick="click_Edit(0)">
                                     <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" /></a>
+                                }
                             </td>
                             <td align="right">&nbsp;
                                 @*<a href="javascript:void(0)" onclick="click_Edit(0)">

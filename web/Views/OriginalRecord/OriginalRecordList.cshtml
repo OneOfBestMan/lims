@@ -28,7 +28,7 @@
 
     <script type="text/javascript">
         
-        var SearchUrl="/OriginalRecord/GetList?pageNumber=1&pageSize=20&RecordID="+@Model.RecordID;
+        var SearchUrl="/OriginalRecord/GetList?pageNumber=1&pageSize=15&RecordID="+@Model.RecordID;
 
         $(document).ready(function () {
             $('#dgtable').datagrid({
@@ -75,8 +75,8 @@
             });
             var p = $('#dgtable').datagrid('getPager');
             $(p).pagination({
-                pageSize: 20, //每页显示的记录条数，默认为10  
-                pageList: [8, 10, 15, 20], //可以设置每页记录条数的列表  
+                pageSize: 15, //每页显示的记录条数，默认为10  
+                pageList: [15, 20,50], //可以设置每页记录条数的列表  
                 onSelectPage: function (pageNumber, pageSize) {
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
                     tablequeryParams.pageNumber = pageNumber;

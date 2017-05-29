@@ -275,6 +275,7 @@
                     <td width="90px" align="right"></td>
                     <td width="80" align="left"></td>
                 </tr>
+                @if (Model == null) { 
                 <tr>
                     <td>
                         易耗品柜：
@@ -290,6 +291,7 @@
 
                     </td>    
                 </tr>
+                }
                 <tr>
                     <td width="90px" align="right">备注：</td>
                     <td align="left" colspan="3">
@@ -300,9 +302,9 @@
                     <td colspan="4" align="center">
                         <a href="javascript:void(0)" onclick="$('#uploadfrm').submit()">
                             <img src="~/Content/Images/baocun.png" height="20px" /></a>
-                        <a href="javascript:void(0)" onclick="history.go(-1)">
+                        @*<a href="javascript:void(0)" onclick="history.go(-1)">
                             <img src="~/Content/Images/fanhui.png" height="20px" />
-                        </a></td>
+                        </a>*@</td>
                 </tr>
             </table>
         }

@@ -46,6 +46,7 @@
 
         //弹出编辑页
         function Edit(InfoID) {
+      
             $.get("/TypeDict/TypeDictEdit?EditType=Edit&InfoID=" + InfoID, function (NewsInfo) {
                 $("#HidEditType").val(NewsInfo.EditType);
                 $("#HidTypeID").val(NewsInfo.TypeID);
@@ -60,6 +61,7 @@
 
         //删除
         function Delete(InfoID) {
+           
             if (confirm("确定要删除数据吗？")) {
                 $.getJSON("/TypeDict/Delete/" + InfoID,
                 function (data) {
@@ -133,7 +135,9 @@
         <table cellpadding="0" cellspacing="0" width="100%" class="WhereTable">
             <tr>
                 <td align="right">
+                   
                     <a href="javascript:void(0)" onclick="Add(0)"><img src="/Content/Images/xinzeng.png" height="20px" /></a>
+                   
                 </td>
             </tr>
         </table>

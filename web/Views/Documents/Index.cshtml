@@ -92,9 +92,14 @@
                     {
                         field: 'Edit', title: '编辑', width: 40, align: 'center',
                         formatter: function (value, row, index) {
+                            if ('@ViewData["97b5ed02"]'=="False")
+                            {
+                                return "";
+                            }
                             var _editURL = "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                             _editURL = isLimitTrue(row.id, row.doc_CreateUser, "edit", _editURL);
                             return _editURL;
+                          
                         }
                     },
                     {
@@ -127,6 +132,9 @@
                     {
                         field: 'Delete', title: '删除', width: 40, align: 'center', fitColumns: true,
                         formatter: function (value, row, index) {
+                            if ('@ViewData["97b5ed02"]' == "False") {
+                                return "";
+                            }
                             var linkstr = "<a href=\"javascript:void(0)\" onclick=\"click_Delete(" + row.id + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"../../Content/Images/shanchu.png\" /></a>";
                             linkstr = isLimitTrue(row.id, row.doc_CreateUser, "delete", linkstr);
                             return linkstr;
@@ -546,8 +554,11 @@
                                 <a href="javascript:void(0)" onclick="click_search()"><img src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
                             </td>
                             <td align="right">
+@if (Convert.ToBoolean(ViewData["97b5ed02"]))
+{
                                 <a href="javascript:void(0)" onclick="click_Edit(0)">
                                     <img src='@Url.Content("~/Content/Images/xinzeng.png")' /></a>
+}
                             </td>
                         </tr>
                     </table>
