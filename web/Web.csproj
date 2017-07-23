@@ -226,6 +226,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Skins\admin\vendor\datetimepicker\css\bootstrap-datetimepicker.css" />
+    <Content Include="Skins\admin\vendor\datetimepicker\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Skins\admin\vendor\datetimepicker\js\bootstrap-datetimepicker.js" />
+    <Content Include="Skins\admin\vendor\datetimepicker\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Skins\css\custom.css" />
     <Content Include="Content\CSS\Indexcss.css" />
     <Content Include="Content\CSS\Maincss.css" />
     <Content Include="Content\FullImages\images_01.jpg" />
@@ -2051,6 +2056,7 @@
     <Content Include="Skins\artDialog\README.md" />
     <Content Include="Skins\artDialog\_config.yml" />
     <Content Include="Views\Demo\Info.cshtml" />
+    <Content Include="Views\LabManage\ExperimentCheck.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

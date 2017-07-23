@@ -30,25 +30,26 @@ namespace Web.Controllers
             //判断用户是否为空
             if (CurrentUserInfo == null)
             {
-                if (filterContext.HttpContext.Response.Cookies["lims.uid"].Value == null || filterContext.HttpContext.Response.Cookies["lims.passport"].Value == null)
+                if (HttpContext.Request.Cookies["lims.userinfo"]==null ||string.IsNullOrEmpty(HttpContext.Request.Cookies["lims.userinfo"].Value))
                 {
                     filterContext.Result = new RedirectResult("/Login/login");
                 }
                 else
                 {
-                    string passportinfo = filterContext.HttpContext.Response.Cookies["lims.passport"].Value;
-                    string uid = filterContext.HttpContext.Response.Cookies["lims.uid"].Value;
-                    E_tb_InPersonnel eInPersonnel = new T_tb_InPersonnel().GetModel(Convert.ToInt32(uid));
+                    HttpCookie cookie = HttpContext.Request.Cookies.Get("lims.userinfo");
+                    string passportinfo = cookie["passport"].ToString();
+                    int uid = Convert.ToInt32(cookie["uid"]);
+                    E_tb_InPersonnel eInPersonnel = new T_tb_InPersonnel().GetModel(uid);
                     if (passportinfo == Utils.Md5(eInPersonnel.PersonnelID + eInPersonnel.UserName + eInPersonnel.PassWord))
                     {
-                        filterContext.HttpContext.Session["UserInfo"] = new T_tb_InPersonnel().Login(eInPersonnel.UserName, eInPersonnel.PassWord);
+                        CurrentUserInfo= new T_tb_InPersonnel().Login(eInPersonnel.UserName, eInPersonnel.PassWord);
+                        filterContext.HttpContext.Session["UserInfo"] = CurrentUserInfo;
                     }
                     else
                     {
                         filterContext.Result = new RedirectResult("/Login/login");
                     }
                 }
-                return;
             }
 
 
