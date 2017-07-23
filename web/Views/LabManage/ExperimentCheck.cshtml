@@ -25,14 +25,14 @@
                             <div class="input-group">
                                 <span class="input-group-addon">分样日期</span>
                                 <div class='input-group date inputtime'>
-                                    <input type='text' class="form-control" id='starttime' name="starttime" value="@ePageParameter.starttime" />
+                                    <input type='text' class="form-control" id='starttime' name="starttime" value="@(ePageParameter.starttime!=null?Convert.ToDateTime(ePageParameter.starttime).ToString("yyyy-MM-dd"):"")" />
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
                                 </div>
                                 至
                                 <div class='input-group date inputtime'>
-                                    <input type='text' class="form-control" id='endtime' name="endtime" value="@ePageParameter.endtime" />
+                                    <input type='text' class="form-control" id='endtime' name="endtime" value="@(ePageParameter.endtime!=null?Convert.ToDateTime(ePageParameter.endtime).ToString("yyyy-MM-dd"):"")" />
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
@@ -75,7 +75,28 @@
                                         <td>@item.samplename</td>
                                         <td>@item.projectname</td>
                                         <td>@item.detectiondate</td>
-                                        <td></td>
+                                        <td>
+                                            @{ 
+                                                string status = "";
+                                                if (item.detecttime == null && item.detectiondate > DateTime.Now)
+                                                {
+                                                    status="待完成";
+                                                }
+                                                else if (item.detecttime == null && item.detectiondate.AddDays((item.urgentlevel == 1) ? 3 : 5) < DateTime.Now)
+                                                {
+                                                    status="延期";
+                                                }
+                                                else if (item.detecttime != null && item.detecttime <= item.detectiondate.AddDays((item.urgentlevel == 1) ? 3 : 5))
+                                                {
+                                                    status="完成";
+                                                }
+                                                else if (item.detecttime != null && item.detecttime > item.detectiondate.AddDays((item.urgentlevel == 1) ? 3 : 5))
+                                                {
+                                                    status="延期完成";
+                                                }
+                                            }
+                                            @status
+                                        </td>
                                         <td>@item.detecttime</td>
                                         <td>@item.detectpersonnelname</td>
                                     </tr>
@@ -83,6 +104,12 @@
                             }
                         </tbody>
                     </table>
+
+                    <div class="row">
+                        <div style="text-align: center">
+                            @Html.Raw(ViewBag.page)
+                        </div>
+                    </div>
 
                 </div>
                 <!-- /.panel-body -->

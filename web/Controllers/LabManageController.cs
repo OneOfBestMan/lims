@@ -1,4 +1,6 @@
-﻿using Model;
+﻿using Comp;
+using DAL.LabManage;
+using Model;
 using Model.LabManage;
 using System;
 using System.Collections.Generic;
@@ -19,13 +21,19 @@ namespace Web.Controllers
         [Route("labmanage/experimentcheck")]
         public ActionResult ExperimentCheck(E_PageParameter ePageParameter)
         {
+            int pageIndex = Utils.GetInt(Request["page"]);
+            ePageParameter.pageindex = pageIndex > 0 ? pageIndex - 1 : pageIndex;
+            ePageParameter.pagesize = 20;
+            D_ExperimentCheck dExperimentCheck = new D_ExperimentCheck();
             List<E_ExperimentCheck> list = new List<E_ExperimentCheck>();
+            int count = 0;
             if (ePageParameter.issearch > 0)
             {
-                list = new List<E_ExperimentCheck>();
+                list = dExperimentCheck.GetExperimentCheckList(ePageParameter, ref count);
             }
             ViewBag.ExperimentCheckList = list;
             ViewBag.ePageParameter = ePageParameter;
+            ViewBag.page = Utils.ShowPage(count, ePageParameter.pagesize, pageIndex, 5);
             return View("/views/labmanage/experimentcheck.cshtml");
         }
 

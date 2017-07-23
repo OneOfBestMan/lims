@@ -2078,6 +2078,10 @@
       <Project>{47836417-e9a1-4afb-86dd-eacc0c37f24b}</Project>
       <Name>Comp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{5058ff20-5b4e-4dca-ba91-c41ac0dcd282}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{bc8e8254-2ad4-458c-a605-352aeb71a1ee}</Project>
       <Name>Model</Name>

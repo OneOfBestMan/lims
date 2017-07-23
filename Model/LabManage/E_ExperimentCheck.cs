@@ -34,12 +34,12 @@ namespace Model.LabManage
         /// <summary>
         /// 抽/送检日期
         /// </summary>
-        public string detectiondate { get; set; }
+        public DateTime detectiondate { get; set; }
 
         /// <summary>
         /// 完成日式（既：原始记录：检测日期）
         /// </summary>
-        public DateTime detecttime { get; set; }
+        public DateTime? detecttime { get; set; }
 
         /// <summary>
         /// 完成人（既：原始记录：检验人）
@@ -50,5 +50,10 @@ namespace Model.LabManage
         /// 完成人名称
         /// </summary>
         public string detectpersonnelname { get; set; }
+
+        /// <summary>
+        /// 紧急程度（1：普通、2：紧急） 默认为普通
+        /// </summary>
+        public int urgentlevel { get; set; } = 1;
     }
 }

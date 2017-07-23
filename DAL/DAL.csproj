@@ -37,6 +37,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.2\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -58,6 +62,7 @@
     <Compile Include="EntrustManage\D_tb_TestingPlan.cs" />
     <Compile Include="ExpePlan\D_tb_ExpePlan.cs" />
     <Compile Include="FileList\D_tb_FileList.cs" />
+    <Compile Include="LabManage\D_ExperimentCheck.cs" />
     <Compile Include="Laboratory\D_tb_DetectProject.cs" />
     <Compile Include="Laboratory\D_tb_Laboratory.cs" />
     <Compile Include="Laboratory\D_tb_Project.cs" />
@@ -110,12 +115,18 @@
     <Compile Include="TestReport\D_tb_TestReportData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Comp\Comp.csproj">
+      <Project>{47836417-e9a1-4afb-86dd-eacc0c37f24b}</Project>
+      <Name>Comp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{bc8e8254-2ad4-458c-a605-352aeb71a1ee}</Project>
       <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

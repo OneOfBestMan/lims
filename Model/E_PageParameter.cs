@@ -25,5 +25,15 @@ namespace Model
         /// 是否查询
         /// </summary>
         public int issearch { get; set; }
+
+        /// <summary>
+        /// 每页显示数据条数
+        /// </summary>
+        public int pagesize { get; set; }
+
+        /// <summary>
+        /// 页码
+        /// </summary>
+        public int pageindex { get; set; }
     }
 }
