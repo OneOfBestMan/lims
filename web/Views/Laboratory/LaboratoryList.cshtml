@@ -166,7 +166,7 @@
 
         //保存提示
         function handle(e) {
-            if (e == "1") {
+            if (e.$2._xmlHttpRequest.response == "1") {
                 alert("保存成功！");
                 $('#LaboratoryEdit').window('close');
                 $('#dgtable').datagrid('reload');
@@ -178,6 +178,7 @@
             alert("保存失败！");
         }
     </script>
+
 </head>
 <body>
     <!--标题-->

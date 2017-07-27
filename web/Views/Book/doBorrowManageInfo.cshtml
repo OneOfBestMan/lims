@@ -42,7 +42,7 @@
             /*结束 页面控件验证*/
         });
         function handle(e) {
-            if (e == "1") {
+            if (e.$2._xmlHttpRequest.response == "1") {
                 window.parent.$('#dgtable').datagrid("reload");
                 alert("保存成功！");
                 $('#dlg').dialog('close');

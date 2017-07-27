@@ -216,7 +216,7 @@
     }
     /***********************文件的操作*************************/
     function handle(e) {
-        if (e == "1") {
+        if (e.$2._xmlHttpRequest.response == "1") {
             $('#dgtable').datagrid('reload');
             alert("保存成功！");
             $('#dlg').dialog('close');
