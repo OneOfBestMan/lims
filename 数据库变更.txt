@@ -1,0 +1,6 @@
+注意：操作前优先备份数据库
+
+1、样品表添加字段：AreaID 单位
+2、批量更新样品表：AreaID值=>update tb_Sample set AreaID=B.AreaID  from tb_Sample as A left join tb_InPersonnel as B on A.createUser=B.PersonnelID
+3、修改数据类型：handleUser=》int(处理人) InspectCompany=》int (送样单位)
+4、添加样品字段：storcondition （存储条件）nvarchar(256)/checkdepar nvarchar(36)(测试部门)/urgentlevel int(紧急程度)
