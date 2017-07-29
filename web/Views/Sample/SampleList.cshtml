@@ -1,0 +1,248 @@
+﻿@using Model;
+@using Model.RoleManage;
+@{
+    ViewBag.Title = "SampleList";
+    Layout = "~/Views/Share/_LayOut.cshtml";
+    var ePageParameter = ViewBag.ePageParameter == null ? new E_PageParameter() : (E_PageParameter)ViewBag.ePageParameter;
+}
+
+<link href="/skins/admin/vendor/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/skins/admin/vendor/datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="/skins/artDialog/dist/dialog.js"></script>
+<script src="/skins/artDialog/dist/dialog-plus.js"></script>
+
+<!-- /.row -->
+<div class="ng-scope">
+    <div class="row ng-scope">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <!--标题-->
+            <h1 class="page-header">样品管理</h1>
+
+            <!--操作-->
+            <div class="form" style="padding-bottom:10px;">
+                <div class="form-inline">
+
+                    <form action="/sample/samplelist" method="get">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">单位名称</span>
+                                <select class="form-control" id="dropAreaID" name="areaid">
+                                    <option value="-1" @(ePageParameter.areaid == -1 ? "selected" : "")>请选择</option>
+                                    @{
+                                        var arealist = ViewBag.arealist as List<E_tb_Area>;
+                                        foreach (E_tb_Area item in arealist)
+                                        {
+                                            <option value="@item.AreaID" @(ePageParameter.areaid == item.AreaID ? "selected" : "")>@item.AreaName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">样品名称</span>
+                                <input type="text" class="form-control" id="txtSampleName" name="samplename" value="@ePageParameter.samplename" style="width:100px;" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">抽样人</span>
+                                    <input type="text" class="form-control" id="txtdetectionUser" name="detectionuser" value="@ePageParameter.detectionuser" style="width:100px;" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">抽样日期</span>
+                                    <div class='input-group date inputtime'>
+                                        <input type='text' class="form-control" id='starttime' name="starttime" value="@(ePageParameter.starttime!=null?Convert.ToDateTime(ePageParameter.starttime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                    至
+                                    <div class='input-group date inputtime'>
+                                        <input type='text' class="form-control" id='endtime' name="endtime" value="@(ePageParameter.endtime!=null?Convert.ToDateTime(ePageParameter.endtime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <!--用于后台区分是否需要查询-->
+                                <input type="hidden" name="issearch" value="1" />
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
+                                <button type="button" class="btn btn-success" onclick="Edit(0)" ><i class="fa fa-plus"></i> 添加 </button>
+                            </div>
+
+                            <div class="form-group pull-right">
+                                <a class="btn btn-info" href="Sample/Export_Sample?areaid=@ePageParameter.areaid&samplename=@ePageParameter.samplename&detectionuser=@ePageParameter.detectionuser&starttime=@ePageParameter.starttime&endtime=@ePageParameter.endtime" target="_blank"><i class="fa fa-cloud-download"></i> 导出 </a>
+                            </div>
+</form>
+                </div>
+            </div>
+
+            <!--内容-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    样品列表
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table id="tab_1" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectall" /></th>
+                                <th style="width:45px;">序号</th>
+                                <th>样品编号</th>
+                                <th>样品名称</th>
+                                <th>产品批次</th>
+                                <th>生产日期</th>
+                                <th>抽样形式</th>
+                                <th>送/抽样日期</th>
+                                <th>抽样者</th>
+                                <th>样品数量</th>
+                                <th>包装方式</th>
+                                <th>保质期</th>
+                                <th>规格型号</th>
+                                <th>抽样地点</th>
+                                <th>抽样单位</th>
+                                <th>送样单位</th>
+                                <th>送样地址</th>
+                                <th>样品管理员</th>
+                                <th>销毁人</th>
+                                <th>销毁时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var SampleList = ViewBag.SampleList as List<tb_Sample>;
+                                foreach (var item in SampleList)
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" value="@item.id" class="ckSample" /></td>
+                                        <td>@item.rowid</td>
+                                        <td>@item.sampleNum</td>
+                                        <td>@item.name</td>
+                                        <td>@item.protNum</td>
+                                        <td>@item.productDate</td>
+                                        <td>@(item.isDetection ? "抽样" : "送样")</td>
+                                        <td>@item.detectionDate</td>
+                                        <td>@item.detectionUser</td>
+                                        <td>@item.batch</td>
+                                        <td>@item.packaging</td>
+                                        <td>@item.expirationDate</td>
+                                        <td>@item.modelType</td>
+                                        <td>@item.detectionAdress</td>
+                                        <td>@item.detectionCompany</td>
+                                        <td>@item.inspectcompanyname</td>
+                                        <td>@item.InspectAddress</td>
+                                        <td>@item.sampleAdmin</td>
+                                        <td>@item.handleusername</td>
+                                        <td>@item.handleDate</td>
+                                        <td>
+                                            @{
+                                                if (!(bool)ViewData["aadf1e6b"])
+                                                {
+                                                    <a href="javascript:void(0)" onclick="Edit(@item.id)">编辑</a>
+                                                    <a href="javascript:void(0)" onclick="click_Destroy(@item.id)">销毁</a>
+                                                    <a href="javascript:void(0)" onclick="click_Delete(@item.id)">删除</a>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                                }
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div style="text-align: center">
+                            @Html.Raw(ViewBag.page)
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".inputtime").datetimepicker({
+            minView: "month",//设置只显示到月份
+            format: "yyyy-mm-dd",//日期格式
+            autoclose: true,//选中关闭
+            todayBtn: true,//今日按钮
+            language: 'cn'
+        });
+    });
+
+    //删除
+    function click_Delete(_itemId) {
+        if (confirm("确定要删除数据吗？")) {
+            $.getJSON("/Sample/Delete_Item/" + _itemId, function (data) { alert(data); if (data == "删除成功！") { $('#dgtable').datagrid('reload'); } });
+        }
+    }
+
+    //销毁单个
+    function click_Destroy(_itemId) {
+        if (confirm("确定要销毁吗？")) {
+            $.getJSON("/Sample/Destroy_Item/" + _itemId, function (data) { alert(data); if (data == "销毁成功！") { $('#dgtable').datagrid('reload'); } });
+        }
+    }
+
+    //批量销毁
+    function click_BatchDestory() {
+        //得到选中的项
+        if ($(".ckSample:checked").length <= 0) {
+            $.messager.alert("提醒", "请选择一条（或多条）数据进行操作");
+            return;
+        }
+        //先让用户确定是否要删除
+        $.messager.confirm("提醒", "确定要销毁吗？", function (r) {
+            if (r) {
+                //遍历所有的选中行
+                var strIds = "";
+                $(".ckSample:checked").each(function () {
+                    //发送异步请求，删除数据，格式1,2,3,5,6
+                    strIds += $(this).val() + ",";
+                });
+                strIds = strIds.substr(0, strIds.lastIndexOf(","));
+                //$.messager.alert("提醒", strIds);
+                $.post("/Sample/BatchDestroy_Item", { ids: strIds }, function (data) {
+                    if (data == "销毁成功！") {
+                        $.messager.alert("消息", "销毁成功！");
+                        //清除选中行
+                        $("#dgtable").datagrid("clearSelections");
+                        //刷新表格
+                        $("#dgtable").datagrid("reload");
+                    } else {
+                        $.messager.alert("错误消息", "销毁失败！");
+                    }
+                });
+            }
+        });
+    }
+
+    //编辑
+    function Edit(id)
+    {
+        var d = dialog({
+            title: '样品编辑',
+            url: '/sample/edit?id=' + id,
+            id: 'id-info',
+        });
+        d.showModal();
+    }
+
+</script>

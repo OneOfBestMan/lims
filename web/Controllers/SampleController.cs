@@ -9,6 +9,9 @@ using System.Data;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.HSSF.UserModel;
+using BLL.RoleManage;
+using Comp;
+using DAL.Sample;
 
 namespace Web.Controllers
 {
@@ -17,6 +20,124 @@ namespace Web.Controllers
         tb_SampleBLL _samplebll = new tb_SampleBLL();
         tb_DetectionBLL _detectionbll = new tb_DetectionBLL();
         tb_TestStandardBLL _teststandardbll = new tb_TestStandardBLL();
+        T_tb_Area _tArea = new T_tb_Area();
+        D_Sample _dSample = new D_Sample();
+
+        /// <summary>
+        /// 获取样品列表
+        /// </summary>
+        /// <param name="ePageParameter">查询参数实体</param>
+        [Route("sample/samplelist")]
+        public ActionResult GetList(E_PageParameter ePageParameter)
+        {
+            int pageIndex = Utils.GetInt(Request["page"]);
+            ePageParameter.pageindex = pageIndex > 0 ? pageIndex - 1 : pageIndex;
+            ePageParameter.pagesize = 20;
+            
+            List<tb_Sample> list = new List<tb_Sample>();
+            int count = 0;
+            
+            switch (CurrentUserInfo.DataRange)
+            {
+                case 3: //个人
+                    ePageParameter.areaid = -1;
+                    ePageParameter.createuser = CurrentUserInfo.PersonnelID;
+                    break;
+                case 2://区域
+                    ePageParameter.areaid = (int)CurrentUserInfo.AreaID;
+                    break;
+            }
+            
+            list = _dSample.GetSampleList(ePageParameter, ref count);
+            ViewBag.SampleList = list;
+            ViewBag.arealist = _tArea.GetModelList((CurrentUserInfo.DataRange > 1 ? $"AreaID={CurrentUserInfo.AreaID}" : ""));
+            ViewBag.ePageParameter = ePageParameter;
+            ViewBag.page = Utils.ShowPage(count, ePageParameter.pagesize, pageIndex, 5);
+            return View("/views/Sample/SampleList.cshtml");
+        }
+
+        /// <summary>
+        /// 编辑样品
+        /// </summary>
+        /// <param name="eSample">样品实体</param>
+        [Route("sample/edit")]
+        public ActionResult Edit(int id)
+        {
+            tb_Sample eSample = new tb_Sample();
+            if (id > 0)
+            {
+                eSample = _dSample.GetSampleInfo(new tb_Sample() { id = id });
+            }
+            else
+            {
+                eSample.sampleNum = GetSampleNum();
+            }
+            ViewBag.Info = eSample;
+            ViewBag.ClientList = new BLL.ClientManage.T_tb_ClientManage().GetModelList("");
+            ViewBag.ProjectList = new BLL.Laboratory.T_tb_Project().GetModelList("");
+            ViewBag.ExpePlanList=new BLL.ExpePlan.T_tb_ExpePlan().GetModelList($"SampleID={id}");
+            return View("/views/Sample/SampleEdit.cshtml");
+        }
+
+        /// <summary>
+        /// 保存
+        /// </summary>
+        public bool Save(tb_Sample eSample)
+        {
+            eSample.updateUser = CurrentUserInfo.PersonnelID;
+            eSample.updateDate = DateTime.Now;
+            if (eSample.id > 0)//若存在数据，执行更新
+            {
+                return _dSample.Update(eSample);
+            }
+            eSample.createUser = CurrentUserInfo.PersonnelID;
+            eSample.createDate = DateTime.Now;
+            eSample.AreaID = (int)CurrentUserInfo.AreaID;
+            eSample.sampleAdmin = CurrentUserInfo.PersonnelName;
+            return _dSample.Add(eSample)>0;//若不存在数据，直接插入
+        }
+
+        /// <summary>
+        /// 获取样品编号
+        /// </summary>
+        public string GetSampleNum()
+        {
+            string samplenum = "";
+            BLL.RoleManage.T_tb_Area _area = new BLL.RoleManage.T_tb_Area();
+            string _areaname = _area.GetModel(CurrentUserInfo.AreaID.Value).AreaName;
+            switch (_areaname)
+            {
+                case "食品检测中心":
+                    _areaname = "JC";
+                    break;
+                case "葫芦岛实验室":
+                    _areaname = "HL";
+                    break;
+                case "深圳实验室":
+                    _areaname = "SZ";
+                    break;
+                case "湛江实验室":
+                    _areaname = "ZJ";
+                    break;
+                case "龙口实验室":
+                    _areaname = "LK";
+                    break;
+                case "烹饪加工营养项目":
+                    _areaname = "PR";
+                    break;
+                case "原料食品安全项目":
+                    _areaname = "YL";
+                    break;
+                default:
+                    _areaname = "";
+                    break;
+            }
+            var list = _samplebll.GetModelList("DATEDIFF(day , createDate, '" + DateTime.Now.ToShortDateString() + "')=0 and AreaID = " + CurrentUserInfo.AreaID);
+            int count = (list != null && list.Count > 0) ? list.Count + 1 : 1;
+            samplenum = _areaname + DateTime.Now.ToString("yyyyMMdd") + "—" + count.ToString("D3");
+            return samplenum;
+        }
+        
         //
         // GET: /Sample/
 
@@ -489,7 +610,7 @@ namespace Web.Controllers
             {
                 tb_Sample model = new tb_Sample();
                 model = _samplebll.GetModel(id);
-                model.handleUser = CurrentUserInfo.PersonnelID.ToString();
+                model.handleUser = CurrentUserInfo.PersonnelID;
                 model.handleDate = DateTime.Now;
                 if (_samplebll.Update(model))
                 {
@@ -517,7 +638,7 @@ namespace Web.Controllers
                 {
                     tb_Sample model = new tb_Sample();
                     model = _samplebll.GetModel(int.Parse(arr[i]));
-                    model.handleUser = CurrentUserInfo.PersonnelID.ToString();
+                    model.handleUser = CurrentUserInfo.PersonnelID;
                     model.handleDate = DateTime.Now;
                     _samplebll.Update(model);
                 }

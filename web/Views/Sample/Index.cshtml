@@ -306,7 +306,7 @@
                             <td width="220px">
                                 <a href="javascript:void(0)" onclick="click_Search()">
                                     <img height="20px" src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
-                               @if (Convert.ToBoolean(ViewData["aadf1e6b"]))
+                               @if (!Convert.ToBoolean(ViewData["aadf1e6b"]))
 {
     <a href='javascript:void(0)' onclick="showwindow('/Sample/doSampleInfo?id=0', '添加')"  >
         <img src='@Url.Content("~/Content/Images/xinzeng.png")' height="20px" />

@@ -23,6 +23,41 @@ namespace Model
 	[Serializable]
 	public partial class tb_Sample
 	{
+        /// <summary>
+        /// 序号ID
+        /// </summary>
+        public int rowid { get; set; }
+
+        /// <summary>
+        /// 处理人名称
+        /// </summary>
+        public string handleusername { get; set; }
+
+        /// <summary>
+        /// 送样单位名称
+        /// </summary>
+        public string inspectcompanyname { get; set; }
+
+        /// <summary>
+        /// 单位ID
+        /// </summary>
+        public int AreaID { get; set; }
+
+        /// <summary>
+        /// 存储条件
+        /// </summary>
+        public string storcondition { get; set; }
+
+        /// <summary>
+        /// 测试部门
+        /// </summary>
+        public string checkdepar { get; set; }
+
+        /// <summary>
+        /// 紧急程度
+        /// </summary>
+        public int urgentlevel { get; set; }
+
         public tb_Sample()
         { }
 
@@ -46,12 +81,12 @@ namespace Model
         private string _temp2;
         private string _putarea;
         private string _samplehandle;
-        private string _handleuser;
+        private int? _handleuser;
         private DateTime? _handledate;
         private string _sampleadmin;
         private string _detectiongist;
         private string _detectionmethod;
-        private string _inspectcompany;
+        private int? _inspectcompany;
         private string _detectionadress;
         private string _detectioncompany;
         private string _inspectaddress;
@@ -214,7 +249,7 @@ namespace Model
         /// <summary>
         /// 处理人
         /// </summary>
-        public string handleUser
+        public int? handleUser
         {
             set { _handleuser = value; }
             get { return _handleuser; }
@@ -254,7 +289,7 @@ namespace Model
         /// <summary>
         /// 送样单位
         /// </summary>
-        public string InspectCompany
+        public int? InspectCompany
         {
             set { _inspectcompany = value; }
             get { return _inspectcompany; }

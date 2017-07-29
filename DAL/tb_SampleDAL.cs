@@ -694,7 +694,7 @@ namespace DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select  top 1 id,name,standard,batch,productDate,modelType,expirationDate,packaging,isDetection,detectionUser,detectionDate,createUser,createDate,updateUser,updateDate,temp1,temp2,putArea,sampleHandle,handleUser,handleDate,sampleAdmin,detectionGist,detectionMethod,InspectCompany,detectionAdress,detectionCompany,InspectAddress,projectName,testMethod,sampleNum,protNum from tb_Sample ");
+            strSql.Append("select  top 1 id,AreaID,name,standard,batch,productDate,modelType,expirationDate,packaging,isDetection,detectionUser,detectionDate,createUser,createDate,updateUser,updateDate,temp1,temp2,putArea,sampleHandle,handleUser,handleDate,sampleAdmin,detectionGist,detectionMethod,InspectCompany,detectionAdress,detectionCompany,InspectAddress,projectName,testMethod,sampleNum,protNum from tb_Sample ");
             strSql.Append(" where id=@id");
             SqlParameter[] parameters = {
 					new SqlParameter("@id", SqlDbType.Int,4)
@@ -708,6 +708,10 @@ namespace DAL
                 if (ds.Tables[0].Rows[0]["id"].ToString() != "")
                 {
                     model.id = int.Parse(ds.Tables[0].Rows[0]["id"].ToString());
+                }
+                if (ds.Tables[0].Rows[0]["AreaID"].ToString() != "")
+                {
+                    model.AreaID = int.Parse(ds.Tables[0].Rows[0]["AreaID"].ToString());
                 }
                 if (ds.Tables[0].Rows[0]["name"] != null)
                 {
@@ -788,9 +792,9 @@ namespace DAL
                 {
                     model.sampleHandle = ds.Tables[0].Rows[0]["sampleHandle"].ToString();
                 }
-                if (ds.Tables[0].Rows[0]["handleUser"] != null)
+                if (ds.Tables[0].Rows[0]["handleUser"].ToString() != "")
                 {
-                    model.handleUser = ds.Tables[0].Rows[0]["handleUser"].ToString();
+                    model.handleUser =int.Parse(ds.Tables[0].Rows[0]["handleUser"].ToString());
                 }
                 if (ds.Tables[0].Rows[0]["handleDate"].ToString() != "")
                 {
@@ -808,9 +812,9 @@ namespace DAL
                 {
                     model.detectionMethod = ds.Tables[0].Rows[0]["detectionMethod"].ToString();
                 }
-                if (ds.Tables[0].Rows[0]["InspectCompany"] != null)
+                if (ds.Tables[0].Rows[0]["InspectCompany"].ToString() != "")
                 {
-                    model.InspectCompany = ds.Tables[0].Rows[0]["InspectCompany"].ToString();
+                    model.InspectCompany =int.Parse(ds.Tables[0].Rows[0]["InspectCompany"].ToString());
                 }
                 if (ds.Tables[0].Rows[0]["detectionAdress"] != null)
                 {
@@ -975,9 +979,9 @@ namespace DAL
                 {
                     model.sampleHandle = row["sampleHandle"].ToString();
                 }
-                if (row["handleUser"] != null)
+                if (row["handleUser"] != null&& row["handleUser"].ToString() != "")
                 {
-                    model.handleUser = row["handleUser"].ToString();
+                    model.handleUser =int.Parse(row["handleUser"].ToString());
                 }
                 if (row["handleDate"] != null && row["handleDate"].ToString() != "")
                 {
@@ -995,9 +999,9 @@ namespace DAL
                 {
                     model.detectionMethod = row["detectionMethod"].ToString();
                 }
-                if (row["InspectCompany"] != null)
+                if (row["InspectCompany"] != null && row["InspectCompany"].ToString() != "")
                 {
-                    model.InspectCompany = row["InspectCompany"].ToString();
+                    model.InspectCompany = int.Parse(row["InspectCompany"].ToString());
                 }
                 if (row["detectionAdress"] != null)
                 {

@@ -35,5 +35,27 @@ namespace Model
         /// 页码
         /// </summary>
         public int pageindex { get; set; }
+
+        /// <summary>
+        /// 作业区ID（单位ID）
+        /// </summary>
+        public int areaid{get;set;}
+
+        /// <summary>
+        /// 样品名称
+        /// </summary>
+        public string samplename { get; set; }
+
+        /// <summary>
+        /// 抽样人
+        /// </summary>
+        public string detectionuser { get; set; }
+        
+        /// <summary>
+        /// 创建人ID
+        /// </summary>
+        public int createuser { get; set; }
+
+
     }
 }
