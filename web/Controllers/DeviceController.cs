@@ -129,7 +129,7 @@ namespace Web.Controllers
                     }
                 }
             }
-            catch
+            catch(Exception e)
             {
                 flag = "0";
             }
@@ -746,5 +746,28 @@ namespace Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
         #endregion
+
+        public ActionResult DeviceRK(int id)
+        {
+          var model=  _devicebll.GetModel(id);
+            ViewBag.id = model.id;
+            ViewBag.name = model.name;
+            ViewBag.pCode = model.pCode;
+            ViewBag.pCode = model.pCode;
+            ViewBag.amount = model.amount;
+            ViewBag.companyId = model.companyId;
+          return View();
+        }
+        public ActionResult DeviceCK(int id)
+        {
+            var model = _devicebll.GetModel(id);
+            ViewBag.id = model.id;
+            ViewBag.name = model.name;
+            ViewBag.pCode = model.pCode;
+            ViewBag.pCode = model.pCode;
+            ViewBag.amount = model.amount;
+            ViewBag.companyId = model.companyId;
+            return View();
+        }
     }
 }

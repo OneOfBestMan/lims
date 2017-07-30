@@ -253,5 +253,7 @@ namespace Model
         }
         #endregion Model
 
+        public decimal? netvalue { get; set; }
+        public String explain { get; set; }
     }
 }

@@ -25,7 +25,7 @@
         $(document).ready(function () {
             $('#dgtable').datagrid({
                 url: "/Drug/GetDrugList",
-                pagination: true,//分页控件  
+                pagination: true,//分页控件
                 singleSelect: true,//是否单选
                 rownumbers: true,
                 queryParams: { 'pageNumber': 1, 'pageSize': 10, '_search': "", '_searchtype': "", '_yzd': "请选择",'_companyid':-1 },
@@ -33,11 +33,35 @@
                     { field: 'drugName', title: '药品名称', width: 210, align: 'center' },
                     { field: 'drugCode', title: '药品编码', width: 130, align: 'center' },
                     { field: 'leibie', title: '药品类别', width: 130, align: 'center' },
+                    { field: 'dingwei', title: '定位信息', width: 120, align: 'center' },
                     { field: 'danwei', title: '单位', width: 50, align: 'center' },
                     { field: 'amount', title: '库存', width: 100, align: 'center' },
+                    { field: 'rukucount', title: '总入库量', width: 120, align: 'center' },
+                    { field: 'chukucount', title: '总出库量', width: 120, align: 'center' },
+                    { field: 'chukulv', title: '出库率', width: 120, align: 'center' },
                     { field: 'temp1', title: '易制毒', width: 80, align: 'center' },
                     { field: 'dengjiren', title: '登记人', width: 80, align: 'center' },
                     { field: 'weixiandengji', title: '危险性类别', width: 80, align: 'center' },
+                    {
+                        field: 'rkEdit', title: '入库', width: 40, align: 'center',
+                        formatter: function (value, row, index) {
+                            if ('@ViewData["9b1e116f"]' == "False") {
+                                return "";
+                            }
+                            var url = '@Url.Action("doDrugInfo", "Drug")' + "?id=" + row.id;
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugInAdd/" + row.id + "','入库')\" >入库</a>";
+                        }
+                    },
+                     {
+                        field: 'ckEdit', title: '出库', width: 40, align: 'center',
+                        formatter: function (value, row, index) {
+                            if ('@ViewData["9b1e116f"]' == "False") {
+                                return "";
+                            }
+                            var url = '@Url.Action("doDrugInfo", "Drug")' + "?id=" + row.id;
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugOutAdd/" + row.id + "','出库')\" >出库</a>";
+                        }
+                    },
                     {
                         field: 'Edit', title: '编辑', width: 40, align: 'center',
                         formatter: function (value, row, index) {
@@ -77,8 +101,8 @@
             });
             var p = $('#dgtable').datagrid('getPager');
             $(p).pagination({
-                pageSize: 10,//每页显示的记录条数，默认为10  
-                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表  
+                pageSize: 10,//每页显示的记录条数，默认为10
+                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表
                 onSelectPage: function (pageNumber, pageSize) {
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
                     tablequeryParams.pageNumber = pageNumber;
@@ -127,8 +151,11 @@
         }
         function getjsonsucceed(data) {
             window.location.href = '@Url.Action("vpoffice", "Documents")' + "?filename=" + data + "&_pname=" + _itemName + "&_ptype=MSDS文档预览";
+                }
+        function reload() {
+            dialog.get('id-info').close();
+           $("#dgtable").datagrid("reload");
         }
-
     </script>
     <style type="text/css">
         .divList {

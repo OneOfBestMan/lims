@@ -1,0 +1,99 @@
+﻿@using Model;
+@using Web;
+@{
+
+    Layout = null;
+
+    var info = ViewBag.Info == null ? new E_Task() : (E_Task)ViewBag.Info;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>详情</title>
+    <link href="/Skins/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="~/Skins/js/jquery-1.10.2.js"></script>
+    <script src="~/Skins/artDialog/dist/dialog.js"></script>
+    <script src="~/Skins/artDialog/dist/dialog-plus.js"></script>
+
+    <script type="text/javascript" src='/Scripts/My97DatePicker/WdatePicker.js'></script>
+</head>
+<body>
+    <div>
+        <div role="form">
+ 
+            <div class="form-group">
+                <label>任务名称：</label>
+                <input class="form-control" id="taskname" value="@info.taskname">
+                <label>责任人：</label>
+                <input class="form-control" id="director" value="@info.director">
+
+                <label>计划完成日期：</label>
+                <input class="form-control" id="tasktime" onFocus="WdatePicker()" value="@info.tasktime">
+               
+                <label>完成日期：</label>
+                <input class="form-control" id="finishtime" onclick="WdatePicker()" value="@info.finishtime">
+                <label>状态：</label>
+                <select id="status"  class="form-control">
+                    @{
+                         
+                        var statuslist = DataHelper.GetStatusTypeList();
+                        foreach (var item in statuslist)
+                        {
+
+                            <option value="@item.Key" @((item.Key == info.status) ? "selected" : "")>@item.Value</option>
+                        }
+                    }
+                </select>
+                <label>任务描述：</label>
+                <textarea  id="remark"  class="form-control">@info.remark</textarea>
+            </div>
+            <input type="hidden" id="hid" value="@info.id" />
+            <button type="button" class="btn btn-primary" onclick="save()">保存</button>
+
+        </div>
+    </div>
+    <script>
+
+        function ok() {
+
+            top.dialog.get('id-info').close()
+        }
+
+    </script>
+
+    <script>
+
+        function save() {
+
+            var taskname = $("#taskname").val();
+            var hid = $("#hid").val();
+          
+
+            var data = "taskname=" + taskname + "&id=" + hid + "&director=" + $("#director").val() + "&tasktime=" + $("#tasktime").val() + "&finishtime=" + $("#finishtime").val() + "&status=" + $("#status").val() + "&remark=" + $("#remark").val();
+            //ajax
+            $.post("/Task/Save", data, function (data) {
+                if (data == "True") {
+                    top.window.location.reload();
+
+                } else {
+                    //消息
+                    dialog({
+                        title: "失败",
+                        content: '保存失败！'
+                    }).show();
+                }
+            });
+
+            return false;
+
+        }
+      
+        
+    </script>
+
+</body>
+</html>

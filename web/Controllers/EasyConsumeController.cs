@@ -8,6 +8,8 @@ using System.Data;
 using Model;
 using Model.RoleManage;
 using BLL.RoleManage;
+using Comp;
+using DAL;
 
 namespace Web.Controllers
 {
@@ -83,18 +85,38 @@ namespace Web.Controllers
             }
             catch { }
             dt.Columns.Add(new DataColumn("djr"));
+
+        
+            dt.Columns.Add("chukulv");
+            dt.Columns.Add("rukucount");
+            dt.Columns.Add("chukucount");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 try
                 {
                     int userid = Convert.ToInt32(dt.Rows[i]["createUser"]);
                     dt.Rows[i]["djr"] = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(userid).PersonnelName;
-                }
-                catch
-                {
-                    continue;
-                }
+
+
+                    String chukulv = "0%";
+
+                    int ruku = Utils.GetInt(DbHelperSQL.GetSingle(" select sum(amount) amount from tb_EasyConsumeIN  where eId=" + dt.Rows[i]["id"]));
+                    int chuku = Utils.GetInt(DbHelperSQL.GetSingle(" select sum(amount) amount from tb_EasyConsumeOUT  where eId=" + dt.Rows[i]["id"]));
+                    dt.Rows[i]["rukucount"] = ruku;
+                    dt.Rows[i]["chukucount"] = chuku;
+                    if (chuku > 0)
+                    {
+                        chukulv = (Convert.ToDouble(chuku) / Convert.ToDouble(ruku)).ToString("p");
+                    }
+                    dt.Rows[i]["chukulv"] = chukulv;
+
+
             }
+                catch (Exception e)
+            {
+                continue;
+            }
+        }
             return PublicClass.ToJson(dt, total);
         }
 
@@ -169,7 +191,26 @@ namespace Web.Controllers
             ViewBag._lid = CurrentUserInfo.AreaID;
             return View();
         }
-
+        public ActionResult EasyConsumeRK(int id)
+        {
+          tb_EasyConsume  model= _easyconsumebll.GetModel(id);
+            ViewBag.name = model.name;
+            ViewBag.type = model.type;
+            ViewBag.amount = model.amount;
+            ViewBag.price = model.price;
+            ViewBag.id = id;
+            return View();
+        }
+        public ActionResult EasyConsumeCK(int id)
+        {
+            tb_EasyConsume model = _easyconsumebll.GetModel(id);
+            ViewBag.name = model.name;
+            ViewBag.type = model.type;
+            ViewBag.amount = model.amount;
+            ViewBag.price = model.price;
+            ViewBag.id = id;
+            return View();
+        }
         public ActionResult doEasyConsumeINInfo(int id)
         {
             if (id > 0)
@@ -312,6 +353,8 @@ namespace Web.Controllers
             model.updateDate = DateTime.Now;
             model.updateUser = CurrentUserInfo.PersonnelID;
             var devicemodel = _easyconsumebll.GetModel(model.eId.Value);
+            model.price = devicemodel.price;
+            model.inMoney = devicemodel.price * model.amount;
             if (_easyconsumeinbll.Add(model) > 0)
             {
                 devicemodel.amount += model.amount;
@@ -543,8 +586,11 @@ namespace Web.Controllers
             var devicemodel = _easyconsumebll.GetModel(model.eId.Value);
             if (_easyconsumeoutbll.Add(model) > 0)
             {
+                if (_easyconsumeinmodel != null) { 
                 _easyconsumeinmodel.temp2 = (Convert.ToInt32(_easyconsumeinmodel.temp2) - model.amount).ToString();
                 _easyconsumeinbll.Update(_easyconsumeinmodel);
+                }
+
                 devicemodel.amount = devicemodel.amount - model.amount;
                 if (_easyconsumebll.Update(devicemodel))
                 {
@@ -623,7 +669,14 @@ namespace Web.Controllers
             for (int i = 0; i < durgInList.Count; i++)
             {
                 var item = durgInList[i];
-                string _text = "有效期" + item.validDate.Value.ToShortDateString() + "  生产日期" + item.productDate.Value.ToShortDateString();
+                string _text = "";
+                if (item.validDate != null) {
+                    _text += "有效期" + item.validDate.Value.ToShortDateString();
+                }
+                if (item.productDate != null) {
+                    _text += "  生产日期" + item.productDate.Value.ToShortDateString();
+                }
+               
                 list.Add(new SelectListItem() { Text = _text, Value = item.id.ToString() });
             }
             return Json(list, JsonRequestBehavior.AllowGet);

@@ -54,9 +54,9 @@ namespace DAL
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("insert into tb_Device(");
-            strSql.Append("name,type,pCode,eCode,buyDate,useDate,price,depercitionNum,verificationNum,unit,lastVerificationDate,verificationResult,nextVerificationDate,technologyStatus,problem,companyId,userId,createUser,createDate,updateUser,updateDate,temp1,temp2,amount)");
+            strSql.Append("name,type,pCode,eCode,buyDate,useDate,price,depercitionNum,verificationNum,unit,lastVerificationDate,verificationResult,nextVerificationDate,technologyStatus,problem,companyId,userId,createUser,createDate,updateUser,updateDate,temp1,temp2,amount,netvalue,explain)");
             strSql.Append(" values (");
-            strSql.Append("@name,@type,@pCode,@eCode,@buyDate,@useDate,@price,@depercitionNum,@verificationNum,@unit,@lastVerificationDate,@verificationResult,@nextVerificationDate,@technologyStatus,@problem,@companyId,@userId,@createUser,@createDate,@updateUser,@updateDate,@temp1,@temp2,@amount)");
+            strSql.Append("@name,@type,@pCode,@eCode,@buyDate,@useDate,@price,@depercitionNum,@verificationNum,@unit,@lastVerificationDate,@verificationResult,@nextVerificationDate,@technologyStatus,@problem,@companyId,@userId,@createUser,@createDate,@updateUser,@updateDate,@temp1,@temp2,@amount,@netvalue,@explain)");
             strSql.Append(";select @@IDENTITY");
             SqlParameter[] parameters = {
 					new SqlParameter("@name", SqlDbType.NVarChar,100),
@@ -82,7 +82,10 @@ namespace DAL
 					new SqlParameter("@updateDate", SqlDbType.DateTime),
 					new SqlParameter("@temp1", SqlDbType.Text),
 					new SqlParameter("@temp2", SqlDbType.Text),
-					new SqlParameter("@amount", SqlDbType.Int,4)};
+					new SqlParameter("@amount", SqlDbType.Int,4),
+                      new SqlParameter("@netvalue", SqlDbType.Decimal,9),
+                    new SqlParameter("@explain", SqlDbType.NVarChar,500)
+            };
             parameters[0].Value = model.name;
             parameters[1].Value = model.type;
             parameters[2].Value = model.pCode;
@@ -107,6 +110,8 @@ namespace DAL
             parameters[21].Value = model.temp1;
             parameters[22].Value = model.temp2;
             parameters[23].Value = model.amount;
+            parameters[24].Value = model.netvalue;
+            parameters[25].Value = model.explain;
 
             object obj = DbHelperSQL.GetSingle(strSql.ToString(), parameters);
             if (obj == null)
@@ -148,7 +153,9 @@ namespace DAL
             strSql.Append("updateDate=@updateDate,");
             strSql.Append("temp1=@temp1,");
             strSql.Append("temp2=@temp2,");
-            strSql.Append("amount=@amount");
+            strSql.Append("amount=@amount,");
+            strSql.Append("netvalue=@netvalue,");
+            strSql.Append("explain=@explain");
             strSql.Append(" where id=@id");
             SqlParameter[] parameters = {
 					new SqlParameter("@name", SqlDbType.NVarChar,100),
@@ -175,7 +182,12 @@ namespace DAL
 					new SqlParameter("@temp1", SqlDbType.Text),
 					new SqlParameter("@temp2", SqlDbType.Text),
 					new SqlParameter("@amount", SqlDbType.Int,4),
-					new SqlParameter("@id", SqlDbType.Int,4)};
+			
+
+                        new SqlParameter("@netvalue", SqlDbType.Decimal,9),
+                    new SqlParameter("@explain", SqlDbType.NVarChar,500),
+                            new SqlParameter("@id", SqlDbType.Int,4),
+            };
             parameters[0].Value = model.name;
             parameters[1].Value = model.type;
             parameters[2].Value = model.pCode;
@@ -200,7 +212,9 @@ namespace DAL
             parameters[21].Value = model.temp1;
             parameters[22].Value = model.temp2;
             parameters[23].Value = model.amount;
-            parameters[24].Value = model.id;
+            parameters[24].Value = model.netvalue;
+            parameters[25].Value = model.explain;
+            parameters[26].Value = model.id;
 
             int rows = DbHelperSQL.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
@@ -264,7 +278,7 @@ namespace DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select  top 1 id,name,type,pCode,eCode,buyDate,useDate,price,depercitionNum,verificationNum,unit,lastVerificationDate,verificationResult,nextVerificationDate,technologyStatus,problem,companyId,userId,createUser,createDate,updateUser,updateDate,temp1,temp2,amount from tb_Device ");
+            strSql.Append("select  top 1 id,name,type,pCode,eCode,buyDate,useDate,price,depercitionNum,verificationNum,unit,lastVerificationDate,verificationResult,nextVerificationDate,technologyStatus,problem,companyId,userId,createUser,createDate,updateUser,updateDate,temp1,temp2,amount,netvalue,explain from tb_Device ");
             strSql.Append(" where id=@id");
             SqlParameter[] parameters = {
 					new SqlParameter("@id", SqlDbType.Int,4)
@@ -392,6 +406,14 @@ namespace DAL
                 {
                     model.amount = int.Parse(row["amount"].ToString());
                 }
+                if (row["netvalue"] != null && row["netvalue"].ToString() != "")
+                {
+                    model.netvalue = decimal.Parse(row["netvalue"].ToString());
+                }
+                if (row["explain"] != null)
+                {
+                    model.explain = row["explain"].ToString();
+                }
             }
             return model;
         }
@@ -402,7 +424,7 @@ namespace DAL
         public DataSet GetList(string strWhere)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select id,name,type,pCode,eCode,buyDate,useDate,price,depercitionNum,verificationNum,unit,lastVerificationDate,verificationResult,nextVerificationDate,technologyStatus,problem,companyId,userId,createUser,createDate,updateUser,updateDate,temp1,temp2,amount ");
+            strSql.Append("select id,name,type,pCode,eCode,buyDate,useDate,price,depercitionNum,verificationNum,unit,lastVerificationDate,verificationResult,nextVerificationDate,technologyStatus,problem,companyId,userId,createUser,createDate,updateUser,updateDate,temp1,temp2,amount,netvalue,explain ");
             strSql.Append(" FROM tb_Device ");
             if (strWhere.Trim() != "")
             {

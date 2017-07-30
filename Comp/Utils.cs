@@ -1070,6 +1070,9 @@ namespace Comp
         /// <returns></returns>
         public static int GetInt(object Obj)
         {
+            if (Obj == null) {
+                return 0;
+            }
             return GetInt(Obj.ToString());
         }
         /// <summary>

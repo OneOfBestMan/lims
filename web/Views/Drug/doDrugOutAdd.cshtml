@@ -87,11 +87,16 @@
                 var _drugId = $(this).val();
                 $.getJSON("/Drug/GetUNIT/" + _drugId, function (data) { $("#unit").html("单位：" + data) });
             });
+
+            if ($("#drugIdN").val()) {
+                Bind_drugIN($("#drugIdN").val(), $('#drugCode').val());
+            }
         });
 
         function handle(e) {
             if (e.$2._xmlHttpRequest.response == "1") {
                 alert("保存成功！");
+                top.reload();
             } else {
                 alert("保存失败！");
             }
@@ -235,7 +240,20 @@
                 <tr>
                     <td width="110" align="right" valign="middle">药品名称：</td>
                     <td align="left">
-                        <select id="ddl_drugN" style="width: 152px"></select>
+                        @{
+                            if (ViewData["drugname"] == null)
+                            {
+                                <select id="ddl_drugN" style="width: 152px"></select>
+                            }
+                            else
+                            {
+                                @ViewData["drugname"]
+                            }
+                        }
+
+
+                       
+
                         @Html.HiddenFor(m => m.drugId, new { @id = "drugIdN" })
                     </td>
                     <td width="90px" align="right">编号：</td>

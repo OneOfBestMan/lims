@@ -25,7 +25,7 @@
         $(document).ready(function () {
             $('#dgtable').datagrid({
                 url: "/Device/GetDeviceList",
-                pagination: true,//分页控件  
+                pagination: true,//分页控件
                 singleSelect: true,//是否单选
                 rownumbers: true,
                 queryParams: { 'pageNumber': 1, 'pageSize': 10, '_cid': '@ViewBag._lid', '_searchtext': '', '_searchtype': '' },
@@ -35,8 +35,9 @@
                     { field: 'pCode', title: '资产编号', width: 80, align: 'center' },
                     { field: 'eCode', title: '设备编号', width: 50, align: 'center' },
                     { field: 'buyDate', title: '购置日期', width: 120, align: 'center' },
-                    { field: 'useDate', title: '启用日期', width: 120, align: 'center' },
+                    { field: 'useDate', title: '使用日期', width: 120, align: 'center' },
                     { field: 'price', title: '原值（元）', width: 50, align: 'center' },
+                    { field: 'netvalue', title: '净值', width: 50, align: 'center' },
                     { field: 'depercitionNum', title: '折旧年限', width: 120, align: 'center' },
                     { field: 'verificationNum', title: '检定周期', width: 80, align: 'center' },
                     { field: 'lastVerificationDate', title: '上次检定日期', width: 80, align: 'center' },
@@ -71,7 +72,10 @@
                     },
                     { field: 'problem', title: '存在问题及部位', width: 80, align: 'center' },
                     {
-                        field: 'company', title: '使用单位', width: 80, align: 'center'
+                        field: 'company', title: '使用人/部门', width: 80, align: 'center'
+                    },
+                    {
+                        field: 'explain', title: '设备操作规程', width: 120, align: 'center'
                     },
                     { field: 'userId', title: '使用人', width: 80, align: 'center' }
                     ,{
@@ -79,6 +83,23 @@
                         formatter: function (value, row, index) {
                             var linkstr = "<a href=\"@Url.Action("DeviceDetail", "Device")?id=" + row.id + "\" target=\"mainFrame\"><img width='18px' height='18' alt=\"运行/保养\" src=\"../../Content/Images/xiugai.png\" /></a>";
                             return linkstr;
+                        }
+                    },
+                      {
+                        field: 'RKEdit', title: '入库', width: 40, align: 'center',
+                        formatter: function (value, row, index) {
+                            if ('@ViewData["9d94bb07"]' == "False") {
+                                return "";
+                            }
+                            return "<a href='javascript:void(0)' onclick='rk_Edit(" + row.id + ")' >入库</a>";
+                        }
+                    }, {
+                        field: 'CKEdit', title: '出库', width: 40, align: 'center',
+                        formatter: function (value, row, index) {
+                            if ('@ViewData["9d94bb07"]' == "False") {
+                                return "";
+                            }
+                            return "<a href='javascript:void(0)' onclick='ck_Edit(" + row.id + ")' >出库</a>";
                         }
                     },
                     {
@@ -104,8 +125,8 @@
             });
             var p = $('#dgtable').datagrid('getPager');
             $(p).pagination({
-                pageSize: 10,//每页显示的记录条数，默认为10  
-                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表  
+                pageSize: 10,//每页显示的记录条数，默认为10
+                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表
                 onSelectPage: function (pageNumber, pageSize) {
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
                     tablequeryParams.pageNumber = pageNumber;
@@ -129,7 +150,14 @@
                     window.frames["doDevicefm"].location = '@Url.Action("doDeviceInfo", "Device")' + "?id=" + _itemId;
                     $('#dlg').dialog('open');
                 }
-
+                  function rk_Edit(_itemId) {
+                    window.frames["doDevicefm"].location = '@Url.Action("DeviceRK", "Device")' + "?id=" + _itemId;
+                    $('#dlg').dialog('open');
+                }
+           function ck_Edit(_itemId) {
+                    window.frames["doDevicefm"].location = '@Url.Action("DeviceCK", "Device")' + "?id=" + _itemId;
+                    $('#dlg').dialog('open');
+                }
                 function click_Search() {
                     var _stype = $('#ddl_search').val();
                     var _stext = $('#txt_Search').val();

@@ -42,8 +42,7 @@
     <div class="index_header">
         <div class="lg lf"><a href="/home/index"><img src="/skins/images/logo.png" width="448" height="70" /></a></div>
         <div class="xx rt">
-            2017-02-26&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;星期日<br />
-            <i>郑州</i> <a href="#">【切换城市】</a><span>晴&nbsp;&nbsp;&nbsp;&nbsp;16~2°C</span>
+             
         </div>
         <div style="overflow:hidden; clear:both; height:0px;"></div>
     </div>
@@ -59,7 +58,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">XXX，您好！&nbsp;&nbsp;&nbsp;&nbsp;角色：<span style="color:#0361af;">XXXX</span></a>
+                @{ 
+                    var user = Session["UserInfo"] == null ? new Model.PersonnelManage.E_tb_InPersonnel() : Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel;
+                    var temp = new DAL.RoleManage.D_tb_Role().GetModel(user.RoleID);
+                     
+
+                <span class="navbar-brand" href="index.html">@user.PersonnelName，您好！&nbsp;&nbsp;&nbsp;&nbsp;角色：<span style="color:#0361af;">@(temp==null?"":temp.RoleName)</span></span>
+                }
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
@@ -69,15 +74,11 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li>
-                            <a href="#"><i class="fa fa-user fa-fw"></i> 帮助中心</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> 修改密码</a>
-                        </li>
+                        
+                        
                         <li class="divider"></li>
                         <li>
-                            <a href="login.html"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
+                            <a href="/Login/login"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -112,7 +113,7 @@
                                     <!-- /.nav-third-level -->
                                 </li>
 
-
+                                <li><a href="/Task/List">任务考核</a></li>
                                 <li><a href="/labmanage/experimentcheck">实验考核</a></li>
 
                             </ul>
@@ -331,7 +332,7 @@
             var d = dialog({
                 title: t,
                 url: url,
-                id: id,
+                id: 'id-info',
 
             });
             d.show();

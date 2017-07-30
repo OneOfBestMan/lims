@@ -14,6 +14,8 @@ using Web.Models;
 using System.Text;
 using Model.RoleManage;
 using BLL.RoleManage;
+using Comp;
+using DAL;
 
 namespace Web.Controllers
 {
@@ -193,15 +195,47 @@ namespace Web.Controllers
                 total = _drugbll.GetModelList(where).Count;
                 dt.Columns.Add(new DataColumn("dengjiren"));
                 BLL.PersonnelManage.T_tb_InPersonnel _inpersonnelbll = new BLL.PersonnelManage.T_tb_InPersonnel();
+                dt.Columns.Add("dingwei");
+                dt.Columns.Add("chukulv");
+                dt.Columns.Add("rukucount");
+                dt.Columns.Add("chukucount");
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     try
                     {
-                        int registrantid = Convert.ToInt32(dt.Rows[i]["registrant"]);
+                        int registrantid = Utils.GetInt(dt.Rows[i]["registrant"]);
                         var inpersonnel = _inpersonnelbll.GetModel(registrantid);
-                        dt.Rows[i]["dengjiren"] = inpersonnel.PersonnelName;
+                        dt.Rows[i]["dengjiren"] = inpersonnel?.PersonnelName;
+
+                        String chukulv = "0%";
+
+                        int ruku = Utils.GetInt(DbHelperSQL.GetSingle(" select sum(amount) amount from tb_DrugIN  where drugId=" + dt.Rows[i]["id"]));
+                        int chuku = Utils.GetInt(DbHelperSQL.GetSingle(" select sum(amount) amount from tb_DrugOUT  where drugId=" + dt.Rows[i]["id"]));
+                        dt.Rows[i]["rukucount"] = ruku;
+                        dt.Rows[i]["chukucount"] = chuku;
+                        if (chuku > 0)
+                        {
+                            chukulv = (Convert.ToDouble(chuku) / Convert.ToDouble(ruku)).ToString("p");
+                        }
+                        dt.Rows[i]["chukulv"] = chukulv;
+
+
+                        var gpsdt = DbHelperSQL.Query(" select GPS  from tb_DrugIN  where drugId=" + dt.Rows[i]["id"] + " group by GPS");
+                        for (int j = 0; j < gpsdt.Tables[0].Rows.Count; j++)
+                        {
+                            int regionid = Utils.GetInt(gpsdt.Tables[0].Rows[j]["GPS"]);
+                            if (regionid > 0)
+                            {
+
+                                var region = _drugregionbll.GetModel(regionid);
+                                var lockmodel = _druglockbll.GetModel(region.lockId.Value);
+                                dt.Rows[i]["dingwei"] += "[" + lockmodel.lockName + "-" + region.regionName + "]";
+                            }
+                        }
+
+
                     }
-                    catch
+                    catch (Exception e)
                     {
                         continue;
                     }
@@ -353,7 +387,7 @@ namespace Web.Controllers
         #endregion
 
         #region 药品入库（新增、编辑、删除、上次MSDS）
-        public ActionResult doDrugInAdd()
+        public ActionResult doDrugInAdd(int id = 0)
         {
             List<SelectListItem> list = new List<SelectListItem>();
             var druglocklist = _druglockbll.GetModelList(CurrentUserInfo.AreaID.Value);
@@ -367,7 +401,16 @@ namespace Web.Controllers
                 }
             }
             ViewData["druglocklist"] = list;
-            return View();
+
+            tb_Drug drug = _drugbll.GetModel(id);
+            tb_DrugIN model = new tb_DrugIN();
+            if (drug != null)
+            {
+                model.drugCode = drug.drugCode;
+                model.drugId = drug.id;
+                ViewData["drugname"] = drug.drugName;
+            }
+            return View(model);
         }
 
         public ActionResult doDrugInUpdate(int id)
@@ -666,9 +709,18 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public ActionResult doDrugOutAdd()
+        public ActionResult doDrugOutAdd(int id = 0)
         {
-            return View();
+
+            tb_Drug drug = _drugbll.GetModel(id);
+            tb_DrugOUT model = new tb_DrugOUT();
+            if (drug != null)
+            {
+                model.drugCode = drug.drugCode;
+                model.drugId = drug.id;
+                ViewData["drugname"] = drug.drugName;
+            }
+            return View(model);
         }
 
         public ActionResult doDrugOutUpdate(int id)
