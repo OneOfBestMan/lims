@@ -12,6 +12,8 @@ using NPOI.HSSF.UserModel;
 using BLL.RoleManage;
 using Comp;
 using DAL.Sample;
+using DAL.ExpePlan;
+using Model.ExpePlan;
 
 namespace Web.Controllers
 {
@@ -75,7 +77,7 @@ namespace Web.Controllers
             ViewBag.Info = eSample;
             ViewBag.ClientList = new BLL.ClientManage.T_tb_ClientManage().GetModelList("");
             ViewBag.ProjectList = new BLL.Laboratory.T_tb_Project().GetModelList("");
-            ViewBag.ExpePlanList=new BLL.ExpePlan.T_tb_ExpePlan().GetModelList($"SampleID={id}");
+            ViewBag.ExpePlanList = new D_tb_ExpePlan().GetExpePlanList(new E_tb_ExpePlan() { SampleID = eSample.id });
             return View("/views/Sample/SampleEdit.cshtml");
         }
 

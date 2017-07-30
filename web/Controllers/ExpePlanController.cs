@@ -15,6 +15,7 @@ using Model.EntrustManage;
 using BLL.RoleManage;
 using BLL;
 using Model.Laboratory;
+using DAL.Sample;
 
 namespace Web.Controllers
 {
@@ -25,6 +26,7 @@ namespace Web.Controllers
         T_tb_InPersonnel tInPersonnel = new T_tb_InPersonnel();
         T_tb_EntrustTesting tEntrustTesting = new T_tb_EntrustTesting(); //委托检验
         tb_SampleBLL tSample = new tb_SampleBLL(); //样品管理
+        D_Sample _dSample = new D_Sample();
         T_tb_Area tArea = new T_tb_Area();
         //
         // GET: /DetectProject/
@@ -126,7 +128,8 @@ namespace Web.Controllers
             ViewData["PlanTypeList"] = this.GetPlanTypeList(false);
             ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("").Tables[0], "ProjectID", "ProjectName", false);
             ViewData["PersonnelList"] = PageTools.GetSelectList(tInPersonnel.GetList(" AreaID=" + CurrentUserInfo.AreaID.ToString()).Tables[0], "PersonnelID", "PersonnelName", false);
-            ViewData["SampleList"] = PageTools.GetSelectList(tSample.GetList(" (handleUser='' or handleUser is null) order by id ").Tables[0], "id", "name", false);
+            ViewData["SampleList"] = PageTools.GetSelectList(_dSample.GetSampleDt("id,name", "handleUser=0"), "id", "name", false);
+            //ViewData["SampleList"] = PageTools.GetSelectList(tSample.GetList(" (handleUser='' or handleUser is null) order by id ").Tables[0], "id", "name", false);
             ViewBag.PersonnelID = CurrentUserInfo.PersonnelID;
             ViewBag.AreaAddr = tArea.GetModel(int.Parse(CurrentUserInfo.AreaID.ToString())).AreaName;
             ViewBag.SampleID = 0;
@@ -172,6 +175,40 @@ namespace Web.Controllers
                 msg = "1";
             }
             return msg;
+        }
+
+        /// <summary>
+        /// 添加实验计划
+        /// </summary>
+        /// <param name="eExpePlan"></param>
+        /// <returns></returns>
+        [Route("expeplan/addexpeplan")]
+        public JsonResult AddExpePlan(E_tb_ExpePlan eExpePlan)
+        {
+            E_tb_Project eProject = tProject.GetModel((int)eExpePlan.ProjectID);
+
+            eExpePlan.InspectMethod = eProject.ExpeMethod;
+            eExpePlan.PlanTypeID = 1;//默认为计划内
+            eExpePlan.HeadPersonnelID = CurrentUserInfo.PersonnelID;
+            eExpePlan.TaskNo = CreateTaskNoList(eExpePlan.ProjectID.ToString(), eExpePlan.SampleID.ToString());
+            eExpePlan.Status = 2;
+            eExpePlan.AreaID = CurrentUserInfo.AreaID;
+            eExpePlan.EditPersonnelID = CurrentUserInfo.PersonnelID;
+            eExpePlan.UpdateTime = DateTime.Now;
+            eExpePlan.InspectPlace = tArea.GetModel((int)CurrentUserInfo.AreaID).AreaName;
+
+            string str = "";
+            int ExpePlanID = 0;
+            if (tExpePlan.IsExistsTaskNo(eExpePlan.TaskNo) > 0)
+            {
+                str = "任务单号重复！";
+            }
+            else
+            {
+                ExpePlanID = tExpePlan.Add(eExpePlan);
+                str = ExpePlanID > 0 ? "OK" : "添加失败！";
+            }
+            return Json(new { msg = str, id = ExpePlanID }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -225,12 +262,12 @@ namespace Web.Controllers
             if (PlanTypeID == "2")
             {
                 //读取计划外的 委托检验 未销毁 未完成的委托检验对应的样品
-                list = tSample.GetModelList("handleUser is null and id in (select SampleID from tb_EntrustTesting where IsComplete=0)");
+                list = tSample.GetModelList("handleUser=0 and id in (select SampleID from tb_EntrustTesting where IsComplete=0)");
             }
             else
             {
                 //获取全部未销毁样品
-                list = tSample.GetModelList("handleUser is null");
+                list = tSample.GetModelList("handleUser=0");
             }
 
             return Json(list, JsonRequestBehavior.AllowGet);

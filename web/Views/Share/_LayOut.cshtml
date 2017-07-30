@@ -259,10 +259,13 @@
                                 <li><a href="/Laboratory/LaboratoryList">实验室信息</a></li>
 }
 @if (Convert.ToBoolean(ViewData["3af01951"])) {
-                                <li><a href="/Project/ProjectList">项目一览</a></li>
+                                
 }
-                               @if (Convert.ToBoolean(ViewData["de3a376d"])) { 
+                                <li><a href="/Project/ProjectList">项目一览</a></li>
                                 <li><a href="/ExpePlan/ExpePlanList">实验计划</a></li>
+
+                               @if (Convert.ToBoolean(ViewData["de3a376d"])) { 
+                                
                                }
                                @if (Convert.ToBoolean(ViewData["68b56a25"])) { 
                                 <li><a href="/OriginalRecord/OriginalRecordList">原始记录</a></li>

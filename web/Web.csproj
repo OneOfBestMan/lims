@@ -2061,6 +2061,8 @@
     <Content Include="Skins\artDialog\_config.yml" />
     <Content Include="Views\Demo\Info.cshtml" />
     <Content Include="Views\LabManage\ExperimentCheck.cshtml" />
+    <Content Include="Views\Sample\SampleEdit.cshtml" />
+    <Content Include="Views\Sample\SampleList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

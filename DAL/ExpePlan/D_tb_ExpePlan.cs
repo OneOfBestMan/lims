@@ -5,6 +5,8 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using Model.ExpePlan;
+using Comp;
+using Dapper;
 
 namespace DAL.ExpePlan
 {
@@ -13,6 +15,37 @@ namespace DAL.ExpePlan
     /// </summary>
     public partial class D_tb_ExpePlan
     {
+
+        /// <summary>
+        /// 获取实验计划列表
+        /// </summary>
+        /// <param name="eExpePlan">查询实体</param>
+        /// <returns>返回对应数据集合</returns>
+        public List<E_tb_ExpePlan> GetExpePlanList(E_tb_ExpePlan eExpePlan)
+        {
+            List<E_tb_ExpePlan> list = new List<E_tb_ExpePlan>();
+
+            //拼接查询条件
+            StringBuilder strwhere = new StringBuilder();
+            if (eExpePlan.SampleID > 0) //样品ID
+            {
+                strwhere.AddWhere($"SampleID={eExpePlan.SampleID}");
+            }
+           
+            //主查询Sql
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat(@"select A.*,B.ProjectName from tb_ExpePlan as A left join tb_Project as B on A.ProjectID=B.ProjectID {0} ", strwhere.ToString());
+
+            //执行查询语句
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<E_tb_ExpePlan>(search.ToString(), eExpePlan)?.ToList();
+            }
+            return list;
+        }
+
+
+
         public D_tb_ExpePlan()
         { }
         #region  Method

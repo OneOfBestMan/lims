@@ -62,10 +62,10 @@
                 //提交验证
                 function IsV() {
                     //判断是否为计划内
-                    var TaskNo=$("#txt_TaskNo").val();
+                    var TaskNo = $("#txt_TaskNo").val();
                     if ($("#drop_PlanTypeIDEdit").val() != "1") {
                         TaskNo = $("#Select_TaskNo").val();
-                        if (TaskNo == ""||TaskNo==null) {
+                        if (TaskNo == "" || TaskNo == null) {
                             alert("请选择任务单号！");
                             return false;
                         }
@@ -142,11 +142,9 @@
                     }
 
                     //设置相关负责人
-                    function SetPersonnelValue()
-                    {
+                    function SetPersonnelValue() {
                         var PlanTypeID = $("#drop_PlanTypeIDEdit").val();
-                        if(PlanTypeID=="2")
-                        {
+                        if (PlanTypeID == "2") {
                             var SampleID = $("#drop_Sample").val();
                             var ProjectID = $("#drop_ProjectID").val();
                             $.ajax({
@@ -159,9 +157,7 @@
                                     $("#drop_PersonnelList").val(data);
                                 }
                             });
-                            
                         }
-                        
                     }
 
                     //更新计划内任务单号
@@ -199,17 +195,17 @@
 
                     //绑定类型选择事件
                     $("#drop_PlanTypeIDEdit").change(function () {
-                        if ($(this).val() == "1") {  //计划内 
+                        if ($(this).val() == "1") {  //计划内
                             $("#Select_TaskNo").hide();
                             $("#txt_TaskNo").show();
                             $("#drop_PersonnelList").removeAttr("disabled");
-                            
+
                         }
                         else { //计划外
                             LoadTaskNoList();
                             $("#Select_TaskNo").show();
                             $("#txt_TaskNo").hide();
-                            $("#drop_PersonnelList").attr("disabled",true);
+                            $("#drop_PersonnelList").attr("disabled", true);
                         }
 
                         LoadSampleList(); //动态加载样品列表
@@ -249,7 +245,7 @@
                         $("#Select_TaskNo").hide();
                         $("#txt_TaskNo").show();
                         $("#drop_PersonnelList").removeAttr("disabled");
-                        
+
 
                     }
                     else {
@@ -259,7 +255,7 @@
                         $("#drop_PersonnelList").attr("disabled",true);
 
                     }
-                    
+
 
                     if ($("#txt_TaskNo").val() == "") {
                         UpdateTxtTaskNo();
@@ -270,8 +266,8 @@
 
 
                     //初始化页面显示
-                    LoadSampleList();  //根据计划类别加载样品列表
-                    LoadProjectList(); //根据计划类别和样品id加载项目列表
+                    //LoadSampleList();  //根据计划类别加载样品列表
+                    //LoadProjectList(); //根据计划类别和样品id加载项目列表
                     LoadTaskNoList();  //加载对应的任务单号
 
                     if ($("#HidEditType").val() == "Edit") {
@@ -280,7 +276,7 @@
                         $("#drop_Sample").val(SampleID);
                         LoadProjectList();
                         $("#drop_ProjectID").val(ProjectID);
-                    }
+                    }@**@
                 });
 
 
