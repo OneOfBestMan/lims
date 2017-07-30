@@ -22,6 +22,7 @@
     <script type="text/javascript" src='@Url.Content("~/Scripts/MicrosoftMvcAjax.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/My97DatePicker/WdatePicker.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/Validform/Validform_v5.3.2_min.js")'></script>
+
     <script type="text/javascript">
         @{
                 string devicename = "";
@@ -182,6 +183,7 @@
                         color: #ff9c00;
                     }
     </style>
+   
 </head>
 <body>
     @using (Ajax.BeginForm("DeviceOUTCU", "Device", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "uploadfrm" }))
@@ -193,11 +195,11 @@
         @Html.HiddenFor(m => m.temp2, new { @id = "temp2E" })
         @Html.HiddenFor(m => m.updateDate, new { @id = "updateDateE" })
         @Html.HiddenFor(m => m.updateUser, new { @id = "updateUserE" })
-        <table align="left" height="300px" style="font-family: '宋体'; font-size: 12px;">
+        <table align="left" height="300px"  style="font-family: '宋体'; font-size: 12px;">
             <tr>
-                <td width="90px" align="right">设备（仪器）名称：</td>
+                <td width="90px" align="right"> 设备名称：</td>
                 <td align="left" colspan="3">
-                    @ViewBag.name
+                 @ViewBag.name
 
                     <input type="hidden" name="deviceId" id="deviceId" value="@ViewBag.id" />
                 </td>

@@ -753,7 +753,7 @@ namespace Web.Controllers
             ViewBag.id = model.id;
             ViewBag.name = model.name;
             ViewBag.pCode = model.pCode;
-            ViewBag.pCode = model.pCode;
+            ViewBag.eCode = model.eCode;
             ViewBag.amount = model.amount;
             ViewBag.companyId = model.companyId;
           return View();
@@ -764,7 +764,7 @@ namespace Web.Controllers
             ViewBag.id = model.id;
             ViewBag.name = model.name;
             ViewBag.pCode = model.pCode;
-            ViewBag.pCode = model.pCode;
+            ViewBag.eCode = model.eCode;
             ViewBag.amount = model.amount;
             ViewBag.companyId = model.companyId;
             return View();

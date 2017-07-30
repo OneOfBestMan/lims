@@ -156,7 +156,7 @@
     <style type="text/css">
         .divList {
             position: absolute;
-            top: 40px;
+     
             left: 1px;
             z-index: 99;
             width: 1048px;
@@ -223,13 +223,7 @@
 </head>
 <body>
 
-    <div style="background: #faf1e8; height: 30px; width: 100%; top: 1px; position: absolute; z-index: 99; left: 1px;">
-        <table align="left" width="100%" height="27px">
-            <tr>
-                <td width="1029" style="font-family: '宋体'; font-size: 12px; color: #10607c;">当前位置：药品管理<img style="text-align:center;vertical-align:middle;height:10px" src='@Url.Content("~/Content/Images/位置.png")' />药品出库<img style="text-align:center;vertical-align:middle;height:10px" src='@Url.Content("~/Content/Images/位置.png")' />新增 </td>
-            </tr>
-        </table>
-    </div>
+
 
     <div class="divList">
         @using (Ajax.BeginForm("NewDrugOUT", "Drug", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "frmNew" }))
