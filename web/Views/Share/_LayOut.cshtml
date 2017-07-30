@@ -25,7 +25,6 @@
 
     <link href="~/Skins/css/custom.css" rel="stylesheet" />
 
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -35,19 +34,60 @@
     <!-- jQuery -->
     <script src="http://aui.github.io/artDialog/lib/jquery-1.10.2.js"></script>
 
+    <script type="text/javascript">
+        function GetWeekDay()
+        {
+            var d = new Date()
+            var weekday = new Array(7)
+            weekday[0] = "星期天"
+            weekday[1] = "星期一"
+            weekday[2] = "星期二"
+            weekday[3] = "星期三"
+            weekday[4] = "星期四"
+            weekday[5] = "星期五"
+            weekday[6] = "星期六"
+            document.write(weekday[d.getDay()])//返回当前时间是星期几
+        }
 
+        function findWeather() {
+            var cityUrl = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js';
+            $.getScript(cityUrl, function (script, textStatus, jqXHR) {
+                var citytq = remote_ip_info.city;// 获取城市
+                var url = "http://php.weather.sina.com.cn/iframe/index/w_cl.php?code=js&city=" + citytq + "&day=0&dfc=3";
+                $.ajax({
+                    url: url,
+                    dataType: "script",
+                    scriptCharset: "gbk",
+                    success: function (data) {
+                        var _w = window.SWther.w[citytq][0];
+                        var _f = _w.f1 + "_0.png";
+                        if (new Date().getHours() > 17) {
+                            _f = _w.f2 + "_1.png";
+                        }
+                        var img = "<img width='16px' height='16px' src='http://i2.sinaimg.cn/dy/main/weather/weatherplugin/wthIco/20_20/" + _f + "' />";
+                        var tq = "<i>"+citytq+"</i>" + " " + img + " " + _w.s1 + " " + _w.t1 + "℃～" + _w.t2 + "℃ " + _w.d1 + _w.p1 + "级";
+
+                        $("#weather").html(tq);
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function () {
+            findWeather();
+        });
+    </script>
 </head>
 <body>
     <!--顶部内容-->
     <div class="index_header">
         <div class="lg lf"><a href="/home/index"><img src="/skins/images/logo.png" width="448" height="70" /></a></div>
         <div class="xx rt">
-            2017-02-26&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;星期日<br />
-            <i>郑州</i> <a href="#">【切换城市】</a><span>晴&nbsp;&nbsp;&nbsp;&nbsp;16~2°C</span>
+            @(DateTime.Now.ToShortDateString())&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<script>GetWeekDay()</script><br />
+            <div id="weather"></div>
         </div>
         <div style="overflow:hidden; clear:both; height:0px;"></div>
     </div>
-
 
     <div id="wrapper">
         <!-- Navigation -->
@@ -59,7 +99,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">XXX，您好！&nbsp;&nbsp;&nbsp;&nbsp;角色：<span style="color:#0361af;">XXXX</span></a>
+               
+                <a class="navbar-brand" href="index.html">
+                    @{
+                        var cookies = HttpContext.Current.Request.Cookies["lims.userinfo"];
+                        var personnelname = HttpUtility.UrlDecode(cookies["personnelname"].ToString());
+                        var rolename = HttpUtility.UrlDecode(cookies["rolename"].ToString());
+                    }
+                    @personnelname，您好！&nbsp;&nbsp;&nbsp;&nbsp;角色：<span style="color:#0361af;">@rolename</span>
+                </a>
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
@@ -77,7 +125,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="login.html"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
+                            <a href="/login/loginout"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->

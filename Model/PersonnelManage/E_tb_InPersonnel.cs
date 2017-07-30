@@ -174,6 +174,11 @@ namespace Model.PersonnelManage
         /// 数据范围 (1:全部、2：区域、3：个人)
         /// </summary>
         public int DataRange { get; set; }
+        
+        /// <summary>
+        /// 所属角色名称
+        /// </summary>
+        public string rolename { get; set; }
         #endregion
 
     }

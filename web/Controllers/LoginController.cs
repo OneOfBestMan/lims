@@ -34,31 +34,19 @@ namespace Web.Controllers
         /// <returns>返回是否执行成功的标志</returns>
         public ActionResult CheckUserInfo(string UserName, E_tb_InPersonnel userInfo, string Code)
         {
-            /*
-            //首先我们拿到系统的验证码
-            string sessionCode = this.TempData["ValidateCode"] == null
-                                     ? new Guid().ToString()
-                                     : this.TempData["ValidateCode"].ToString();
-            //然后我们就将验证码去掉，避免了暴力破解
-            this.TempData["ValidateCode"] = new Guid();
-            //判断用户输入的验证码是否正确
-            if (sessionCode != Code)
-            {
-                return Content("验证码输入不正确");
-            }
-            */
-
             //调用业务逻辑层（BLL）去校验用户是否正确,,,定义变量存取获取到的用户的错误信息
             string UserInfoError = "";
             E_tb_InPersonnel eInPersonnel = tInPersonnel.Login(userInfo.UserName, userInfo.PassWord);
             if (eInPersonnel != null)
             {
                 Session["UserInfo"] = eInPersonnel;
-
+                
                 //添加登陆Cookies  若出入安全考虑应该进行加密处理
                 HttpCookie cookie = new HttpCookie("lims.userinfo");
                 cookie["passport"]= Utils.Md5(eInPersonnel.PersonnelID.ToString() + eInPersonnel.UserName.ToString() + eInPersonnel.PassWord.ToString(), 32);
                 cookie["uid"]= eInPersonnel.PersonnelID.ToString();
+                cookie["personnelname"] = HttpUtility.UrlEncode(eInPersonnel.PersonnelName);
+                cookie["rolename"] = HttpUtility.UrlEncode(eInPersonnel.rolename);
                 cookie.Expires = DateTime.Now.AddDays(1);
                 Response.Cookies.Add(cookie);
                 
@@ -76,11 +64,16 @@ namespace Web.Controllers
         /// 注销登录
         /// </summary>
         /// <returns></returns>
+        [Route("login/loginout")]
         public ActionResult LoginOut()
         {
             Session["UserInfo"] = null;
-            Response.Redirect("/Login/Login");
-            return View();
+
+            HttpCookie cookie = new HttpCookie("lims.userinfo");
+            cookie.Expires = DateTime.Now.AddDays(-1);
+            Response.Cookies.Add(cookie);
+
+           return new RedirectResult("/Login/login");
         }
 
         /// <summary>
