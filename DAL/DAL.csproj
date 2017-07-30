@@ -80,6 +80,7 @@
     <Compile Include="RoleManage\D_tb_Role.cs" />
     <Compile Include="RoleManage\D_tb_RoleAction.cs" />
     <Compile Include="RoleManage\D_tb_UserRole.cs" />
+    <Compile Include="Sample\D_Sample.cs" />
     <Compile Include="ShowImage\D_tb_ShowImages.cs" />
     <Compile Include="tb_attachmentDAL.cs" />
     <Compile Include="tb_BaseDAL.cs" />

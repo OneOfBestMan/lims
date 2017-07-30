@@ -15,6 +15,8 @@
 *└──────────────────────────────────┘
 */
 using System;
+using System.ComponentModel;
+
 namespace Model
 {
 	/// <summary>
@@ -23,6 +25,52 @@ namespace Model
 	[Serializable]
 	public partial class tb_Sample
 	{
+        /// <summary>
+        /// ID集合
+        /// </summary>
+        public string ids { get; set; }
+
+        /// <summary>
+        /// 序号ID
+        /// </summary>
+        [DisplayName("序号")]
+        public int rowid { get; set; }
+
+        /// <summary>
+        /// 处理人名称
+        /// </summary>
+        public string handleusername { get; set; }
+
+        /// <summary>
+        /// 送样单位名称
+        /// </summary>
+        [DisplayName("处理人名称")]
+        public string inspectcompanyname { get; set; }
+
+        /// <summary>
+        /// 单位ID
+        /// </summary>
+        [DisplayName("单位ID")]
+        public int AreaID { get; set; }
+
+        /// <summary>
+        /// 存储条件
+        /// </summary>
+        [DisplayName("存储条件")]
+        public string storcondition { get; set; }
+
+        /// <summary>
+        /// 测试部门
+        /// </summary>
+        [DisplayName("测试部门")]
+        public string checkdepar { get; set; }
+
+        /// <summary>
+        /// 紧急程度
+        /// </summary>
+        [DisplayName("紧急程度")]
+        public int urgentlevel { get; set; }
+
         public tb_Sample()
         { }
 
@@ -46,12 +94,12 @@ namespace Model
         private string _temp2;
         private string _putarea;
         private string _samplehandle;
-        private string _handleuser;
+        private int? _handleuser;
         private DateTime? _handledate;
         private string _sampleadmin;
         private string _detectiongist;
         private string _detectionmethod;
-        private string _inspectcompany;
+        private int? _inspectcompany;
         private string _detectionadress;
         private string _detectioncompany;
         private string _inspectaddress;
@@ -62,6 +110,7 @@ namespace Model
         /// <summary>
         /// 
         /// </summary>
+        [DisplayName("样品ID")]
         public int id
         {
             set { _id = value; }
@@ -70,6 +119,7 @@ namespace Model
         /// <summary>
         /// 样品名称
         /// </summary>
+        [DisplayName("样品名称")]
         public string name
         {
             set { _name = value; }
@@ -78,6 +128,7 @@ namespace Model
         /// <summary>
         /// 执行标准
         /// </summary>
+        [DisplayName("执行标准")]
         public string standard
         {
             set { _standard = value; }
@@ -86,6 +137,7 @@ namespace Model
         /// <summary>
         /// 样品数量
         /// </summary>
+        [DisplayName("样品数量")]
         public string batch
         {
             set { _batch = value; }
@@ -94,6 +146,7 @@ namespace Model
         /// <summary>
         /// 生产日期
         /// </summary>
+        [DisplayName("生产日期")]
         public DateTime? productDate
         {
             set { _productdate = value; }
@@ -102,6 +155,7 @@ namespace Model
         /// <summary>
         /// 规格型号
         /// </summary>
+        [DisplayName("规格型号")]
         public string modelType
         {
             set { _modeltype = value; }
@@ -110,6 +164,7 @@ namespace Model
         /// <summary>
         /// 保质期
         /// </summary>
+        [DisplayName("保质期")]
         public string expirationDate
         {
             set { _expirationdate = value; }
@@ -118,6 +173,7 @@ namespace Model
         /// <summary>
         /// 包装方式
         /// </summary>
+        [DisplayName("包装方式")]
         public string packaging
         {
             set { _packaging = value; }
@@ -126,6 +182,7 @@ namespace Model
         /// <summary>
         /// 抽样形式
         /// </summary>
+        [DisplayName("抽样形式")]
         public bool isDetection
         {
             set { _isdetection = value; }
@@ -134,6 +191,7 @@ namespace Model
         /// <summary>
         /// 抽样人
         /// </summary>
+        [DisplayName("抽样人")]
         public string detectionUser
         {
             set { _detectionuser = value; }
@@ -142,38 +200,43 @@ namespace Model
         /// <summary>
         /// 抽样日期
         /// </summary>
+        [DisplayName("抽样日期")]
         public DateTime? detectionDate
         {
             set { _detectiondate = value; }
             get { return _detectiondate; }
         }
         /// <summary>
-        /// 
+        /// 创建人
         /// </summary>
+        [DisplayName("创建人")]
         public int? createUser
         {
             set { _createuser = value; }
             get { return _createuser; }
         }
         /// <summary>
-        /// 
+        /// 创建时间
         /// </summary>
+        [DisplayName("创建时间")]
         public DateTime? createDate
         {
             set { _createdate = value; }
             get { return _createdate; }
         }
         /// <summary>
-        /// 
+        /// 更新人
         /// </summary>
+        [DisplayName("更新人")]
         public int? updateUser
         {
             set { _updateuser = value; }
             get { return _updateuser; }
         }
         /// <summary>
-        /// 
+        /// 更新时间
         /// </summary>
+        [DisplayName("更新时间")]
         public DateTime? updateDate
         {
             set { _updatedate = value; }
@@ -214,7 +277,8 @@ namespace Model
         /// <summary>
         /// 处理人
         /// </summary>
-        public string handleUser
+        [DisplayName("处理人")]
+        public int? handleUser
         {
             set { _handleuser = value; }
             get { return _handleuser; }
@@ -222,6 +286,7 @@ namespace Model
         /// <summary>
         /// 处理时间
         /// </summary>
+        [DisplayName("处理时间")]
         public DateTime? handleDate
         {
             set { _handledate = value; }
@@ -230,6 +295,7 @@ namespace Model
         /// <summary>
         /// 样品管理员
         /// </summary>
+        [DisplayName("样品管理员")]
         public string sampleAdmin
         {
             set { _sampleadmin = value; }
@@ -238,6 +304,7 @@ namespace Model
         /// <summary>
         /// 抽样依据
         /// </summary>
+        [DisplayName("抽样依据")]
         public string detectionGist
         {
             set { _detectiongist = value; }
@@ -246,6 +313,7 @@ namespace Model
         /// <summary>
         /// 抽样方法
         /// </summary>
+        [DisplayName("抽样方法")]
         public string detectionMethod
         {
             set { _detectionmethod = value; }
@@ -254,7 +322,8 @@ namespace Model
         /// <summary>
         /// 送样单位
         /// </summary>
-        public string InspectCompany
+        [DisplayName("抽样人")]
+        public int? InspectCompany
         {
             set { _inspectcompany = value; }
             get { return _inspectcompany; }
@@ -262,6 +331,7 @@ namespace Model
         /// <summary>
         /// 抽样地址
         /// </summary>
+        [DisplayName("抽样地址")]
         public string detectionAdress
         {
             set { _detectionadress = value; }
@@ -270,6 +340,7 @@ namespace Model
         /// <summary>
         /// 抽样单位
         /// </summary>
+        [DisplayName("抽样单位")]
         public string detectionCompany
         {
             set { _detectioncompany = value; }
@@ -278,6 +349,7 @@ namespace Model
         /// <summary>
         /// 送检地址
         /// </summary>
+        [DisplayName("送检地址")]
         public string InspectAddress
         {
             set { _inspectaddress = value; }
@@ -286,6 +358,7 @@ namespace Model
         /// <summary>
         /// 项目名称
         /// </summary>
+        [DisplayName("项目名称")]
         public string projectName
         {
             set { _projectname = value; }
@@ -294,6 +367,7 @@ namespace Model
         /// <summary>
         /// 检验方法
         /// </summary>
+        [DisplayName("检验方法")]
         public string testMethod
         {
             set { _testmethod = value; }
@@ -302,6 +376,7 @@ namespace Model
         /// <summary>
         /// 样品编号
         /// </summary>
+        [DisplayName("样品编号")]
         public string sampleNum
         {
             set { _samplenum = value; }
@@ -310,6 +385,7 @@ namespace Model
         /// <summary>
         /// 产品批次
         /// </summary>
+        [DisplayName("产品批次")]
         public string protNum
         {
             set { _protnum = value; }

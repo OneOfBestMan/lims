@@ -141,10 +141,10 @@ namespace Web.Controllers
             }
             else
             {
-                string id = eSample.InspectCompany;
-                if (!string.IsNullOrEmpty(id))
+                int? id = eSample.InspectCompany;
+                if (id!=null&&!string.IsNullOrEmpty(id.ToString()))
                 {
-                    Model.ClientManage.E_tb_ClientManage cmmodel = tClientManage.GetModel(int.Parse(id));
+                    Model.ClientManage.E_tb_ClientManage cmmodel = tClientManage.GetModel(int.Parse(id.ToString()));
                     eEntrustTesting.EntrustCompany = cmmodel.ClientName;
                 }
                 else
@@ -190,10 +190,10 @@ namespace Web.Controllers
             }
             else
             {
-                string id = eSample.InspectCompany;
-                if (!string.IsNullOrEmpty(id))
+                int? id = eSample.InspectCompany;
+                if (id!=null&&!string.IsNullOrEmpty(id.ToString()))
                 {
-                    Model.ClientManage.E_tb_ClientManage cmmodel = tClientManage.GetModel(int.Parse(id));
+                    Model.ClientManage.E_tb_ClientManage cmmodel = tClientManage.GetModel(int.Parse(id.ToString()));
                     EntrustCompany = cmmodel.ClientName;
                 }
             }

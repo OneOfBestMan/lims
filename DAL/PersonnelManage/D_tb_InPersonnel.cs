@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using Model.PersonnelManage;
+using Dapper;
 
 namespace DAL.PersonnelManage
 {
@@ -394,91 +395,17 @@ namespace DAL.PersonnelManage
         /// </summary>
         public E_tb_InPersonnel Login(string UserName, string PassWord)
         {
-
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select top 1 A.*,C.DataRange from tb_InPersonnel as A join tb_UserRole as B  on A.PersonnelID=B.PersonnelID join tb_Role as C on B.RoleID=C.RoleID");
+            strSql.Append("select top 1 A.*,C.DataRange,C.RoleName from tb_InPersonnel as A join tb_UserRole as B  on A.PersonnelID=B.PersonnelID join tb_Role as C on B.RoleID=C.RoleID");
             strSql.Append(" where A.UserName=@UserName and A.PassWord=@PassWord");
-            SqlParameter[] parameters = {
-					new SqlParameter("@UserName", SqlDbType.NVarChar,50),
-                    new SqlParameter("@PassWord", SqlDbType.NVarChar,50)
-};
-            parameters[0].Value = UserName;
-            parameters[1].Value = PassWord;
 
-            E_tb_InPersonnel model = new E_tb_InPersonnel();
-            DataSet ds = DbHelperSQL.Query(strSql.ToString(), parameters);
-            if (ds.Tables[0].Rows.Count > 0)
+            E_tb_InPersonnel model = null;
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
-                if (ds.Tables[0].Rows[0]["PersonnelID"].ToString() != "")
-                {
-                    model.PersonnelID = int.Parse(ds.Tables[0].Rows[0]["PersonnelID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["AreaID"].ToString() != "")
-                {
-                    model.AreaID = int.Parse(ds.Tables[0].Rows[0]["AreaID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["PersonnelName"] != null)
-                {
-                    model.PersonnelName = ds.Tables[0].Rows[0]["PersonnelName"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Department"] != null)
-                {
-                    model.Department = ds.Tables[0].Rows[0]["Department"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Sex"] != null)
-                {
-                    model.Sex = ds.Tables[0].Rows[0]["Sex"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Birthday"].ToString() != "")
-                {
-                    model.Birthday = DateTime.Parse(ds.Tables[0].Rows[0]["Birthday"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["Educational"] != null)
-                {
-                    model.Educational = ds.Tables[0].Rows[0]["Educational"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Title"] != null)
-                {
-                    model.Title = ds.Tables[0].Rows[0]["Title"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Post"] != null)
-                {
-                    model.Post = ds.Tables[0].Rows[0]["Post"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["WorkingTime"] != null)
-                {
-                    model.WorkingTime = ds.Tables[0].Rows[0]["WorkingTime"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Description"] != null)
-                {
-                    model.Description = ds.Tables[0].Rows[0]["Description"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Tel"] != null)
-                {
-                    model.Tel = ds.Tables[0].Rows[0]["Tel"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["CID"] != null)
-                {
-                    model.CID = ds.Tables[0].Rows[0]["CID"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["UserName"] != null)
-                {
-                    model.UserName = ds.Tables[0].Rows[0]["UserName"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["PassWord"] != null)
-                {
-                    model.PassWord = ds.Tables[0].Rows[0]["PassWord"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["DataRange"].ToString() != "")
-                {
-                    model.DataRange = int.Parse(ds.Tables[0].Rows[0]["DataRange"].ToString());
-                }
-                return model;
+                model = conn.Query<E_tb_InPersonnel>(strSql.ToString(), new { UserName=UserName, PassWord=PassWord })?.FirstOrDefault();
             }
-            else
-            {
-                return null;
-            }
+            return model;
+            
         }
         #endregion
     }

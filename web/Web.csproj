@@ -31,6 +31,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,7 +65,8 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NPOI">
+    <Reference Include="NPOI, Version=2.3.0.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>Dll\NPOI.dll</HintPath>
     </Reference>
     <Reference Include="PageOffice, Version=2.0.0.1, Culture=neutral, PublicKeyToken=1d75ee5788809228, processorArchitecture=MSIL">
@@ -229,6 +231,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dll\NPOI.dll" />
     <Content Include="Skins\admin\vendor\datetimepicker\css\bootstrap-datetimepicker.css" />
     <Content Include="Skins\admin\vendor\datetimepicker\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Skins\admin\vendor\datetimepicker\js\bootstrap-datetimepicker.js" />
@@ -505,8 +508,6 @@
     <Content Include="Dll\Ionic.Zip.dll" />
     <Content Include="Dll\itextsharp.dll" />
     <Content Include="Dll\LitJSON.dll" />
-    <Content Include="Dll\NPOI.dll" />
-    <Content Include="Dll\NPOI.XML" />
     <Content Include="Dll\PageOffice.dll" />
     <Content Include="FlexPaper\FlexPaperViewer.swf" />
     <Content Include="FlexPaper\js\expressInstall.swf" />
@@ -2060,12 +2061,6 @@
     <Content Include="Skins\artDialog\_config.yml" />
     <Content Include="Views\Demo\Info.cshtml" />
     <Content Include="Views\LabManage\ExperimentCheck.cshtml" />
-    <Content Include="Views\Task\List.cshtml" />
-    <Content Include="Views\Task\Info.cshtml" />
-    <Content Include="Views\EasyConsume\EasyConsumeRK.cshtml" />
-    <Content Include="Views\EasyConsume\EasyConsumeCK.cshtml" />
-    <Content Include="Views\Device\DeviceRK.cshtml" />
-    <Content Include="Views\Device\DeviceCK.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

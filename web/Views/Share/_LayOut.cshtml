@@ -25,7 +25,6 @@
 
     <link href="~/Skins/css/custom.css" rel="stylesheet" />
 
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -35,18 +34,60 @@
     <!-- jQuery -->
     <script src="http://aui.github.io/artDialog/lib/jquery-1.10.2.js"></script>
 
+    <script type="text/javascript">
+        function GetWeekDay()
+        {
+            var d = new Date()
+            var weekday = new Array(7)
+            weekday[0] = "星期天"
+            weekday[1] = "星期一"
+            weekday[2] = "星期二"
+            weekday[3] = "星期三"
+            weekday[4] = "星期四"
+            weekday[5] = "星期五"
+            weekday[6] = "星期六"
+            document.write(weekday[d.getDay()])//返回当前时间是星期几
+        }
 
+        function findWeather() {
+            var cityUrl = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js';
+            $.getScript(cityUrl, function (script, textStatus, jqXHR) {
+                var citytq = remote_ip_info.city;// 获取城市
+                var url = "http://php.weather.sina.com.cn/iframe/index/w_cl.php?code=js&city=" + citytq + "&day=0&dfc=3";
+                $.ajax({
+                    url: url,
+                    dataType: "script",
+                    scriptCharset: "gbk",
+                    success: function (data) {
+                        var _w = window.SWther.w[citytq][0];
+                        var _f = _w.f1 + "_0.png";
+                        if (new Date().getHours() > 17) {
+                            _f = _w.f2 + "_1.png";
+                        }
+                        var img = "<img width='16px' height='16px' src='http://i2.sinaimg.cn/dy/main/weather/weatherplugin/wthIco/20_20/" + _f + "' />";
+                        var tq = "<i>"+citytq+"</i>" + " " + img + " " + _w.s1 + " " + _w.t1 + "℃～" + _w.t2 + "℃ " + _w.d1 + _w.p1 + "级";
+
+                        $("#weather").html(tq);
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function () {
+            findWeather();
+        });
+    </script>
 </head>
 <body>
     <!--顶部内容-->
     <div class="index_header">
         <div class="lg lf"><a href="/home/index"><img src="/skins/images/logo.png" width="448" height="70" /></a></div>
         <div class="xx rt">
-             
+            @(DateTime.Now.ToShortDateString())&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<script>GetWeekDay()</script><br />
+            <div id="weather"></div>
         </div>
         <div style="overflow:hidden; clear:both; height:0px;"></div>
     </div>
-
 
     <div id="wrapper">
         <!-- Navigation -->
@@ -58,13 +99,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @{ 
-                    var user = Session["UserInfo"] == null ? new Model.PersonnelManage.E_tb_InPersonnel() : Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel;
-                    var temp = new DAL.RoleManage.D_tb_Role().GetModel(user.RoleID);
-                     
-
-                <span class="navbar-brand" href="index.html">@user.PersonnelName，您好！&nbsp;&nbsp;&nbsp;&nbsp;角色：<span style="color:#0361af;">@(temp==null?"":temp.RoleName)</span></span>
-                }
+               
+                <a class="navbar-brand" href="index.html">
+                    @{
+                        var cookies = HttpContext.Current.Request.Cookies["lims.userinfo"];
+                        var personnelname = HttpUtility.UrlDecode(cookies["personnelname"].ToString());
+                        var rolename = HttpUtility.UrlDecode(cookies["rolename"].ToString());
+                    }
+                    @personnelname，您好！&nbsp;&nbsp;&nbsp;&nbsp;角色：<span style="color:#0361af;">@rolename</span>
+                </a>
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">
@@ -74,11 +117,15 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        
-                        
+                        <li>
+                            <a href="#"><i class="fa fa-user fa-fw"></i> 帮助中心</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-gear fa-fw"></i> 修改密码</a>
+                        </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="/Login/login"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
+                            <a href="/login/loginout"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -113,7 +160,7 @@
                                     <!-- /.nav-third-level -->
                                 </li>
 
-                                <li><a href="/Task/List">任务考核</a></li>
+
                                 <li><a href="/labmanage/experimentcheck">实验考核</a></li>
 
                             </ul>
@@ -234,7 +281,7 @@
                             <a href="#"><i class="fa fa-balance-scale fa-fw"></i> 样品管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
 @if (Convert.ToBoolean(ViewData["0faa9106"])) { 
-                                <li><a href="/Sample/Index">样品管理</a></li>}
+                                <li><a href="/sample/samplelist">样品管理</a></li>}
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
@@ -332,7 +379,7 @@
             var d = dialog({
                 title: t,
                 url: url,
-                id: 'id-info',
+                id: id,
 
             });
             d.show();

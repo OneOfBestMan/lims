@@ -332,8 +332,8 @@ namespace Web.Controllers
 
                 #region 设置表头
                 ICellStyle cellStyle = wb.CreateCellStyle();
-                cellStyle.VerticalAlignment = VerticalAlignment.CENTER;
-                cellStyle.Alignment = HorizontalAlignment.CENTER;
+                cellStyle.VerticalAlignment = VerticalAlignment.Center;
+                cellStyle.Alignment = HorizontalAlignment.Center;
 
                 IRow row0 = sh.CreateRow(0);
                 row0.Height = 20 * 20;
@@ -444,8 +444,8 @@ namespace Web.Controllers
 
                 #region 设置表头
                 ICellStyle cellStyle = wb.CreateCellStyle();
-                cellStyle.VerticalAlignment = VerticalAlignment.CENTER;
-                cellStyle.Alignment = HorizontalAlignment.CENTER;
+                cellStyle.VerticalAlignment = VerticalAlignment.Center;
+                cellStyle.Alignment = HorizontalAlignment.Center;
 
                 IRow row0 = sh.CreateRow(0);
                 row0.Height = 20 * 20;
@@ -578,8 +578,8 @@ namespace Web.Controllers
 
                 #region 设置表头
                 ICellStyle cellStyle = wb.CreateCellStyle();
-                cellStyle.VerticalAlignment = VerticalAlignment.CENTER;
-                cellStyle.Alignment = HorizontalAlignment.CENTER;
+                cellStyle.VerticalAlignment = VerticalAlignment.Center;
+                cellStyle.Alignment = HorizontalAlignment.Center;
 
                 IRow row0 = sh.CreateRow(0);
                 row0.Height = 20 * 20;
