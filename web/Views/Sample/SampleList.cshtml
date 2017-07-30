@@ -83,6 +83,7 @@
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
                                 <button type="button" class="btn btn-success" onclick="Edit(0)" ><i class="fa fa-plus"></i> 添加 </button>
                                 <button type="button" class="btn btn-warning" onclick="BatchDestory(0)"><i class="fa fa-bitbucket"></i> 销毁 </button>
+                                <button type="button" class="btn btn-primary" onclick="ShowSamplingSheet()"><i class="fa fa-plus"></i> 生成分样单 </button>
                             </div>
 
                             <div class="form-group pull-right">
@@ -260,6 +261,31 @@
                 }
             });
         }
+    }
+
+    //显示分样单
+    function ShowSamplingSheet() {
+        //得到选中的项
+        if ($(".ckSample:checked").length <= 0) {
+            alert("请选择一条（或多条）数据进行操作");
+            return;
+        }
+
+        //遍历所有的选中行
+        var strIds = "";
+        $(".ckSample:checked").each(function () {
+            //发送异步请求，删除数据，格式1,2,3,5,6
+            strIds += $(this).val() + ",";
+        });
+        strIds = strIds.substr(0, strIds.lastIndexOf(","));
+
+        //显示对于窗体
+        var d = dialog({
+            title: '样品编辑',
+            url: '/sample/samplingsheet?sampleids=' + strIds,
+            id: 'id-info',
+        });
+        d.showModal();
     }
 
     //编辑

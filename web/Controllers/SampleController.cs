@@ -14,6 +14,11 @@ using Comp;
 using DAL.Sample;
 using DAL.ExpePlan;
 using Model.ExpePlan;
+using Model.Sample;
+using System.Reflection;
+using NPOI.XWPF.UserModel;
+using NPOI.OpenXmlFormats.Wordprocessing;
+using System.Text;
 
 namespace Web.Controllers
 {
@@ -166,7 +171,7 @@ namespace Web.Controllers
         /// </summary>
         /// <returns>样品文件</returns>
         [Route("sample/exportsample")]
-        public ActionResult ExportSample(E_PageParameter ePageParameter)
+        public FileResult ExportSample(E_PageParameter ePageParameter)
         {
             List<tb_Sample> list = _dSample.GetSampleList(ePageParameter);
             string filename = "样品列表" + DateTime.Now.ToFileTime() + ".xls";
@@ -175,16 +180,43 @@ namespace Web.Controllers
             return File(path, "application/vnd.ms-excel", filename);
         }
 
+        /// <summary>
+        /// 分样单列表
+        /// </summary>
+        [Route("sample/samplingsheet")]
+        public ActionResult SamplingSheet(E_PageParameter ePageParameter)
+        {
+            List<E_SamplingSheet> list = new List<E_SamplingSheet>();
+            list = _dSample.GetSamplingSheetList(ePageParameter);
 
+            ViewBag.SamplingSheetList = list;
+            ViewBag.sampleids = ePageParameter.sampleids;
 
+            return View("/views/sample/SamplingSheet.cshtml");
+        }
 
+        /// <summary>
+        /// 导出分样单
+        /// </summary>
+        [Route("sample/exportsamplingsheet")]
+        public FileResult ExportSamplingSheet(E_PageParameter ePageParameter)
+        {
+            List<E_SamplingSheet> list = _dSample.GetSamplingSheetList(ePageParameter);
+            string filename = "分样单" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".doc";
+            string filetemplatepath = Server.MapPath("/upfile/template/分样单模板.docx");
+            string path = Server.MapPath("/upfile/samplingsheet/" + filename);
+            
+            NPOITools.RenderToWord<E_SamplingSheet>(list, filetemplatepath,path);
+
+            return File(path, "application/vnd.ms-word", filename);
+        }
 
 
 
 
         /*以下为旧版代码*****************************************/
-        
-        
+
+
         public ActionResult Index()
         {
             try
