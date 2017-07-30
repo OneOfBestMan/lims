@@ -119,6 +119,20 @@ namespace DAL.Sample
         }
 
         /// <summary>
+        /// 获取数据集合
+        /// </summary>
+        /// <param name="fields">字段列表</param>
+        /// <param name="strwhere">查询条件</param>
+        /// <returns>返回对应数据集合</returns>
+        public DataTable GetSampleDt(string fields, string strwhere)
+        {
+            //主查询Sql
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat($"select {fields} from tb_Sample where {strwhere}");
+            return DbHelperSQL.Query(search.ToString()).Tables[0];
+        }
+
+        /// <summary>
         /// 获取样品详情
         /// </summary>
         /// <param name="id">样品ID</param>
