@@ -31,6 +31,7 @@ namespace Web.Controllers
         //
         // GET: /Drug/
 
+
         public ActionResult Index()
         {
             ViewData["ddl_company"] = PublicClass.GetAreaList("请选择", CurrentUserInfo.AreaID.Value);
