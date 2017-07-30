@@ -56,6 +56,10 @@ namespace Model
         /// </summary>
         public int createuser { get; set; }
 
-
+        /// <summary>
+        /// 样品ID集合
+        /// </summary>
+        public string sampleids { get; set; }
+        
     }
 }

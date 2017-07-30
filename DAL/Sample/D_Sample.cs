@@ -1,6 +1,7 @@
 ﻿using Comp;
 using Dapper;
 using Model;
+using Model.Sample;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -114,6 +115,34 @@ namespace DAL.Sample
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
                 list = conn.Query<Model.tb_Sample>(search.ToString(), ePageParameter)?.ToList();
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 获取分样单数据
+        /// </summary>
+        /// <param name="ePageParameter">查询参数实体</param>
+        /// <returns>返回分样单数据</returns>
+        public List<E_SamplingSheet> GetSamplingSheetList(E_PageParameter ePageParameter)
+        {
+            List<E_SamplingSheet> list = new List<E_SamplingSheet>();
+
+            //主查询Sql
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat(@"select A.samplenum,A.name as samplename,
+                                        (C.ProjectName+'--'+B.InspectMethod) as checkprojectandstandard,
+                                        A.storcondition,A.checkdepar,
+                                        case when A.urgentlevel=1 then '普通' else '紧急' end asurgentlevel
+                                        from dbo.tb_Sample as A 
+                                        left join dbo.tb_ExpePlan AS B on A.id=B.SampleID
+                                        left join dbo.tb_Project as C on B.ProjectID=C.ProjectID
+                                    where A.id in ({0})",ePageParameter.sampleids);
+
+            //执行查询语句
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<E_SamplingSheet>(search.ToString(), ePageParameter)?.ToList();
             }
             return list;
         }
