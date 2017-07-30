@@ -14,14 +14,12 @@ namespace DAL.Sample
     public class D_Sample
     {
         /// <summary>
-        /// 获取实验考核数据列表
+        /// 获取查询条件
         /// </summary>
-        /// <param name="ePageParameter">页面参数实体</param>
-        /// <returns></returns>
-        public List<Model.tb_Sample> GetSampleList(E_PageParameter ePageParameter, ref int count)
+        /// <param name="ePageParameter">查询参数实体</param>
+        /// <returns>查询条件</returns>
+        private string GetStrWhere(E_PageParameter ePageParameter)
         {
-            List<Model.tb_Sample> list = new List<Model.tb_Sample>();
-            
             //拼接查询条件
             StringBuilder strwhere = new StringBuilder();
             if (ePageParameter.areaid > 0) //单位
@@ -48,16 +46,27 @@ namespace DAL.Sample
             {
                 strwhere.AddWhere($"A.detectionDate<=cast('{Convert.ToDateTime(ePageParameter.endtime).ToString("yyyy-MM-dd")}' as datetime)");
             }
+            return strwhere.ToString();
+        }
 
+        /// <summary>
+        /// 获取实验考核数据列表
+        /// </summary>
+        /// <param name="ePageParameter">页面参数实体</param>
+        /// <returns></returns>
+        public List<Model.tb_Sample> GetSampleList(E_PageParameter ePageParameter, ref int count)
+        {
+            List<Model.tb_Sample> list = new List<Model.tb_Sample>();
+            
             //主查询Sql
             StringBuilder search = new StringBuilder();
-            search.AppendFormat(@"select  row_number()over(order by createDate desc) as rowid,
+            search.AppendFormat(@"select  row_number()over(order by A.createDate desc) as rowid,
 	                                       A.*,
 	                                       B.PersonnelName as handleusername,
 	                                       C.ClientName as inspectcompanyname  
                                     from tb_Sample as A 
                                     left join tb_InPersonnel as B on A.handleUser=B.PersonnelID
-                                    left join tb_ClientManage as C on A.InspectCompany=C.ClientID {0} ", strwhere.ToString());
+                                    left join tb_ClientManage as C on A.InspectCompany=C.ClientID {0} ", GetStrWhere(ePageParameter));
 
             //当前页数据Sql
             StringBuilder currdata = new StringBuilder();
@@ -78,6 +87,33 @@ namespace DAL.Sample
             {
                 list = conn.Query<Model.tb_Sample>(currdata.ToString(), ePageParameter)?.ToList();
                 count = (int)conn.ExecuteScalar(totalcount.ToString(), ePageParameter);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 获取样品列表，不带分页
+        /// </summary>
+        /// <param name="ePageParameter">查询参数实体</param>
+        /// <returns>返回对应数据集合</returns>
+        public List<Model.tb_Sample> GetSampleList(E_PageParameter ePageParameter)
+        {
+            List<Model.tb_Sample> list = new List<Model.tb_Sample>();
+            
+            //主查询Sql
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat(@"select  row_number()over(order by A.createDate desc) as rowid,
+	                                       A.*,
+	                                       B.PersonnelName as handleusername,
+	                                       C.ClientName as inspectcompanyname  
+                                    from tb_Sample as A 
+                                    left join tb_InPersonnel as B on A.handleUser=B.PersonnelID
+                                    left join tb_ClientManage as C on A.InspectCompany=C.ClientID {0} ", GetStrWhere(ePageParameter));
+            
+            //执行查询语句
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<Model.tb_Sample>(search.ToString(), ePageParameter)?.ToList();
             }
             return list;
         }
@@ -168,6 +204,42 @@ namespace DAL.Sample
             {
                 int id = Convert.ToInt32(conn.ExecuteScalar(strSql.ToString(), model));
                 return id;
+            }
+        }
+
+        /// <summary>
+        /// 销毁样品
+        /// </summary>
+        /// <param name="model">样品实体</param>
+        /// <returns>是否执行成功</returns>
+        public bool BatchDestroy(tb_Sample model)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append(@"update tb_Sample set 
+                                handleUser=@handleUser,
+                                handleDate=@handleDate
+                            where id in (@ids)");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                int count = conn.Execute(strSql.ToString(), model);
+                return (count > 0);
+            }
+        }
+
+        /// <summary>
+        /// 删除样品
+        /// </summary>
+        /// <param name="model">样品实体</param>
+        /// <returns>是否执行成功</returns>
+        public bool Delete(tb_Sample model)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append(@"delete from tb_Sample  where id = @id");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                int count = conn.Execute(strSql.ToString(), model);
+                return (count > 0);
             }
         }
     }

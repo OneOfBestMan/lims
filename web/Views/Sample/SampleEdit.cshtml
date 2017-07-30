@@ -40,7 +40,7 @@
                         </td>
                         <td>
                             <label>生产日期：</label>
-                            <input type="text" class="form-control inputtime" name="productDate" value="@info.productDate" />
+                            <input type="text" class="form-control inputtime" name="productDate" value="@(info.productDate!=null?Convert.ToDateTime(info.productDate).ToShortDateString():"")" />
                         </td>
                         <td>
                             <label>保质期：</label>
@@ -76,7 +76,7 @@
                         </td>
                         <td>
                             <label>送/抽检日期：</label>
-                            <input type="text" class="form-control inputtime DetectionType_True" name="detectionDate" value="@info.detectionDate" />
+                            <input type="text" class="form-control inputtime DetectionType_True" name="detectionDate" value="@(info.detectionDate!=null?Convert.ToDateTime(info.detectionDate).ToShortDateString():"")" />
                         </td>
                         <td>
                             <label>抽样者：</label>
@@ -135,7 +135,11 @@
 
                             <!--隐藏属性-->
                             <input type="hidden" name="AreaID" value="@info.AreaID" />
-
+                            <input type="hidden" name="id" value="@info.id"/>
+                            <input type="hidden" name="createDate" value="@info.createDate" />
+                            <input type="hidden" name="createUser" value="@info.createUser" />
+                            <input type="hidden" name="handleDate" value="@info.handleDate" />
+                            <input type="hidden" name="handleUser" value="@info.handleUser" />
                         </td>
                     </tr>
                 </tbody>
@@ -251,7 +255,6 @@
             $("#formdata select").each(function () {
                 data += "&" + $(this).attr("name") + "=" + $(this).val();
             });
-            alert(data);
 
             $.post("/Sample/Save", data, function (data) {
                 if (data == "True") {

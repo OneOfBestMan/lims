@@ -80,7 +80,7 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 保存
+        /// 保存样品
         /// </summary>
         public bool Save(tb_Sample eSample)
         {
@@ -95,6 +95,27 @@ namespace Web.Controllers
             eSample.AreaID = (int)CurrentUserInfo.AreaID;
             eSample.sampleAdmin = CurrentUserInfo.PersonnelName;
             return _dSample.Add(eSample)>0;//若不存在数据，直接插入
+        }
+        
+        /// <summary>
+        /// 销毁样品
+        /// </summary>
+        /// <param name="id">样品ID集合</param>
+        public JsonResult BatchDestroy(string ids)
+        {
+            bool result = _dSample.BatchDestroy(new tb_Sample() { ids = ids, handleUser = CurrentUserInfo.PersonnelID, handleDate = DateTime.Now });
+            string str = (result ? "OK" : "销毁失败！");
+            return Json(str, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 删除样品
+        /// </summary>
+        public JsonResult Delete(int id)
+        {
+            bool result = _dSample.Delete(new tb_Sample() { id = id });
+            string str = (result ? "OK" : "删除失败！");
+            return Json(str, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -137,10 +158,31 @@ namespace Web.Controllers
             samplenum = _areaname + DateTime.Now.ToString("yyyyMMdd") + "—" + count.ToString("D3");
             return samplenum;
         }
-        
-        //
-        // GET: /Sample/
 
+        /// <summary>
+        /// 导出样品
+        /// </summary>
+        /// <returns>样品文件</returns>
+        [Route("sample/exportsample")]
+        public ActionResult ExportSample(E_PageParameter ePageParameter)
+        {
+            List<tb_Sample> list = _dSample.GetSampleList(ePageParameter);
+            string filename = "样品列表" + DateTime.Now.ToFileTime() + ".xls";
+            string path = Server.MapPath("/upfile/sample/" + filename);
+            NPOITools.RenderToExcel<tb_Sample>(list, path);
+            return File(path, "application/vnd.ms-excel", filename);
+        }
+
+
+
+
+
+
+
+
+        /*以下为旧版代码*****************************************/
+        
+        
         public ActionResult Index()
         {
             try
@@ -154,7 +196,6 @@ namespace Web.Controllers
             }
             return View();
         }
-
         #region 样品管理（新增、修改、删除、列表、导出Excel）
         /// <summary>
         /// 跳转页面
@@ -622,35 +663,7 @@ namespace Web.Controllers
             }
             return Json(str, JsonRequestBehavior.AllowGet);
         }
-        /// <summary>
-        /// 批量销毁数据
-        /// 作者：张伟
-        /// </summary>
-        /// <param name="id">主键ID</param>
-        /// <returns></returns>
-        public JsonResult BatchDestroy_Item(string ids)
-        {
-            string str = "销毁失败！";
-            try
-            {
-                string[] arr = ids.Split(',');
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    tb_Sample model = new tb_Sample();
-                    model = _samplebll.GetModel(int.Parse(arr[i]));
-                    model.handleUser = CurrentUserInfo.PersonnelID;
-                    model.handleDate = DateTime.Now;
-                    _samplebll.Update(model);
-                }
-                str = "销毁成功！";
-            }
-            catch
-            {
-            }
-            return Json(str, JsonRequestBehavior.AllowGet);
-        }
-
-
+        
         #endregion 检验标准
 
         public JsonResult GetProjectListForDropDownList(string q)

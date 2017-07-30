@@ -11,6 +11,11 @@
 <script src="/skins/artDialog/dist/dialog.js"></script>
 <script src="/skins/artDialog/dist/dialog-plus.js"></script>
 
+<style type="text/css">
+    .displaybtn {text-align:center;color:#5cb85c;}
+    .displaycol {display:none;}
+</style>
+
 <!-- /.row -->
 <div class="ng-scope">
     <div class="row ng-scope">
@@ -77,10 +82,11 @@
                                 <input type="hidden" name="issearch" value="1" />
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
                                 <button type="button" class="btn btn-success" onclick="Edit(0)" ><i class="fa fa-plus"></i> 添加 </button>
+                                <button type="button" class="btn btn-danger" onclick="BatchDestory(0)"><i class="fa fa-bitbucket"></i> 销毁 </button>
                             </div>
 
                             <div class="form-group pull-right">
-                                <a class="btn btn-info" href="Sample/Export_Sample?areaid=@ePageParameter.areaid&samplename=@ePageParameter.samplename&detectionuser=@ePageParameter.detectionuser&starttime=@ePageParameter.starttime&endtime=@ePageParameter.endtime" target="_blank"><i class="fa fa-cloud-download"></i> 导出 </a>
+                                <a class="btn btn-info" href="/Sample/ExportSample?areaid=@ePageParameter.areaid&samplename=@ePageParameter.samplename&detectionuser=@ePageParameter.detectionuser&starttime=@ePageParameter.starttime&endtime=@ePageParameter.endtime" target="_blank"><i class="fa fa-cloud-download"></i> 导出 </a>
                             </div>
 </form>
                 </div>
@@ -96,12 +102,12 @@
                     <table id="tab_1" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th><input type="checkbox" id="selectall" onclick="selectall()" /></th>
+                                <th style="width:30px;"><input type="checkbox" id="selectall" onclick="selectall()" /></th>
                                 <th style="width:45px;">序号</th>
-                                <th>样品编号</th>
+                                <th style="width:75px;">样品编号</th>
                                 <th>样品名称</th>
                                 <th style="width:75px;">产品批次</th>
-                                <th>生产日期</th>
+                                <th style="width:75px;">生产日期</th>
                                 <th style="width:75px;">抽样形式</th>
                                 <th style="width:85px;">送/抽样日期</th>
                                 <th style="width:65px;">抽样者</th>
@@ -109,13 +115,17 @@
                                 <th style="width:75px;">包装方式</th>
                                 <th style="width:65px;">保质期</th>
                                 <th style="width:75px;">规格型号</th>
-                                <th style="width:75px;">抽样地点</th>
-                                <th style="width:75px;">抽样单位</th>
-                                <th style="width:75px;">送样单位</th>
-                                <th style="width:75px;">送样地址</th>
-                                <th style="width:80px;">样品管理员</th>
-                                <th style="width:65px;">销毁人</th>
-                                <th style="width:75px;">销毁时间</th>
+                                <th style="width:75px;" class="displaycol">抽样地点</th>
+                                <th style="width:75px;" class="displaycol">抽样单位</th>
+                                <th style="width:75px;" class="displaycol">送样单位</th>
+                                <th style="width:75px;" class="displaycol">送样地址</th>
+                                <th style="width:75px;" class="displaycol">存储条件</th>
+                                <th style="width:75px;" class="displaycol">测试部门</th>
+                                <th style="width:75px;" class="displaycol">紧急程度</th>
+                                <th style="width:65px;" class="displaycol">销毁人</th>
+                                <th style="width:75px;" class="displaycol">销毁时间</th>
+                                <th style="width:80px;" class="displaycol">样品管理员</th>
+                                <th style="width:75px;" class="displaybtn">显示更多</th>
                                 <th style="width:100px;">操作</th>
                             </tr>
                         </thead>
@@ -130,28 +140,32 @@
                                         <td>@item.sampleNum</td>
                                         <td title="@item.name">@item.name</td>
                                         <td>@item.protNum</td>
-                                        <td>@item.productDate</td>
+                                        <td>@(item.productDate!=null?Convert.ToDateTime(item.productDate).ToShortDateString():"")</td>
                                         <td>@(item.isDetection ? "抽样" : "送样")</td>
-                                        <td>@item.detectionDate</td>
+                                        <td>@(item.detectionDate != null ? Convert.ToDateTime(item.detectionDate).ToShortDateString() : "")</td>
                                         <td>@item.detectionUser</td>
                                         <td>@item.batch</td>
                                         <td>@item.packaging</td>
                                         <td>@item.expirationDate</td>
                                         <td>@item.modelType</td>
-                                        <td>@item.detectionAdress</td>
-                                        <td>@item.detectionCompany</td>
-                                        <td>@item.inspectcompanyname</td>
-                                        <td>@item.InspectAddress</td>
-                                        <td>@item.sampleAdmin</td>
-                                        <td>@item.handleusername</td>
-                                        <td>@item.handleDate</td>
+                                        <td class="displaycol">@item.detectionAdress</td>
+                                        <td class="displaycol">@item.detectionCompany</td>
+                                        <td class="displaycol">@item.inspectcompanyname</td>
+                                        <td class="displaycol">@item.InspectAddress</td>
+                                        <td class="displaycol">@item.storcondition</td>
+                                        <td class="displaycol">@item.checkdepar</td>
+                                        <td class="displaycol">@(item.urgentlevel==2?"紧急":"普通")</td>
+                                        <td class="displaycol">@item.handleusername</td>
+                                        <td class="displaycol">@item.handleDate</td>
+                                        <td class="displaycol">@item.sampleAdmin</td>
+                                        <td class="displaybtn">。。。</td>
                                         <td>
                                             @{
                                                 if (!(bool)ViewData["aadf1e6b"])
                                                 {
                                                     <a href="javascript:void(0)" onclick="Edit(@item.id)">编辑</a>
-                                                    <a href="javascript:void(0)" onclick="click_Destroy(@item.id)">销毁</a>
-                                                    <a href="javascript:void(0)" onclick="click_Delete(@item.id)">删除</a>
+                                                    <a href="javascript:void(0)" onclick="BatchDestory(@item.id)">销毁</a>
+                                                    <a href="javascript:void(0)" onclick="Delete(@item.id)">删除</a>
                                                 }
                                             }
                                         </td>
@@ -178,6 +192,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        //初始化时间选择控件
         $(".inputtime").datetimepicker({
             minView: "month",//设置只显示到月份
             format: "yyyy-mm-dd",//日期格式
@@ -185,53 +200,66 @@
             todayBtn: true,//今日按钮
             language: 'cn'
         });
+
+        //隐藏多余列
+        $(".displaycol").hide();
+        $(".displaybtn").click(function(){
+            if($(this).text().toString()=="显示更多")
+            {
+                $(".displaycol").show();
+                $(this).text("隐藏列");
+            }
+            else if($(this).text()=="隐藏列")
+            {
+                $(".displaycol").hide();
+                $(this).text("显示更多");
+            }
+        });
+
     });
 
     //删除
-    function click_Delete(_itemId) {
+    function Delete(_itemId) {
         if (confirm("确定要删除数据吗？")) {
-            $.getJSON("/Sample/Delete_Item/" + _itemId, function (data) { alert(data); if (data == "删除成功！") { $('#dgtable').datagrid('reload'); } });
+            $.getJSON("/Sample/Delete/" + _itemId, function (data) {
+                if (data == "OK")
+                {
+                    alert("删除成功！");
+                    window.location.reload();
+                }
+            });
         }
     }
 
-    //销毁单个
-    function click_Destroy(_itemId) {
-        if (confirm("确定要销毁吗？")) {
-            $.getJSON("/Sample/Destroy_Item/" + _itemId, function (data) { alert(data); if (data == "销毁成功！") { $('#dgtable').datagrid('reload'); } });
-        }
-    }
-
-    //批量销毁
-    function click_BatchDestory() {
+    //批量销毁样品
+    function BatchDestory(id) {
         //得到选中的项
-        if ($(".ckSample:checked").length <= 0) {
-            $.messager.alert("提醒", "请选择一条（或多条）数据进行操作");
+        if (id == 0 && $(".ckSample:checked").length <= 0) {
+            alert("请选择一条（或多条）数据进行操作");
             return;
         }
         //先让用户确定是否要删除
-        $.messager.confirm("提醒", "确定要销毁吗？", function (r) {
-            if (r) {
-                //遍历所有的选中行
-                var strIds = "";
+        if (confirm("确定要销毁吗？")) {
+            //遍历所有的选中行
+            var strIds = id.toString();
+            if (id == 0) {
+                strIds = "";
                 $(".ckSample:checked").each(function () {
                     //发送异步请求，删除数据，格式1,2,3,5,6
                     strIds += $(this).val() + ",";
                 });
                 strIds = strIds.substr(0, strIds.lastIndexOf(","));
-                //$.messager.alert("提醒", strIds);
-                $.post("/Sample/BatchDestroy_Item", { ids: strIds }, function (data) {
-                    if (data == "销毁成功！") {
-                        $.messager.alert("消息", "销毁成功！");
-                        //清除选中行
-                        $("#dgtable").datagrid("clearSelections");
-                        //刷新表格
-                        $("#dgtable").datagrid("reload");
-                    } else {
-                        $.messager.alert("错误消息", "销毁失败！");
-                    }
-                });
             }
-        });
+            $.post("/Sample/BatchDestroy", { ids: strIds }, function (data) {
+                if (data == "OK") {
+                    alert("销毁成功！");
+                    //重新加载页面
+                    window.location.reload();
+                } else {
+                    alert("销毁失败！");
+                }
+            });
+        }
     }
 
     //编辑
