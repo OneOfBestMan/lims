@@ -16,6 +16,8 @@ using System.Text;
 using System.Diagnostics;
 using Model.ExpePlan;
 using System.Text.RegularExpressions;
+using Model;
+using Comp;
 
 namespace Web.Controllers
 {
@@ -32,11 +34,18 @@ namespace Web.Controllers
         //
         // GET: /Laboratory/
 
-        public ActionResult TestReportList(E_tb_TestReport eTestReport)
+        public ActionResult TestReportList(E_PageParameter ePageParameter)
         {
-            ViewData["AreaList"] = PageTools.GetSelectList(tArea.GetList("").Tables[0], "AreaID", "AreaName", true);
-            ViewBag._userName = CurrentUserInfo.UserName;
-            return View(eTestReport);
+            int pageIndex = Utils.GetInt(Request["page"]);
+            ePageParameter.pageindex = pageIndex > 0 ? pageIndex - 1 : pageIndex;
+            ePageParameter.pagesize = 20;
+
+            ViewBag.arealist = tArea.GetModelList((CurrentUserInfo.DataRange > 1 ? $"AreaID={CurrentUserInfo.AreaID}" : ""));
+            ViewBag.TestReportList = this.GetList(ePageParameter);
+            ViewBag.ePageParameter = ePageParameter;
+            ViewBag.page = Utils.ShowPage(ePageParameter.count, ePageParameter.pagesize, pageIndex, 5);
+            
+            return View("/views/TestReport/TestReportList.cshtml");
         }
 
         /// <summary>
@@ -44,61 +53,48 @@ namespace Web.Controllers
         /// 作者：小朱
         /// </summary>
         /// <returns>将DataTable转换为Json数据格式通过string类型返回</returns>
-        public string GetList(int pageNumber, int pageSize, string AreaID, string StartTime, string EndTime, string SampleNum, string SampleName, string Department, string MainTestPersonne, string ReportID, string SamplingTimes, string SamplingTimee)
+        //public DataTable GetList(int pageNumber, int pageSize, string AreaID, string StartTime, string EndTime, string SampleNum, string SampleName, string Department, string MainTestPersonne, string ReportID, string SamplingTimes, string SamplingTimee)
+        public DataTable GetList(E_PageParameter ePageParameter)
         {
-            Session["_AreaID"] = AreaID;
-            Session["_StartTime"] = StartTime;
-            Session["_EndTime"] = EndTime;
-            Session["_SampleNum"] = SampleNum;
-            Session["_SampleName"] = SampleName;
-            Session["_Department"] = Department;
-            Session["_MainTestPersonne"] = MainTestPersonne;
-            Session["_SamplingTimes"] = SamplingTimes;
-            Session["_SamplingTimee"] = SamplingTimee;
-            Session["_ReportID"] = ReportID;
             DataTable dt = new DataTable();
             int total = 0;
             string strWhere = "";
-            if (!string.IsNullOrEmpty(ReportID) && ReportID != "0")
+            if (ePageParameter.areaid>0)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.ReportID=" + ReportID);
+                strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + ePageParameter.areaid);
             }
-            if (!string.IsNullOrEmpty(AreaID) && AreaID != "-1")
+            if (ePageParameter.issuedtimestart!=null)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + AreaID);
+                strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime>=cast('" + ePageParameter.issuedtimestart.ToString() + "' as datetime)");
             }
-            if (!string.IsNullOrEmpty(StartTime))
+            if (ePageParameter.issuedtimeend!=null)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime>=cast('" + StartTime + "' as datetime)");
+                strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime<=cast('" + ePageParameter.issuedtimeend.ToString() + "' as datetime)");
             }
-            if (!string.IsNullOrEmpty(EndTime))
+            if (!string.IsNullOrEmpty(ePageParameter.samplenum))
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime<=cast('" + EndTime + "' as datetime)");
+                strWhere = PageTools.AddWhere(strWhere, "T.SampleNum like  '%" + ePageParameter.samplenum + "%'");
             }
-            if (!string.IsNullOrEmpty(SampleNum))
+            if (!string.IsNullOrEmpty(ePageParameter.samplename))
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.SampleNum like  '%" + SampleNum + "%'");
+                strWhere = PageTools.AddWhere(strWhere, "T.SampleName like  '%" + ePageParameter.samplename + "%'");
             }
-            if (!string.IsNullOrEmpty(SampleName))
+            if (!string.IsNullOrEmpty(ePageParameter.department))
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.SampleName like  '%" + SampleName + "%'");
+                strWhere = PageTools.AddWhere(strWhere, "T.Department like  '%" + ePageParameter.department + "%'");
             }
-            if (!string.IsNullOrEmpty(Department))
+            if (!string.IsNullOrEmpty(ePageParameter.maintestpersonne))
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.Department like  '%" + Department + "%'");
-            }
-            if (!string.IsNullOrEmpty(MainTestPersonne))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "D.PersonnelName like '%" + MainTestPersonne + "%'");
+                strWhere = PageTools.AddWhere(strWhere, "D.PersonnelName like '%" + ePageParameter.maintestpersonne + "%'");
             }
 
-            if (!string.IsNullOrEmpty(SamplingTimes))
+            if (ePageParameter.samplingtimestart!=null)
             {
-                strWhere = PageTools.AddWhere(strWhere, "SamplingTime>=cast('" + SamplingTimes + "' as datetime)");
+                strWhere = PageTools.AddWhere(strWhere, "SamplingTime>=cast('" + ePageParameter.samplingtimestart.ToString() + "' as datetime)");
             }
-            if (!string.IsNullOrEmpty(SamplingTimee))
+            if (ePageParameter.samplingtimeend!=null)
             {
-                strWhere = PageTools.AddWhere(strWhere, "SamplingTime<=cast('" + SamplingTimee + "' as datetime)");
+                strWhere = PageTools.AddWhere(strWhere, "SamplingTime<=cast('" + ePageParameter.samplingtimeend.ToString() + "' as datetime)");
             }
 
             //添加数据权限判断
@@ -115,8 +111,9 @@ namespace Web.Controllers
             try
             {
                 //dt = tTestReport.GetListByPage(strWhere, "UpdateTime DESC,T.SampleName ASC", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
-                dt = tTestReport.GetListByPage(strWhere, "TestTime DESC", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
-
+                int startindex = ePageParameter.pageindex * ePageParameter.pagesize + 1;
+                int endindex = (ePageParameter.pageindex+1) * ePageParameter.pagesize;
+                dt = tTestReport.GetListByPage(strWhere, "TestTime DESC", startindex, endindex, ref total).Tables[0];
             }
             catch { }
 
@@ -157,13 +154,15 @@ namespace Web.Controllers
                 }
             }
 
+            ePageParameter.count = total;
+            return dt;
 
-            string strJson = PublicClass.ToJson(dt, total);
-            if (strJson.Trim() == "")
-            {
-                strJson = "{\"total\":0,\"rows\":[]}";
-            }
-            return strJson;
+            //string strJson = PublicClass.ToJson(dt, total);
+            //if (strJson.Trim() == "")
+            //{
+            //    strJson = "{\"total\":0,\"rows\":[]}";
+            //}
+            //return strJson;
         }
 
         /// <summary>
@@ -173,7 +172,7 @@ namespace Web.Controllers
         /// <returns>返回编辑结果</returns>
         public ActionResult TestReportEdit(E_tb_TestReport eTestReport, string EditType, int? InfoID)
         {
-            ViewData["RecordList"] = tOriginalRecord.GetList("").Tables[0];
+            //ViewData["RecordList"] = tOriginalRecord.GetList("").Tables[0];
             ViewData["_abclist"] = PageTools.GetSelectList(tTypeDict.GetList("SubjectID=5").Tables[0], "TypeID", "TypeName", false);
             ViewData["RecordSelect"] = new DataTable();
             ViewData["ReportDataList"] = new DataTable();
@@ -181,8 +180,8 @@ namespace Web.Controllers
             if (EditType == "Edit")
             {
                 eTestReport = tTestReport.GetModel(Convert.ToInt32(InfoID));
-                ViewData["RecordList"] = tOriginalRecord.GetList("RecordID not in (" + eTestReport.RecordIDS + ")").Tables[0];
-                ViewData["RecordSelect"] = tOriginalRecord.GetList("RecordID in (" + eTestReport.RecordIDS + ")").Tables[0];
+                //ViewData["RecordList"] = tOriginalRecord.GetList("RecordID not in (" + eTestReport.RecordIDS + ")").Tables[0];
+                //ViewData["RecordSelect"] = tOriginalRecord.GetList("RecordID in (" + eTestReport.RecordIDS + ")").Tables[0];
                 ViewData["ReportDataList"] = tTestReportData.GetList("ReportID=" + eTestReport.ReportID).Tables[0]; //检验数据
                 
                 if (eTestReport.ApprovalPersonnelID != null && eTestReport.ApprovalPersonnelID > 0)
@@ -361,9 +360,8 @@ namespace Web.Controllers
         /// <param name="eTestReport">要处理的对象</param>
         /// <returns>返回是否处理成功</returns>
         [ValidateInput(false)]
-        public string Save(E_tb_TestReport eTestReport)
+        public bool Save(E_tb_TestReport eTestReport)
         {
-            string msg = "0";
             try
             {
                 //检验数据
@@ -419,14 +417,12 @@ namespace Web.Controllers
                 {
                     tExpePlan.UpdateStatusByPlanIDS(eTestReport.TaskNoS, eTestReport.ReportID);
                 }
-
-                msg = "1";
             }
             catch (Exception ex)
             {
-                msg = ex.Message;
+                return false;
             }
-            return msg;
+            return true;
         }
 
         /// <summary>

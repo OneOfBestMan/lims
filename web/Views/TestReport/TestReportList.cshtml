@@ -1,317 +1,300 @@
 ﻿@model Model.TestReport.E_tb_TestReport
+@using Model.RoleManage;
+@using Model;
+@using System.Data;
 @{
     ViewBag.Title = "TestReportList";
     Layout = "~/Views/Share/_LayOut.cshtml";
+    var ePageParameter = ViewBag.ePageParameter == null ? new E_PageParameter() : (E_PageParameter)ViewBag.ePageParameter;
 }
 
-<!DOCTYPE html>
+<link href="/skins/admin/vendor/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/skins/admin/vendor/datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="/skins/artDialog/dist/dialog.js"></script>
+<script src="/skins/artDialog/dist/dialog-plus.js"></script>
 
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>实验报告列表</title>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/default/easyui.css")'/>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/icon.css")'/>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/uploader/uploadify.css")' />
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")'  />
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")'  />
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Content/XINDECSS/MainStyle.css")'/>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/jquery.easyui.min.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/locale/easyui-lang-zh_CN.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/uploader/jquery.uploadify.min.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/uploader/swfobject.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/MicrosoftAjax.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/MicrosoftMvcAjax.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/Validform/Validform_v5.3.2_min.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/My97DatePicker/WdatePicker.js")'></script>
-    <script type="text/javascript" src='@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")'></script>
-    <style type="text/css">
-    </style>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var SearchUrl="/TestReport/GetList?pageNumber=1&pageSize=15&ReportID="+@Model.ReportID;
-            $('#dgtable').datagrid({
-                url: SearchUrl,
-                pagination: true, //分页控件  
-                singleSelect: true, //是否单选
-                rownumbers: true,
-                columns: [[
-//                    { field: 'ReportID', title: '序号', align: 'center' },
-//                    { field: 'ReportNo', title: '报告编号', align: 'center' },
-//                    { field: 'productNum', title: '批次', align: 'center' },
-                    { field: 'SampleNum', title: '样品编号', align: 'center' },
-                    { field: 'SampleName', title: '样品名称', align: 'left' },
-                    { field: 'ProductionTime', title: '生产日期', align: 'center',
-                        formatter: function (value, row, index) {
-                            if (value == undefined || value.length < 9) {
-                                return "";
-                            }
-                            value = value.substr(0, value.length - 8);
-                            return value;
-                        } },
-                    { field: 'Department', title: '送/抽检单位', align: 'center' },
-                    { field: 'SamplingTime', title: '抽样日期', align: 'center',
-                        formatter: function (value, row, index) {
-                            if (value == undefined || value.length < 9) {
-                                return "";
-                            }
-                            value = value.substr(0, value.length - 8);
-                            return value;
-                        } },
-//                    { field: 'TestingCompany', title: '检测单位', align: 'center' },
-                    { field: 'TestTypeName', title: '检验类别', align: 'center' },
-                    { field: 'RecordIDS', title: '原始记录单号', align: 'center' },
-                    { field: 'TaskNoS', title: '任务单号', align: 'center' },
-                    { field: 'IssuedTime', title: '签发日期', align: 'center',
-                        formatter: function (value, row, index) {
-                            if (value == undefined || value.length < 9) {
-                                return "";
-                            }
-                            value = value.substr(0, value.length - 8);
-                            return value;
-                        } },
-                    { field: 'Conclusion', title: '结论', align: 'center' },
-                    { field: 'MainTestPersonnelName', title: '主检人', align: 'center' },
-                    { field: 'examinePersonnelName', title: '审批人', align: 'center' },
-                    { field: 'ApprovalPersonnelName', title: '批准人', align: 'center' },
-                    //{ field: 'UpdateTime', title: '编辑日期', align: 'center' },
-                    {
-                        field: 'Edit', title: '检验报告', align: 'center',
-                        formatter: function (value, row, index) {
-                            return "@if (Convert.ToBoolean(ViewData["f6fd17f1"]))
-                                    {<a href='javascript:void(0)' onclick='Edit(" + row.ReportID + ")' ><img width='18px' height='18' alt='修改' src='/Content/Images/xiugai.png' /></a>}";
-                        }
-                    },
-                    //{ field: 'View', title: '预览', align: 'center' },
-                    { 
-                        field: 'Down', title: '下载', align: 'center',width:70,
-                        formatter: function (value, row, index) {
-                            return "<a href=\"/TestReport/DownById?id="+row.ReportID+"\"  target=\"_blank\" >下载</a>";
-                        }
-                    },
-                    {
-                        field: 'Delete', title: '删除', align: 'center',width:70,
-                        formatter: function (value, row, index) {
-                            var linkstr="";
-                            if(row.ApprovalPersonnelName == "")
-                            {
-                                linkstr = "@if (Convert.ToBoolean(ViewData["b988fb96"]))
-                                           {<a href=\"javascript:void(0)\" onclick=\"Delete(" + row.ReportID + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"/Content/Images/shanchu.png\" /></a>}";
-                            }
-                            else
-                            {
-                                linkstr = "@if (Convert.ToBoolean(ViewData["b988fb96"])&&ViewBag._userName.Equals("guhaining"))
-                                           {<a href=\"javascript:void(0)\" onclick=\"Delete(" + row.ReportID + ")\" ><img width='18px' height='18' alt=\"删除\" src=\"/Content/Images/shanchu.png\" /></a>}";
-                            }
-                            return linkstr;
-                        }
-                    }
-                    
-                ]],
-                onLoadSuccess: function (data) {
-                    if (!data.rows) {
-                        var body = $(this).data().datagrid.dc.body2;
-                        body.find('table tbody').append('<tr><td width="' + body.width() + '" style="height: 25px; text-align: center;">没有数据</td></tr>');
-                    }
-                },
-                rowStyler:function(index,row){   
-                   
-                    //if(!row.ApprovalPersonnelName){
-                      
-                    //        return 'background-color:red;';   
-                      
-                    //}
-                    if(!row.examinePersonnelName){
+<style type="text/css">
+    .displaybtn {
+        text-align: center;
+        color: #5cb85c;
+    }
 
-                        if (GetDateDiff(row.TestTime)>14){   
-                            return 'background-color:yellow;';   
-                        }  
-                    }
-                }   
-               
-            });
-            var p = $('#dgtable').datagrid('getPager');
-            $(p).pagination({
-                pageSize: 15, //每页显示的记录条数，默认为10  
-                pageList: [15, 20, 50], //可以设置每页记录条数的列表  
-                onSelectPage: function (pageNumber, pageSize) {
-                    var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
-                    tablequeryParams.pageNumber = pageNumber;
-                    tablequeryParams.pageSize = pageSize;
-                    $('#dgtable').datagrid('options').queryParams = tablequeryParams;
-                    $("#dgtable").datagrid("reload");
-                }
-            });
+    .displaycol {
+        display: none;
+    }
+</style>
 
-            $('#dlg_office').dialog('close');
+
+
+<!-- /.row -->
+<div class="ng-scope">
+    <div class="row ng-scope">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <!--标题-->
+            <h1 class="page-header">实验报告列表</h1>
+
+            <!--操作-->
+            <div class="form" style="padding-bottom:10px;">
+                <form action="/TestReport/TestReportList" method="get">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">单位名称</span>
+                                <select class="form-control" id="dropAreaID" name="areaid">
+                                    <option value="">请选择</option>
+                                    @{
+                                        var arealist = ViewBag.arealist as List<E_tb_Area>;
+                                        foreach (E_tb_Area item in arealist)
+                                        {
+                                            <option value="@item.AreaID" @(ePageParameter.areaid == item.AreaID ? "selected" : "")>@item.AreaName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">签发日期</span>
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='starttime' name="issuedtimestart" value="@(ePageParameter.issuedtimestart!=null?Convert.ToDateTime(ePageParameter.issuedtimestart).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                                至
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='endtime' name="issuedtimeend" value="@(ePageParameter.issuedtimeend!=null?Convert.ToDateTime(ePageParameter.issuedtimeend).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">抽样日期</span>
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='starttime' name="samplingtime" value="@(ePageParameter.samplingtimestart!=null?Convert.ToDateTime(ePageParameter.samplingtimestart).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                                至
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='endtime' name="samplingtimeend" value="@(ePageParameter.samplingtimeend!=null?Convert.ToDateTime(ePageParameter.samplingtimeend).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">样品编号</span>
+                                <input type="text" class="form-control" id="txtSampleName" name="samplenum" value="@ePageParameter.samplenum" style="width:100px;" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">样品名称</span>
+                                <input type="text" class="form-control" id="txtSampleName" name="samplename" value="@ePageParameter.samplename" style="width:100px;" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">抽送检单位</span>
+                                <input type="text" class="form-control" id="txtdetectionUser" name="department" value="@ePageParameter.department" style="width:100px;" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">主检人</span>
+                                <input type="text" class="form-control" id="txtdetectionUser" name="maintestpersonne" value="@ePageParameter.maintestpersonne" style="width:100px;" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <!--用于后台区分是否需要查询-->
+                            <input type="hidden" name="issearch" value="1" />
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
+                        </div>
+
+                        <div class="form-group pull-right">
+                            <a class="btn btn-info" href="/TestReport/ExpAllPDF" target="_blank"><i class="fa fa-cloud-download"></i> 批量下载 </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!--内容-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    实验报告列表
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table id="tab_1" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:30px;"><input type="checkbox" id="selectall" onclick="selectall()" /></th>
+                                <th style="width:45px;">序号</th>
+                                <th style="width:75px;">样品编号</th>
+                                <th>样品名称</th>
+                                <th style="width:75px;">生产日期</th>
+                                <th style="width:100px;">送/抽检单位</th>
+                                <th style="width:85px;">抽样日期</th>
+                                <th style="width:75px;">检验类别</th>
+                                <th style="width:100px;">原始记录单号</th>
+                                <th style="width:65px;">任务单号</th>
+                                <th style="width:75px;">签发日期</th>
+                                <th style="width:75px;" class="">主检人</th>
+                                <th style="width:75px;" class="">审批人</th>
+                                <th style="width:75px;" class="">主检人</th>
+
+                                <th style="width:75px;" class="displaycol">结论</th>
+                                <th style="width:75px;" class="displaybtn">显示更多</th>
+                                <th style="width:160px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var TestReportList = ViewBag.TestReportList as DataTable;
+                                foreach (DataRow item in TestReportList.Rows)
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" value="@item["ReportID"].ToString()" class="ckSample" /></td>
+                                        <td>@item["Row"].ToString()</td>
+                                        <td>@item["SampleNum"].ToString()</td>
+                                        <td title="@item["SampleName"].ToString()">@item["SampleName"].ToString()</td>
+                                        <td>@(!Convert.IsDBNull(item["ProductionTime"]) ? Convert.ToDateTime(item["ProductionTime"]).ToShortDateString() : "")</td>
+                                        <td>@item["Department"].ToString()</td>
+                                        <td>@(!Convert.IsDBNull(item["SamplingTime"]) ? Convert.ToDateTime(item["SamplingTime"]).ToShortDateString() : "")</td>
+                                        <td>@item["TestTypeName"].ToString()</td>
+                                        <td>@Html.Raw(item["RecordIDS"].ToString())</td>
+                                        <td>@Html.Raw(item["TaskNoS"].ToString())</td>
+                                        <td>@(!Convert.IsDBNull(item["IssuedTime"]) ? Convert.ToDateTime(item["IssuedTime"]).ToShortDateString() : "") </td>
+                                        <td class="">@item["MainTestPersonnelName"].ToString()</td>
+                                        <td class="">@item["examinePersonnelName"].ToString()</td>
+                                        <td class="">@item["ApprovalPersonnelName"].ToString()</td>
+                                        <td class="displaycol">@item["Conclusion"].ToString()</td>
+                                        <td class="displaybtn">。。。</td>
+                                        <td>
+                                            @{
+                                                if ((bool)ViewData["f6fd17f1"])
+                                                {
+
+                                                }
+
+                                            }
+                                            <a href="javascript:void(0)" class="btn btn-info btn-xs" onclick="Edit(@item["ReportID"].ToString())">检验报告</a>
+                                            <a href="/TestReport/DownById?id=@item["ReportID"].ToString()" target="_blank" class="btn btn-info btn-xs">下载</a>
+                                            <a href="javascript:void(0)" class="btn btn-danger btn-xs" onclick="Delete(@item["ReportID"].ToString())">删除</a>
+                                            @{
+                                                if (!(bool)ViewData["b988fb96"])
+                                                {
+
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                                }
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div style="text-align: center">
+                            @Html.Raw(ViewBag.page)
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.panel - body-->
+            </div>
+            <!-- /.col - lg - 12-->
+        </div>
+    </div>
+</div>
+
+
+<!--编辑-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        //初始化时间选择控件
+        $(".inputtime").datetimepicker({
+            minView: "month",//设置只显示到月份
+            format: "yyyy-mm-dd",//日期格式
+            autoclose: true,//选中关闭
+            todayBtn: true,//今日按钮
+            language: 'cn'
         });
 
-                //删除
-                function Delete(InfoID) {
-                    if (confirm("确定要删除数据吗？")) {
-                        $.getJSON("/TestReport/Delete/" + InfoID,
-                        function (data) {
-                            alert(data);
-                            if (data == "删除成功！") {
-                                $('#dgtable').datagrid('reload');
-                            }
-                        });
-                    }
-                }
-
-                //导出PDF
-                function ExpPDF(InfoID)
-                {
-                    $.getJSON("/TestReport/ExpPDF/" + InfoID,
-                        function (data) {
-                            window.open(data);
-                        });
-                }
-
-                //查询
-                function click_Search() {
-                    var AreaID=$("#AreaID").val();
-                    var StartTime=$("#txt_StartTime").val();
-                    var EndTime=$("#txt_EndTime").val();
-                    var SampleNum=$("#txt_SampleNum").val();
-                    var SampleName=$("#txt_SampleName").val();
-                    var Department=$("#txt_Department").val();
-                    var MainTestPersonne=$("#txt_MainTestPersonne").val();
-                    var txt_SamplingTimes=$("#txt_SamplingTimes").val();
-                    var txt_SamplingTimee=$("#txt_SamplingTimee").val();
-                    $('#dgtable').datagrid('options').url = "/TestReport/GetList?pageNumber=1&pageSize=20&AreaID=" + AreaID+"&StartTime="+StartTime+"&EndTime="+EndTime+"&SampleNum="+SampleNum+"&SampleName="+SampleName+"&Department="+Department+"&MainTestPersonne="+MainTestPersonne+"&SamplingTimes="+txt_SamplingTimes+"&SamplingTimee="+txt_SamplingTimee;
-                    $("#dgtable").datagrid("reload");
-                }
-
-                //文档预览
-                function click_ViewOffice(_itemId) {
-                    var url = '@Url.Action("GetFileURLForView", "TestReport")' + "?wid=" + _itemId;
-                    $.getJSON(url, getjsonsucceed);
-                }
-                function getjsonsucceed(data) {
-                    $('#dlg_office').dialog('open');
-                    window.frames["officefrm"].location = '@Url.Action("vpoffice", "Documents")' + "?filename=" + data;
-        }
-        function GetDateDiff(endDate)  
-        {  
-            var startTime = new Date().getTime();     
-            var endTime = new Date(Date.parse(endDate.replace(/-/g,   "/"))).getTime();     
-            var dates = Math.abs((startTime - endTime))/(1000*60*60*24);     
-            return  dates;    
-        }
-
-    </script>
-
-    <!--编辑-->
-    <script type="text/javascript">
-        //添加
-        function Add() {
-            $('#EditForms').window({ href: '/TestReport/TestReportEdit?EditType=Add' });
-            $('#EditForms').window('refresh');
-            $('#EditForms').window('open');
-        }
-
-        //弹出编辑页
-        function Edit(InfoID) {
-            $('#EditForms').window({ href: '/TestReport/TestReportEdit?EditType=Edit&InfoID=' + InfoID });
-            $('#EditForms').window('refresh');
-            $('#EditForms').window('open');
-        }
-
-        //关闭弹出层
-        function Close() {
-            $('#EditForms').window('close');
-        }
-
-        //保存提示
-        function handle(e) {
-            if (e.$2._xmlHttpRequest.response == "1") {
-                alert("保存成功！");
-                $('#EditForms').window('close');
-                $('#dgtable').datagrid('reload');
-            } else {
-                alert(e);
-                alert("保存失败！");
+        //隐藏多余列
+        $(".displaycol").hide();
+        $(".displaybtn").click(function () {
+            if ($(this).text().toString() == "显示更多") {
+                $(".displaycol").show();
+                $(this).text("隐藏列");
             }
+            else if ($(this).text() == "隐藏列") {
+                $(".displaycol").hide();
+                $(this).text("显示更多");
+            }
+        });
+
+    });
+
+    //添加
+    function Add() {
+
+        var d = dialog({
+            title: '检验报告',
+            url: '/TestReport/TestReportEdit?EditType=Add',
+            id: 'id-info',
+        });
+        d.showModal();
+    }
+
+    //编辑
+    function Edit(InfoID) {
+
+        var d = dialog({
+            title: '检验报告',
+            url: '/TestReport/TestReportEdit?EditType=Edit&InfoID=' + InfoID,
+            id: 'id-info',
+        });
+        d.showModal();
+    }
+
+    //删除
+    function Delete(InfoID) {
+        if (confirm("确定要删除数据吗？")) {
+            $.getJSON("/TestReport/Delete/" + InfoID,
+            function (data) {
+                if (data == "删除成功！") {
+                    window.location.reload();
+                }
+            });
         }
-        function failed(e) {
-            alert("保存失败！");
+    }
+
+    //全选
+    function selectall() {
+        //alert($("#selectall").is(":checked"));
+        if ($("#selectall").is(":checked")) {
+            $("input.ckSample").prop("checked", true);
         }
-    </script>
-
-
-</head>
-<body>
-    <!--标题-->
-    <table cellpadding="0" cellspacing="0" width="100%" class="HeadTitle">
-        <tr>
-            <td>当前位置：实验室管理<img style="text-align:center;vertical-align:middle;height:10px" src='@Url.Content("~/Content/Images/位置.png")' />实验报告列表 </td>
-        </tr>
-    </table>
-
-    <!--数据列表-->
-    <div class="divList">
-        <table cellpadding="0" cellspacing="0" width="100%" class="WhereTable">
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td align="right" style="width: 70px;">单位名称：</td>
-                            <td width="100px" align="left">@Html.DropDownListFor(m => m.AreaID, ViewData["AreaList"] as SelectList)</td>
-                            <td align="right" style="width: 70px;">签发日期：</td>
-                            <td align="left" style="width: 80px;">
-                                <input type="text" id="txt_StartTime" value="" onclick="WdatePicker()" style="width: 80px;" /></td>
-                            <td align="center" style="width: 30px;">至</td>
-                            <td align="left" style="width: 80px;">
-                                <input type="text" id="txt_EndTime" value="" onclick="WdatePicker()" style="width: 80px;" /></td>
-                            <td align="center" style="width: 70px;">抽样日期</td>
-                            <td align="left" style="width: 80px;">
-                                <input type="text" id="txt_SamplingTimes" value="" onclick="WdatePicker()" style="width: 80px;" /></td>
-                            <td align="center" style="width: 30px;">至</td>
-                            <td align="left" style="width: 80px;">
-                                <input type="text" id="txt_SamplingTimee" value="" onclick="WdatePicker()" style="width: 80px;" /></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <table>
-                        <tr>
-                            <td align="right" style="width: 70px;">样品编号：</td>
-                            <td align="left" style="width: 85px;">
-                                <input style="border: 1px solid #3496d6; width: 80px;" type="text" id="txt_SampleNum" /></td>
-                            <td align="right" style="width: 70px;">样品名称：</td>
-                            <td align="left" style="width: 85px;">
-                                <input style="border: 1px solid #3496d6; width: 80px;" type="text" id="txt_SampleName" /></td>
-                            <td align="right" style="width: 80px;">抽送检单位：</td>
-                            <td align="left" style="width: 85px;">
-                                <input style="border: 1px solid #3496d6; width: 80px;" type="text" id="txt_Department" /></td>
-                             <td align="right" style="width: 80px;">主检人：</td>
-                            <td align="left" style="width: 85px;">
-                                <input style="border: 1px solid #3496d6; width: 80px;" type="text" id="txt_MainTestPersonne" /></td>
-                            <td width="60px"><a href="javascript:void(0)" onclick="click_Search()">
-                                <img height="20px" src="/Content/Images/chaxun.png" /></a></td>
-                            <td width="67px">
-                                <a href="@Url.Action("ExpAllPDF","TestReport")" target="_blank">批量下载</a>
-                            </td>
-                            <td align="right">&nbsp;&nbsp;</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <table cellpadding="0" cellspacing="0" class="biaoge easyui-datagrid" id="dgtable" width="100%">
-        </table>
-    </div>
-
-    <!--编辑页-->
-    <div id="EditForms" class="easyui-window" title="报告信息" style="width: 840px; height: 500px;top:20px" data-options="iconCls:'icon-save',modal:true,closed:true,minimizable:false">
-    </div>
-
-    <!--阅览OFFICE-->
-    <div id="dlg_office" class="easyui-dialog" title="文档预览" data-options="iconCls:'icon-save'" style="width: 780px; top:20px;height: 420px; padding: 0px; position: absolute; z-index: 999; left: 5px;">
-        <iframe style="overflow: hidden; border: 0; height: 768px; width: 100%;" name="officefrm" src='@Url.Action("vpoffice", "Documents")'></iframe>
-    </div>
-    <!--End 阅览OFFICE-->
-</body>
+        else {
+            $("input.ckSample").prop("checked", false);
+        }
+    }
+</script>

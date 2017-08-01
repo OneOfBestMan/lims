@@ -7,11 +7,33 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>检验报告信息</title>
-    @*<script src="../../Scripts/jquery-1.8.2.js" type="text/javascript"></script>*@
+    <link href="~/Content/XINDECSS/MainStyle.css" rel="stylesheet" />
+    <script src="/Scripts/jquery-1.8.2.js" type="text/javascript"></script>
+    <style type="text/css">
+        .OriginalRecordSelect{width:98%;padding-top:10px;margin:0 auto}
+        .OriginalRecordSelect h2{width:100%;height:25px;line-height:25px;text-align:center;font-size:12px;font-weight:700}
+        .MainTable{width:99.9%;margin:0 auto;background-color:#95B8E7}
+        .MainTable thead th{background-color:#e7f4fd;height:25px;line-height:25px}
+        .MainTable tbody td{background-color:#fff;height:24px;line-height:24px}
+        .Cover{width:100%}
+        .Cover ul{padding-top:10px;width:100%;padding-bottom:160px}
+        .Cover li{width:100%;text-align:center;font-size:16px;font-weight:700;padding-top:10px;font-family:微软雅黑}
+        .Cover table{margin:0 auto;width:400px}
+        .Cover table td{height:30px;line-height:30px;font-size:14px}
+        .Explain{width:98%;padding-top:10px}
+        .TestReport{width:100%;padding-top:10px}
+        .TestReport h2{width:100%;height:30px;line-height:30px;font-size:16px;font-weight:700;text-align:center;padding-bottom:10px}
+        .TestReport table{margin:0 auto;width:780px}
+        .TestReport table td{height:25px;line-height:25px}
+    </style>
 </head>
 <body>
-    @using (Ajax.BeginForm("Save", "TestReport", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "frmUpdate" }))
- {
+
+    @*@using (Ajax.BeginForm("Save", "TestReport", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "frmUpdate" }))
+    {
+    }*@
+
+    <div id="formdata">
         @Html.HiddenFor(m => m.ReportID, new { @id = "HidReportID" })
         @Html.HiddenFor(m => m.EditType, new { @id = "HidEditType" })
         @Html.HiddenFor(m => m.RecordIDS, new { @id = "HidRecordIDS" })
@@ -19,107 +41,13 @@
         @Html.HiddenFor(m => m.ReportNo, new { @id = "HidReportNo" })
         @Html.HiddenFor(m => m.productNum, new { @id = "HidproductNum" })
         @Html.HiddenFor(m => m.SampleNum, new { @id = "HidSampleNum" })
-     
         @Html.HiddenFor(m => m.ApprovalPersonnelID, new { @id = "HidApprovalPersonnelID" })
         @Html.HiddenFor(m => m.examinePersonnelID, new { @id = "HidexaminePersonnelID" })
         @Html.HiddenFor(m => m.MainTestPersonnelID, new { @id = "HidMainTestPersonnelID" })
         @Html.HiddenFor(m => m.TestReportDataJson, new { @id = "HidTestReportDataJson" })
-        <style type="text/css">
-            .OriginalRecordSelect {
-                width: 98%;
-                padding-top: 10px;
-                margin: 0px auto;
-            }
+        
 
-                .OriginalRecordSelect h2 {
-                    width: 100%;
-                    height: 25px;
-                    line-height: 25px;
-                    text-align: center;
-                    font-size: 12px;
-                    font-weight: bold;
-                }
-
-            .MainTable {
-                width: 99.9%;
-                margin: 0px auto;
-                background-color: #95B8E7;
-            }
-
-                .MainTable thead th {
-                    background-color: #e7f4fd;
-                    height: 25px;
-                    line-height: 25px;
-                }
-
-                .MainTable tbody td {
-                    background-color: #fff;
-                    height: 24px;
-                    line-height: 24px;
-                }
-
-            .Cover {
-                width: 100%;
-            }
-
-                .Cover ul {
-                    padding-top: 10px;
-                    width: 100%;
-                    padding-bottom: 160px;
-                }
-
-                .Cover li {
-                    width: 100%;
-                    text-align: center;
-                    font-size: 16px;
-                    font-weight: bold;
-                    padding-top: 10px;
-                    font-family: 微软雅黑;
-                }
-
-                .Cover table {
-                    margin: 0px auto;
-                    width: 400px;
-                }
-
-                    .Cover table td {
-                        height: 30px;
-                        line-height: 30px;
-                        font-size: 14px;
-                    }
-
-            .Explain {
-                width: 98%;
-                padding-top: 10px;
-            }
-
-            .TestReport {
-                width: 100%;
-                padding-top: 10px;
-            }
-
-                .TestReport h2 {
-                    with: 100%;
-                    height: 30px;
-                    line-height: 30px;
-                    font-size: 16px;
-                    font-weight: bold;
-                    text-align: center;
-                    padding-bottom: 10px;
-                }
-
-                .TestReport table {
-                    margin: 0px auto;
-                    width: 780px;
-                }
-
-                    .TestReport table td {
-                        height: 25px;
-                        line-height: 25px;
-                    }
-        </style>
-    
-        <div id="tt" class="easyui-tabs" style="width: 800px; height: 510px; overflow: auto; padding-top: 10px;">
+        <div id="tt" class="easyui-tabs" style="width: 800px; height: 600px; overflow: auto; padding-top: 10px;">
             <div title="封面" style="overflow: auto; background-color: transparent;">
                 <div class="Cover">
                     <ul>
@@ -174,7 +102,7 @@
                         </tr>
                         <tr>
                             @*<td align="right">保质期：</td>
-                        <td align="left">@Html.TextBoxFor(m => m.ShelfLife, new { @style = "width:99%;", @id = "txt_ShelfLife" })</td>*@
+                                <td align="left">@Html.TextBoxFor(m => m.ShelfLife, new { @style = "width:99%;", @id = "txt_ShelfLife" })</td>*@
                             <td align="right">产品批号：</td>
                             <td align="left">@Html.TextBoxFor(m => m.productNum, new { @style = "width:99%;", @id = "txt_productNum", @disabled = "disabled" })</td>
                             <td align="right">检验类别：</td>
@@ -211,10 +139,10 @@
                             <td align="left">@Html.TextBoxFor(m => m.TestTime, new { @style = "width:99%;", @id = "txt_TestTime", @onclick = "WdatePicker()" })</td>
                         </tr>
                         @*<tr>
-                        <td align="right">批准日期：</td>
-                        <td align="left">@Html.TextBoxFor(m => m.IssuedTime, new { @style = "width:99%;", @id = "txt_IssuedTime", @onclick = "WdatePicker()" })</td>
-                        <td colspan="2"></td>
-                    </tr>*@
+                                <td align="right">批准日期：</td>
+                                <td align="left">@Html.TextBoxFor(m => m.IssuedTime, new { @style = "width:99%;", @id = "txt_IssuedTime", @onclick = "WdatePicker()" })</td>
+                                <td colspan="2"></td>
+                            </tr>*@
 
                         <tr>
                             <td align="right">检验依据：</td>
@@ -236,15 +164,18 @@
                                         <td align="left">@Html.TextBoxFor(m => m.IssuedTime, new { @style = "width:100px;",@onclick = "WdatePicker()"})</td>
                                         <td align="left">@Html.TextBoxFor(m => m.ApprovalPersonnelName, new { @style = "width:100px;", @id = "txt_ApprovalPersonnelName", @disabled = "disabled" })</td>
                                         <td align="left" style="width: 60px;">
-                                            <input type="button" value="批准" onclick="Approval('@ViewBag.DetectPersonnelID    ','@ViewBag.DetectPersonnelName    ')"/></td>
-                                        <td align="right" style="width: 60px;">审核：</td>
+                                            <input type="button" value="批准" onclick="Approval('@ViewBag.DetectPersonnelID    ','@ViewBag.DetectPersonnelName    ')" />
+                                        </td>
+                                        <td align="right" style="width: 80px;">审核：</td>
                                         <td align="left">@Html.TextBoxFor(m => m.examinePersonnelName, new { @style = "width:100px;", @id = "txt_examinePersonnelName", @disabled = "disabled" })</td>
                                         <td align="left" style="width: 60px;">
-                                            <input type="button" value="审核" onclick="Examine('@ViewBag.DetectPersonnelID    ','@ViewBag.DetectPersonnelName    ')"/></td>
-                                        <td align="right" style="width: 60px;">主检：</td>
+                                            <input type="button" value="审核" onclick="Examine('@ViewBag.DetectPersonnelID    ','@ViewBag.DetectPersonnelName    ')" />
+                                        </td>
+                                        <td align="right" style="width: 80px;">主检：</td>
                                         <td align="left">@Html.TextBoxFor(m => m.MainTestPersonnelName, new { @style = "width:100px;", @id = "txt_MainTestPersonnelName", @disabled = "disabled" })</td>
                                         <td align="left" style="width: 60px;">
-                                            <input type="button" value="主检" onclick="MainTest('@ViewBag.DetectPersonnelID    ','@ViewBag.DetectPersonnelName    ')"/></td>
+                                            <input type="button" value="主检" onclick="MainTest('@ViewBag.DetectPersonnelID    ','@ViewBag.DetectPersonnelName    ')" />
+                                        </td>
                                         <td>&nbsp;&nbsp;</td>
                                     </tr>
                                 </table>
@@ -254,7 +185,7 @@
                 </div>
             </div>
             <div title="检验数据" data-options="closable:false" style="overflow: auto; background-color: transparent;">
-                <input type="button" id="btn_App" style="float:right;margin-right:30px" value="批量合格" onclick="mul_click()"/>
+                <input type="button" id="btn_App" style="float:right;margin-right:30px" value="批量合格" onclick="mul_click()" />
                 <input type="hidden" id="HidTestPersonnelName" value="@ViewBag.DetectPersonnelName" />
                 <table border="0" cellpadding="0" cellspacing="1" class="MainTable" style="width: 95%; margin-top: 20px;">
                     <thead>
@@ -281,26 +212,26 @@
             {
                 continue;
             }
-            TempRow["TestStandard"] = originalrecodr.InsStand;                           
-            <tr id="ReportData_@TempRow["ReportDataID"].ToString()" RecordID="@TempRow["RecordID"].ToString()" RecordFilePath="@TempRow["RecordFilePath"].ToString()">
-                                <td align="center">@TempRow["TestName"].ToString()</td>
-                                <td align="center">@TempRow["TestStandard"].ToString()</td>
-                                <td align="center">@TempRow["TestResult"].ToString()</td>
-                                <td align="center">@TempRow["QualifiedLevel"].ToString()</td>
-                                <td align="center">@TempRow["TestPersonnelName"].ToString()</td>
-                                <td align="center">
-                                    <input type="button" value="合格" onclick="Qualified('@TempRow["ReportDataID"].ToString()    ')"/>&nbsp;&nbsp;
-                            <input type="button" value="不合格" onclick="UnQualified('@TempRow["ReportDataID"].ToString()    ')"/>&nbsp;&nbsp;
-                            @*<input type="button" value="检查" onclick="Check('@TempRow["ReportDataID"].ToString()')"/>*@
-                                </td>
-                            </tr>
+            TempRow["TestStandard"] = originalrecodr.InsStand;
+                        <tr id="ReportData_@TempRow["ReportDataID"].ToString()" RecordID="@TempRow["RecordID"].ToString()" RecordFilePath="@TempRow["RecordFilePath"].ToString()">
+                            <td align="center">@TempRow["TestName"].ToString()</td>
+                            <td align="center">@TempRow["TestStandard"].ToString()</td>
+                            <td align="center">@TempRow["TestResult"].ToString()</td>
+                            <td align="center">@TempRow["QualifiedLevel"].ToString()</td>
+                            <td align="center">@TempRow["TestPersonnelName"].ToString()</td>
+                            <td align="center">
+                                <input type="button" value="合格" onclick="Qualified('@TempRow["ReportDataID"].ToString()    ')" />&nbsp;&nbsp;
+                                <input type="button" value="不合格" onclick="UnQualified('@TempRow["ReportDataID"].ToString()    ')" />&nbsp;&nbsp;
+                                @*<input type="button" value="检查" onclick="Check('@TempRow["ReportDataID"].ToString()')"/>*@
+                            </td>
+                        </tr>
          }
      }
                         }
 
                     </tbody>
                 </table>
-                
+
             </div>
         </div>
         <table border="0" cellpadding="0" cellspacing="0" width="95%" class="DialogTable">
@@ -310,50 +241,18 @@
                         string _userName=ViewBag._userName;
                         if (Model.ApprovalPersonnelID == null || Model.ApprovalPersonnelID <= 0 || _userName.Equals("guhaining"))
                         {
-                            <a href="javascript:void(0)" onclick="FromSubmit()">
-                        <img src="~/Content/Images/baocun.png" height="20px" /></a>
+                    <a href="javascript:void(0)" onclick="FromSubmit()">
+                        <img src="~/Content/Images/baocun.png" height="20px" />
+                    </a>
                         }
-                    }              
-                    @*<a href="javascript:void(0)" onclick="FromSubmit()">
-                        <img src="~/Content/Images/baocun.png" height="20px" /></a> *@  
-                    <a href="javascript:void(0)" onclick="Close()">
-                        <img src="~/Content/Images/quxiao.png" height="20px" /></a>
+                    }
+
                 </td>
             </tr>
         </table>
-     
-@*        <!--原始记录选择-->
-        <script type="text/javascript">
-        //添加
-            function AddRecord() {
-            $("#RecordList input:checked").each(function () {
-                $("#RecordSelect").append("<tr>" + $(this).parents("tr").html() + "</tr>");
-                $(this).parent().parent().remove();
-            });
-            SetRecordIDS();
-        }
+    </div>
 
-        //删除
-        function DelRecord() {
-            $("#RecordSelect input:checked").each(function () {
-                $("#RecordList").append("<tr>" + $(this).parents("tr").html() + "</tr>");
-                $(this).parent().parent().remove();
-            });
-            SetRecordIDS();
-        }
 
-        //设置所选的任务单号ID
-        function SetRecordIDS() {
-            var strRecordIDS = "";
-            var strTaskNoS = "";
-            $("#RecordSelect input").each(function () {
-                strRecordIDS += $(this).val() + ",";
-                strTaskNoS += $(this).attr("TaskNo") + ",";
-            });
-            $("#HidRecordIDS").val(strRecordIDS);
-            $("#HidTaskNoS").val(strTaskNoS);
-        }
-    </script>*@
         <!--检验人-->
         <script type="text/javascript">
             //批准
@@ -467,9 +366,26 @@
         <script type="text/javascript">
             function FromSubmit() {
                 GetReportData();
-                $('#frmUpdate').submit();
+
+                var data = "p=1";
+                $("#formdata input").each(function () {
+                    data += "&" + $(this).attr("name") + "=" + $(this).val();
+                });
+                $("#formdata select").each(function () {
+                    data += "&" + $(this).attr("name") + "=" + $(this).val();
+                });
+
+                $.post("/TestReport/Save", data, function (data) {
+                    if (data == "True") {
+                        top.window.location.reload();
+                    } else {
+                        alert("保存失败！");
+                    }
+                });
+
+               //$('#frmUpdate').submit();
             }
           
         </script>
- }
+
 </body>
