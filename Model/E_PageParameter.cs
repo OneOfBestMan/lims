@@ -60,6 +60,45 @@ namespace Model
         /// 样品ID集合
         /// </summary>
         public string sampleids { get; set; }
-        
+
+        /// <summary>
+        /// 签发开始时间
+        /// </summary>
+        public DateTime? issuedtimestart { get; set; }
+
+        /// <summary>
+        /// 签发结束时间
+        /// </summary>
+        public DateTime? issuedtimeend { get; set; }
+
+        /// <summary>
+        /// 抽样开始日期
+        /// </summary>
+        public DateTime? samplingtimestart { get; set; }
+
+        /// <summary>
+        /// 抽样结束日期
+        /// </summary>
+        public DateTime? samplingtimeend { get; set; }
+
+        /// <summary>
+        /// 样品编号
+        /// </summary>
+        public string samplenum { get; set; }
+
+        /// <summary>
+        /// 抽送检单位
+        /// </summary>
+        public string department { get; set; }
+
+        /// <summary>
+        /// 主检人
+        /// </summary>
+        public string maintestpersonne { get; set; }
+
+        /// <summary>
+        /// 数据行数
+        /// </summary>
+        public int count { get; set; }
     }
 }
