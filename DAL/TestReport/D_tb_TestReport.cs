@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using Model.TestReport;
+using Dapper;
 
 namespace DAL.TestReport
 {
@@ -486,34 +487,10 @@ namespace DAL.TestReport
             return DbHelperSQL.Query(strSql.ToString());
         }
 
-        /*
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        public DataSet GetList(int PageSize,int PageIndex,string strWhere)
-        {
-            SqlParameter[] parameters = {
-                    new SqlParameter("@tblName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@fldName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@PageSize", SqlDbType.Int),
-                    new SqlParameter("@PageIndex", SqlDbType.Int),
-                    new SqlParameter("@IsReCount", SqlDbType.Bit),
-                    new SqlParameter("@OrderType", SqlDbType.Bit),
-                    new SqlParameter("@strWhere", SqlDbType.VarChar,1000),
-                    };
-            parameters[0].Value = "tb_TestReport";
-            parameters[1].Value = "ReportID";
-            parameters[2].Value = PageSize;
-            parameters[3].Value = PageIndex;
-            parameters[4].Value = 0;
-            parameters[5].Value = 0;
-            parameters[6].Value = strWhere;	
-            return DbHelperSQL.RunProcedure("UP_GetRecordByPage",parameters,"ds");
-        }*/
+      
 
         #endregion  Method
-
-        #region 数据接口
+        
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -556,6 +533,24 @@ namespace DAL.TestReport
             strSql.Append("select COUNT(1) from tb_TestReport where AddTime=CAST('" + AddTime + "' as datetime)");
             return Convert.ToInt32(DbHelperSQL.GetSingle(strSql.ToString()));
         }
-        #endregion
+
+        /// <summary>
+        /// 批量审核
+        /// </summary>
+        /// <param name="ids">检验报告id集合</param>
+        /// <param name="examinePersonnelID">审核人</param>
+        /// <returns>返回是否执行成功</returns>
+        public bool Examine (string ids,int examinePersonnelID)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($"update tb_TestReport set examinePersonnelID={examinePersonnelID} where ReportID in ({ids}) and (examinePersonnelID is null or examinePersonnelID=0)");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                int count = conn.Execute(strSql.ToString());
+                return (count > 0);
+            }
+        }
+
     }
 }

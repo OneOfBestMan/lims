@@ -18,6 +18,7 @@ using Model.ExpePlan;
 using System.Text.RegularExpressions;
 using Model;
 using Comp;
+using DAL.TestReport;
 
 namespace Web.Controllers
 {
@@ -30,7 +31,7 @@ namespace Web.Controllers
         T_tb_TestReportData tTestReportData = new T_tb_TestReportData(); //检验数据
         T_tb_TypeDict tTypeDict = new T_tb_TypeDict();//类别字典
         T_tb_ExpePlan tExpePlan = new T_tb_ExpePlan();//实验计划管理
-
+        D_tb_TestReport dTestReport = new D_tb_TestReport();
         //
         // GET: /Laboratory/
 
@@ -44,7 +45,7 @@ namespace Web.Controllers
             ViewBag.TestReportList = this.GetList(ePageParameter);
             ViewBag.ePageParameter = ePageParameter;
             ViewBag.page = Utils.ShowPage(ePageParameter.count, ePageParameter.pagesize, pageIndex, 5);
-            
+
             return View("/views/TestReport/TestReportList.cshtml");
         }
 
@@ -59,15 +60,15 @@ namespace Web.Controllers
             DataTable dt = new DataTable();
             int total = 0;
             string strWhere = "";
-            if (ePageParameter.areaid>0)
+            if (ePageParameter.areaid > 0)
             {
                 strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + ePageParameter.areaid);
             }
-            if (ePageParameter.issuedtimestart!=null)
+            if (ePageParameter.issuedtimestart != null)
             {
                 strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime>=cast('" + ePageParameter.issuedtimestart.ToString() + "' as datetime)");
             }
-            if (ePageParameter.issuedtimeend!=null)
+            if (ePageParameter.issuedtimeend != null)
             {
                 strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime<=cast('" + ePageParameter.issuedtimeend.ToString() + "' as datetime)");
             }
@@ -88,11 +89,11 @@ namespace Web.Controllers
                 strWhere = PageTools.AddWhere(strWhere, "D.PersonnelName like '%" + ePageParameter.maintestpersonne + "%'");
             }
 
-            if (ePageParameter.samplingtimestart!=null)
+            if (ePageParameter.samplingtimestart != null)
             {
                 strWhere = PageTools.AddWhere(strWhere, "SamplingTime>=cast('" + ePageParameter.samplingtimestart.ToString() + "' as datetime)");
             }
-            if (ePageParameter.samplingtimeend!=null)
+            if (ePageParameter.samplingtimeend != null)
             {
                 strWhere = PageTools.AddWhere(strWhere, "SamplingTime<=cast('" + ePageParameter.samplingtimeend.ToString() + "' as datetime)");
             }
@@ -112,7 +113,7 @@ namespace Web.Controllers
             {
                 //dt = tTestReport.GetListByPage(strWhere, "UpdateTime DESC,T.SampleName ASC", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
                 int startindex = ePageParameter.pageindex * ePageParameter.pagesize + 1;
-                int endindex = (ePageParameter.pageindex+1) * ePageParameter.pagesize;
+                int endindex = (ePageParameter.pageindex + 1) * ePageParameter.pagesize;
                 dt = tTestReport.GetListByPage(strWhere, "TestTime DESC", startindex, endindex, ref total).Tables[0];
             }
             catch { }
@@ -183,7 +184,7 @@ namespace Web.Controllers
                 //ViewData["RecordList"] = tOriginalRecord.GetList("RecordID not in (" + eTestReport.RecordIDS + ")").Tables[0];
                 //ViewData["RecordSelect"] = tOriginalRecord.GetList("RecordID in (" + eTestReport.RecordIDS + ")").Tables[0];
                 ViewData["ReportDataList"] = tTestReportData.GetList("ReportID=" + eTestReport.ReportID).Tables[0]; //检验数据
-                
+
                 if (eTestReport.ApprovalPersonnelID != null && eTestReport.ApprovalPersonnelID > 0)
                 {
                     eTestReport.ApprovalPersonnelName = tInPersonnel.GetModel(Convert.ToInt32(eTestReport.ApprovalPersonnelID)).PersonnelName;
@@ -214,14 +215,15 @@ namespace Web.Controllers
                             {
                                 switch (_areaid)
                                 {
-                                    case 2: {
-                                        eTestReport.Explain += @"食品检测中心<br/>
+                                    case 2:
+                                        {
+                                            eTestReport.Explain += @"食品检测中心<br/>
 检验单位地址：天津市塘沽区东沽石油新村配餐采购加工中心院内<br/>
 邮政编码：300452<br/>
 联系电话：022-66917343<br/>
 传真：022-66917343<br/><br/>";
-                                        break;
-                                    }
+                                            break;
+                                        }
                                     case 3:
                                         {
                                             eTestReport.Explain += @"食品检测中心（葫芦岛）<br/>
@@ -400,7 +402,7 @@ namespace Web.Controllers
                 //{
                 //    eTestReport.Conclusion = "不合格";
                 //}
-              
+
                 eTestReport.EditPersonnelID = CurrentUserInfo.PersonnelID;
                 eTestReport.AreaID = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(eTestReport.MainTestPersonnelID.Value).AreaID;
                 //if (CurrentUserInfo.DataRange != 1)
@@ -438,6 +440,15 @@ namespace Web.Controllers
         }
 
         /// <summary>
+        /// 批量审核
+        /// </summary>
+        public JsonResult Examine(string ids)
+        {
+            bool result=dTestReport.Examine(ids, CurrentUserInfo.PersonnelID);
+            return Json(result ? "True" : "审核失败", JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 阅览文件
         /// 作者：章建国
         /// </summary>
@@ -449,7 +460,8 @@ namespace Web.Controllers
             string iFile = "" + model.FilePath;
             return Json(iFile, JsonRequestBehavior.AllowGet);
         }
-        public FilePathResult DownById(int id) {
+        public FilePathResult DownById(int id)
+        {
             ProcessStartInfo Pss = new ProcessStartInfo();
             Pss.FileName = Server.MapPath("/HtmlToPDF/wkhtmltopdf.exe");
             var eTestReport = tTestReport.GetModel(id);
@@ -475,8 +487,8 @@ namespace Web.Controllers
                     PS.Close();
                 }
             }
-            
-            return File(FilePath, "application/octet-stream", eTestReport.SampleNum+eTestReport.SampleName + ".pdf");
+
+            return File(FilePath, "application/octet-stream", eTestReport.SampleNum + eTestReport.SampleName + ".pdf");
         }
 
         public JsonResult ExpPDF(int id)
@@ -493,7 +505,7 @@ namespace Web.Controllers
             Pss.StandardOutputEncoding = Encoding.UTF8;
             Pss.RedirectStandardInput = true;
             Pss.RedirectStandardOutput = true;
-            
+
             bool bresult = false;
             using (Process PS = new Process())
             {
@@ -509,70 +521,20 @@ namespace Web.Controllers
             return Json("/TestReportPDF/" + FileName, JsonRequestBehavior.AllowGet);
         }
 
-        public FilePathResult ExpAllPDF()
+        /// <summary>
+        /// 批量导出
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public FilePathResult ExpAllPDF(string ids)
         {
-            string AreaID = Session["_AreaID"].ToString();
-            string StartTime = Session["_StartTime"].ToString();
-            string EndTime = Session["_EndTime"].ToString();
-            string SampleNum = Session["_SampleNum"].ToString();
-            string SampleName = Session["_SampleName"].ToString();
-            string Department = Session["_Department"].ToString();
-            string MainTestPersonne = Session["_MainTestPersonne"].ToString();
-            string SamplingTimes = Session["_SamplingTimes"].ToString();
-            string SamplingTimee = Session["_SamplingTimee"].ToString();
-
-            string ReportID = "";
-            if (Session["_ReportID"] != null)
-            {
-                ReportID = Session["_ReportID"].ToString();
-            }
-
-
             DataTable dt = new DataTable();
             int total = 0;
             string strWhere = "";
-            if (!string.IsNullOrEmpty(ReportID) && ReportID != "0")
+            if (!string.IsNullOrEmpty(ids))
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.ReportID=" + ReportID);
+                strWhere = PageTools.AddWhere(strWhere, $"T.ReportID in ({ids})");
             }
-            if (!string.IsNullOrEmpty(AreaID) && AreaID != "-1")
-            {
-                strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + AreaID);
-            }
-            if (!string.IsNullOrEmpty(StartTime))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime>=cast('" + StartTime + "' as datetime)");
-            }
-            if (!string.IsNullOrEmpty(EndTime))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "T.IssuedTime<=cast('" + EndTime + "' as datetime)");
-            }
-            if (!string.IsNullOrEmpty(SampleNum))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "T.SampleNum like  '%" + SampleNum + "%'");
-            }
-            if (!string.IsNullOrEmpty(SampleName))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "T.SampleName like  '%" + SampleName + "%'");
-            }
-            if (!string.IsNullOrEmpty(Department))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "T.Department like  '%" + Department + "%'");
-            }
-            if (!string.IsNullOrEmpty(MainTestPersonne))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "D.PersonnelName like '%" + MainTestPersonne + "%'");
-            }
-
-            if (!string.IsNullOrEmpty(SamplingTimes))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "SamplingTime>=cast('" + SamplingTimes + "' as datetime)");
-            }
-            if (!string.IsNullOrEmpty(SamplingTimee))
-            {
-                strWhere = PageTools.AddWhere(strWhere, "SamplingTime<=cast('" + SamplingTimee + "' as datetime)");
-            }
-
             //添加数据权限判断
             switch (CurrentUserInfo.DataRange)
             {
@@ -583,13 +545,7 @@ namespace Web.Controllers
                     strWhere = PageTools.AddWhere(strWhere, "T.EditPersonnelID=" + CurrentUserInfo.PersonnelID + " ");
                     break;
             }
-
-            try
-            {
-                //dt = tTestReport.GetListByPage(strWhere, "UpdateTime DESC,T.SampleName ASC", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
-                dt = tTestReport.GetListByPage(strWhere, "TestTime DESC", 1, 10000, ref total).Tables[0];
-            }
-            catch { }
+            dt = tTestReport.GetListByPage(strWhere, "TestTime DESC", 1, 10000, ref total).Tables[0];
             var strs = "批量下载-";
             string[] iFile = new string[1];
             if (dt != null && dt.Rows.Count > 0)
@@ -601,8 +557,8 @@ namespace Web.Controllers
                     Pss.FileName = Server.MapPath("/HtmlToPDF/wkhtmltopdf.exe");
                     string strUrl = System.Configuration.ConfigurationManager.AppSettings["HostName"].ToString() + "/ReportView/TestReportView?ReportID=" + dt.Rows[i]["ReportID"];//Request.UserHostName
                     var eTestReport = tTestReport.GetModel(Convert.ToInt32(dt.Rows[i]["ReportID"]));
-                    //string FileName = Guid.NewGuid() + ".pdf";
-                    if (i == 0) {
+                    if (i == 0)
+                    {
                         strs += eTestReport.SampleName;
                     }
                     string FileName = UrnHtml(eTestReport.SampleNum) + ".pdf";
@@ -611,12 +567,11 @@ namespace Web.Controllers
                     Pss.UseShellExecute = false;
                     Pss.RedirectStandardInput = true;
                     Pss.RedirectStandardOutput = true;
-              
-
+                    
                     bool bresult = false;
                     using (Process PS = new Process())
                     {
-                      
+
                         PS.StartInfo = Pss;
                         PS.Start();
                         PS.WaitForExit();
@@ -629,8 +584,7 @@ namespace Web.Controllers
                     iFile[i] = FilePath;
                 }
             }
-
-        
+            
             string oFile = AppDomain.CurrentDomain.BaseDirectory + "UpFile//DownLoads//" + strs + ".zip";
             PublicClass.CompressFiles(iFile, oFile);
             return File(oFile, "application/octet-stream", strs + ".zip");
@@ -641,7 +595,7 @@ namespace Web.Controllers
         {
             bool flag = false;
             var reportList = tTestReportData.GetList("ReportID=" + reportid).Tables[0]; //检验数据
-            if (reportList!= null && reportList.Rows.Count > 0)
+            if (reportList != null && reportList.Rows.Count > 0)
             {
                 var _list = tTestReportData.DataTableToList(reportList);
                 for (int i = 0; i < _list.Count; i++)
