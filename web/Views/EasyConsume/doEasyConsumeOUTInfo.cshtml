@@ -84,7 +84,7 @@
         });
         function handle(e) {
             if (e.$2._xmlHttpRequest.response == "1") {
-                alert("保存成功！");
+                alert("保存成功！"); parent.reload();
             } else {
                 alert("保存失败！");
             }

@@ -545,6 +545,15 @@ namespace Web.Controllers
         /// <returns></returns>
         public string NewDrugIN(tb_DrugIN model)
         {
+            if (model.amount <= 0) {
+                return "请填写数量";
+            }
+            if (model.productDate == null) {
+                return "请选择生产日期";
+            }
+            if (model.validDate == null) {
+                return "请选择有效期";
+            }
             string flag = "0";
             try
             {
@@ -966,7 +975,13 @@ namespace Web.Controllers
             for (int i = 0; i < durgInList.Count; i++)
             {
                 var item = durgInList[i];
-                string _text = "有效期" + item.validDate.Value.ToShortDateString() + "  生产日期" + item.productDate.Value.ToShortDateString();
+                string _text = "";
+                if (item.validDate != null) {
+                    _text += "有效期" + item.validDate.Value.ToShortDateString();
+                }
+                if (item.productDate != null) {
+                    _text += "  生产日期" + item.productDate.Value.ToShortDateString();
+                }
                 list.Add(new SelectListItem() { Text = _text, Value = item.id.ToString() });
             }
             return Json(list, JsonRequestBehavior.AllowGet);

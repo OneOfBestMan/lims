@@ -169,6 +169,10 @@
             $('#dgtable').datagrid('options').queryParams = tablequeryParams;
             $("#dgtable").datagrid("reload");
         }
+        function reload() {
+            dialog.get('id-info').close();
+            $("#dgtable").datagrid("reload");
+        }
     </script>
     <style type="text/css">
         .divList

@@ -87,15 +87,16 @@
                 }
             });
             /*****************结束药品柜*****************/
+            
         });
-
+  
         function handle(e) {
             if (e.$2._xmlHttpRequest.response == "1") {
                 alert("保存成功！");
                 top.reload();
               
             } else {
-                alert("保存失败！");
+                alert(e.$2._xmlHttpRequest.response);
             }
         }
         function failed(e) {

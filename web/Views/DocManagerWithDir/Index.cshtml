@@ -192,7 +192,7 @@ var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel)
                         field: 'DownLoad', title: '下载', width: 50, align: 'center',
                         formatter: function (value, row, index) {
                             //return "<a href='../DocManagerWithDir/GetFileFromDisk?id=" + row.id + "'><img width='18px' height='18' alt='下载' src='../../Content/Images/xiazai.png' /></a>";
-                            var _downloadURL = "<a href='Documents/GetFileFromDisk?id=" + row.id + "'><img width='18px' height='18' alt='下载' src='../../Content/Images/xiazai.png' /></a>";
+                            var _downloadURL = "<a href='/Documents/GetFileFromDisk?id=" + row.id + "'><img width='18px' height='18' alt='下载' src='../../Content/Images/xiazai.png' /></a>";
                             _downloadURL = isLimitTrue(row.id, row.doc_CreateUser, "read", _downloadURL);
                             return _downloadURL;
                         }

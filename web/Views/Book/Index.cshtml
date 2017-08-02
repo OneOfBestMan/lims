@@ -23,7 +23,7 @@
         $(document).ready(function () {
             $('#dgtable').datagrid({
                 url: "/Book/GetList",
-                pagination: true,//分页控件  
+                pagination: true,//分页控件
                 singleSelect: true,//是否单选
                 rownumbers: true,
                 queryParams: { 'pageNumber': 1, 'pageSize': 8, '_search': "", '_searchtype': "", '_cid': '@ViewBag._lid' },
@@ -64,8 +64,8 @@
             });
             var p = $('#dgtable').datagrid('getPager');
             $(p).pagination({
-                pageSize: 10,//每页显示的记录条数，默认为10  
-                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表  
+                pageSize: 10,//每页显示的记录条数，默认为10
+                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表
                 onSelectPage: function (pageNumber, pageSize) {
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
                     tablequeryParams.pageNumber = pageNumber;
@@ -109,6 +109,10 @@
                         tablequeryParams._cid = _cid;
                     }
                     $('#dgtable').datagrid('options').queryParams = tablequeryParams;
+                    $("#dgtable").datagrid("reload");
+                }
+          function reload() {
+                    dialog.get('id-info').close();
                     $("#dgtable").datagrid("reload");
                 }
     </script>

@@ -36,6 +36,14 @@
             var ddlcompany = $("#ddlcompany").val();
             var ddl_shenhezhuangtai = $("#ddl_shenhezhuangtai").val();
             var txt_search2 = $("#txt_search2").val();
+            if (txts == "") {
+                alert("请选择开始日期");
+                return;
+            }
+            if (txts2 == "") {
+                alert("请选择结束日期");
+                return;
+            }
 
             $('#btnCheck').attr("disabled", false);
             $('#btnAudit').attr("disabled", false);
@@ -191,8 +199,14 @@
                                 </select>
                             </td>
                             <td style="font-family: '宋体'; font-size: 12px; color: #10607c;">名称：<input style="border: 1px solid #3496d6;width:120px" type="text" id="txt_search2" /></td>
-                            <td align="left" width="80">
+                            <td align="left">
                                 <a href="javascript:void(0)" onclick="click_Search()"><img src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
+                                <a href="javascript:void(0)" onclick="click_Check()"><img src='@Url.Content("~/Content/Images/盘点.png")' /></a>
+                                @if (Convert.ToBoolean(ViewData["9d2eb602"]))
+                                {
+
+                                    <a href="javascript:void(0)" onclick="click_AllAudit()"><img src='@Url.Content("~/Content/Images/批量审核.png")' /></a>
+                                }
                             </td>
                             <td align="left">
                                
@@ -200,12 +214,7 @@
                         </tr>
                         <tr>
                             <td align="right" colspan="5">
-                                <a href="javascript:void(0)" onclick="click_Check()"><img src='@Url.Content("~/Content/Images/盘点.png")' /></a>
-                                @if (Convert.ToBoolean(ViewData["9d2eb602"]))
-                                {
-                               
-                                <a href="javascript:void(0)" onclick="click_AllAudit()"><img src='@Url.Content("~/Content/Images/批量审核.png")' /></a>
-                                }
+                             
                             </td>
                         </tr>
                     </table>

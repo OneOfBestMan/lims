@@ -58,9 +58,9 @@
         });
         function handle(e) {
             if (e.$2._xmlHttpRequest.response == "1") {
-                window.parent.$('#dgtable').datagrid("reload");
+           
                 alert("保存成功！");
-                $('#dlg').dialog('close');
+                parent.reload();
             } else {
                 alert("保存失败！");
             }

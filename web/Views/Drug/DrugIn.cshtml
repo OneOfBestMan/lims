@@ -144,6 +144,10 @@
         function click_Export() {
             $.getJSON('@Url.Action("Drug", "Export_DrugIN")', function (data) { });
         }
+        function reload() {
+            dialog.get('id-info').close();
+            $("#dgtable").datagrid("reload");
+        }
     </script>
     <style type="text/css">
         .divList {

@@ -75,6 +75,11 @@
             $('#dgtable').datagrid('options').queryParams = tablequeryParams;
             $("#dgtable").datagrid("reload");
         }
+        function reload() {
+            $('#dgtable').datagrid("reload");
+         
+           $('#dlg').dialog('close');
+        }
     </script>
     <style type="text/css">
         .divList {

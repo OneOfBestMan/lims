@@ -27,13 +27,16 @@
     <script type="text/javascript" src='@Url.Content("~/Scripts/ligerUI/js/core/base.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/ligerUI/js/plugins/ligerTree.js")'></script>
 
+     
+ 
+
     <script type="text/javascript">
         var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel).PersonnelID)';
         var _lid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel).AreaID)';
         $(document).ready(function () {
             $('#dgtable').datagrid({
                 url: "/Documents/GetDocList",
-                pagination: true,//分页控件  
+                pagination: true,//分页控件
                 singleSelect: true,//是否单选
                 rownumbers: true,
                 fitColumns: true,
@@ -99,7 +102,7 @@
                             var _editURL = "<a href='javascript:void(0)' onclick='click_Edit(" + row.id + ")' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                             _editURL = isLimitTrue(row.id, row.doc_CreateUser, "edit", _editURL);
                             return _editURL;
-                          
+
                         }
                     },
                     {
@@ -118,13 +121,13 @@
                             } else {
                                 return "";
                             }
-                            
+
                         }
                     },
                     {
                         field: 'DownLoad', title: '下载', width: 40, align: 'center',
                         formatter: function (value, row, index) {
-                            var _downloadURL = "<a href='Documents/GetFileFromDisk?id=" + row.id + "'><img width='18px' height='18' alt='下载' src='../../Content/Images/xiazai.png' /></a>";
+                            var _downloadURL = "<a href='/Documents/GetFileFromDisk?id=" + row.id + "'><img width='18px' height='18' alt='下载' src='../../Content/Images/xiazai.png' /></a>";
                             _downloadURL = isLimitTrue(row.id, row.doc_CreateUser, "read", _downloadURL);
                             return _downloadURL;
                         }
@@ -144,8 +147,8 @@
             });
             var p = $('#dgtable').datagrid('getPager');
             $(p).pagination({
-                pageSize: 10,//每页显示的记录条数，默认为10  
-                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表  
+                pageSize: 10,//每页显示的记录条数，默认为10
+                pageList: [8, 10, 15, 20],//可以设置每页记录条数的列表
                 onSelectPage: function (pageNumber, pageSize) {
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
                     tablequeryParams.pageNumber = pageNumber;
