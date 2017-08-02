@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using Model.Laboratory;
+using Comp;
 
 namespace DAL.Laboratory
 {
@@ -343,19 +344,33 @@ namespace DAL.Laboratory
                 strSql.Append("order by T.DetectTime desc");
             }
             strSql.Append(@")AS Row,  T.*");
-            strSql.Append(@"from (SELECT     dbo.tb_Sample.name, dbo.tb_Project.ProjectName, count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel, dbo.tb_TestReportData.TestPersonnelName, 
-                      dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department,dbo.tb_Area.TestReportName as GHS 
-FROM         dbo.tb_Sample INNER JOIN
-                      dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID INNER JOIN
-                      dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID INNER JOIN
-                      dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
-                      INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
-                      INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId   
-                      group by dbo.tb_Sample.name, dbo.tb_Project.ProjectName, dbo.tb_TestReportData.TestPersonnelName, 
-                      dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department,dbo.tb_Area.TestReportName) T ");
+            strSql.Append(@"from (SELECT     
+		                                dbo.tb_Sample.name,			--样品名称
+		                                dbo.tb_Project.ProjectName, --项目名称
+		                                count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel,  --检验次数
+		                                sum(case when dbo.tb_TestReportData.QualifiedLevel =  '合格' then 1 else 0 end) as QualifiedLevelA, --合格个数
+		                                sum(case when dbo.tb_TestReportData.QualifiedLevel != '合格' then 1 else 0 end) as QualifiedLevelB, --非合格个数
+		                                dbo.tb_TestReportData.TestPersonnelName,  --检验人名称
+		                                dbo.tb_OriginalRecord.DetectTime,   --检验日期
+		                                dbo.tb_TestReport.Department,		--送/抽检单位
+		                                dbo.tb_Area.TestReportName as GHS	--检验中心名称
+                                        FROM dbo.tb_Sample 
+		                                     INNER JOIN dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID		--原始记录
+		                                     INNER JOIN dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID		--检验项目
+		                                     INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID --检验报告数据
+		                                     INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID --检验报告
+		                                     INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId   --区域
+		                                group by 
+		                                     dbo.tb_Sample.name, 
+		                                     dbo.tb_Project.ProjectName, 
+		                                     dbo.tb_TestReportData.TestPersonnelName, 
+		                                     dbo.tb_OriginalRecord.DetectTime,
+		                                     dbo.tb_TestReport.Department,
+		                                     dbo.tb_Area.TestReportName
+	                                        ) T ");
             if (!string.IsNullOrEmpty(strWhere.Trim()))
             {
-                strSql.Append(" WHERE " + strWhere);
+                strSql.Append(strWhere);
             }
             strSql.Append(" ) TT");
             total = DbHelperSQL.GetCount(strSql.ToString());
@@ -398,65 +413,71 @@ FROM         dbo.tb_Sample INNER JOIN
         }
 
 
-        public int GetAllListCountForReport(string strWhere, string isPass)
+        public DataRow GetAllListCountForReport(string strWhere)
         {
-            int count = 0;
             StringBuilder strSql = new StringBuilder();
-            strSql.Append(@"SELECT    count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel 
-                        FROM         dbo.tb_Sample INNER JOIN
-                      dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID INNER JOIN
-                      dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID INNER JOIN
-                      dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
-                        INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
-                       ");
-            strSql.Append(" where "+strWhere+" ");
-            if (isPass=="1")
-            {
-                strSql.Append(" and tb_TestReportData.QualifiedLevel = '合格' ");
-            }
-            else if (isPass == "2")
-            {
-                strSql.Append(" and tb_TestReportData.QualifiedLevel <> '合格' ");
-            }
-            strSql.Append("group by dbo.tb_Sample.name, dbo.tb_Project.ProjectName, dbo.tb_TestReportData.TestPersonnelName, dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department");
-
+            strSql.Append($@"select sum(QualifiedLevel) as QualifiedLevel,sum(QualifiedLevelA) as QualifiedLevelA,sum(QualifiedLevelB) as QualifiedLevelB from 
+                            (
+	                            SELECT    
+	                            count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel,
+                                sum(case when dbo.tb_TestReportData.QualifiedLevel='合格' then 1 else 0 end) as QualifiedLevelA,
+	                            sum(case when dbo.tb_TestReportData.QualifiedLevel <>'合格' then 1 else 0 end) as QualifiedLevelB,
+	                            dbo.tb_Sample.name, dbo.tb_Project.ProjectName, dbo.tb_TestReportData.TestPersonnelName, dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department
+	                            FROM dbo.tb_Sample 
+	                            INNER JOIN dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID 
+	                            INNER JOIN dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID 
+	                            INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
+	                            INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
+	                            group by dbo.tb_Sample.name, dbo.tb_Project.ProjectName, dbo.tb_TestReportData.TestPersonnelName, dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department
+                            ) as T {strWhere.ToString()}");
+            
             DataSet ds = DbHelperSQL.Query(strSql.ToString());
             if (ds != null && ds.Tables != null && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
             {
-                count = int.Parse(ds.Tables[0].Compute("sum(QualifiedLevel)", "").ToString());
+                return ds.Tables[0].Rows[0];
             }
-            return count;
+            return null;
         }
 
         public DataSet GetExportListByReport(string strWhere, string orderby)
         {
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append("SELECT * FROM ( ");
-            strSql.Append(" SELECT ROW_NUMBER() OVER (");
+            string orderbystr = "order by T.DetectTime desc";
             if (!string.IsNullOrEmpty(orderby.Trim()))
             {
-                strSql.Append("order by T." + orderby);
+                orderbystr = "order by T." + orderby;
             }
-            else
-            {
-                strSql.Append("order by T.DetectTime desc");
-            }
-            strSql.Append(@")AS Row,  T.*");
-            strSql.Append(@"from (SELECT     dbo.tb_Sample.name, dbo.tb_Project.ProjectName, count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel, dbo.tb_TestReportData.TestPersonnelName, 
-                      dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department,dbo.tb_Area.TestReportName as GHS 
-FROM         dbo.tb_Sample INNER JOIN
-                      dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID INNER JOIN
-                      dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID INNER JOIN
-                      dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
-                      INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
-                        INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId 
-                      group by dbo.tb_Sample.name, dbo.tb_Project.ProjectName, dbo.tb_TestReportData.TestPersonnelName, 
-                      dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department,dbo.tb_Area.TestReportName) T ");
-            if (!string.IsNullOrEmpty(strWhere.Trim()))
-            {
-                strSql.Append(" WHERE " + strWhere);
-            }
-            strSql.Append(" ) TT");
+
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"SELECT * FROM 
+                            (  
+	                            SELECT ROW_NUMBER() OVER ({orderbystr})AS Row,T.* from 
+	                            (
+		                            SELECT 
+			                            dbo.tb_Sample.name, 
+			                            dbo.tb_Project.ProjectName, 
+			                            count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel, 
+                                        sum(case when dbo.tb_TestReportData.QualifiedLevel='合格' then 1 else 0 end) QualifiedLevelA,
+			                            sum(case when dbo.tb_TestReportData.QualifiedLevel<>'合格' then 1 else 0 end) QualifiedLevelB,
+			                            dbo.tb_TestReportData.TestPersonnelName, 
+			                            dbo.tb_OriginalRecord.DetectTime,
+			                            dbo.tb_TestReport.Department,dbo.tb_Area.TestReportName as GHS 
+		                            FROM dbo.tb_Sample 
+			                            INNER JOIN dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID 
+			                            INNER JOIN dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID 
+			                            INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
+			                            INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
+			                            INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId 
+		                            group by 
+			                            dbo.tb_Sample.name, 
+			                            dbo.tb_Project.ProjectName, 
+			                            dbo.tb_TestReportData.TestPersonnelName, 
+			                            dbo.tb_OriginalRecord.DetectTime,
+			                            dbo.tb_TestReport.Department,
+			                            dbo.tb_Area.TestReportName
+	                            ) T  
+	                            {strWhere}
+                            ) TT");
+
             return DbHelperSQL.Query(strSql.ToString());
         }
     }
