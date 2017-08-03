@@ -10,7 +10,7 @@ using BLL.DictManage;
 
 namespace Web.Controllers
 {
-    public class TypeDictController : Controller
+    public class TypeDictController : BaseController
     {
         T_tb_TypeDict tTypeDict = new T_tb_TypeDict();
 

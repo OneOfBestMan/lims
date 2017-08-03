@@ -41,7 +41,8 @@
             $("#HidParentID").val(ParentID);
             $("#txt_TypeName").val("");
             $("#txt_Directions").val("");
-            $('#EditForms').dialog('open');
+            $('#EditForms').dialog({ height: 224, width:400 });
+            $('#EditForms').dialog('open' );
         }
 
         //弹出编辑页
@@ -166,7 +167,7 @@
             @Html.HiddenFor(m => m.SubjectID, new { @id = "HidSubjectID" })
             @Html.HiddenFor(m => m.ParentID, new { @id = "HidParentID" })
             @Html.HiddenFor(m => m.TypeLevel, new { @id = "HidTypeLevel" })
-            <table border="0" cellpadding="0" cellspacing="0" width="98%" class="DialogTable">
+            <table border="0" cellpadding="0" cellspacing="0" width="90%" class="DialogTable">
                 <tr>
                     <td width="70px" align="right">类别名称：</td>
                     <td align="left" style="width:260px;">@Html.TextBoxFor(m => m.TypeName, new { @style = "width:99%;", @id = "txt_TypeName" })</td>
