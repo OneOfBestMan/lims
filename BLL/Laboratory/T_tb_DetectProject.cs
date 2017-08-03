@@ -172,10 +172,7 @@ namespace BLL.Laboratory
             return dal.GetListCountForReport(dr, isPass);
         }
 
-        public int GetAllListCountForReport(string strWhere, string isPass)
-        {
-            return dal.GetAllListCountForReport(strWhere, isPass);
-        }
+
         public DataSet GetExportListByReport(string strWhere, string orderby)
         {
             return dal.GetExportListByReport(strWhere, orderby);
