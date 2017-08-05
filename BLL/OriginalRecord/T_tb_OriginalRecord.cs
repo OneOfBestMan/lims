@@ -58,16 +58,6 @@ namespace BLL.OriginalRecord
         }
 
         /// <summary>
-        /// 得到一个对象实体
-        /// </summary>
-        public E_tb_OriginalRecord GetModel(int RecordID)
-        {
-
-            return dal.GetModel(RecordID);
-        }
-
-
-        /// <summary>
         /// 获得数据列表
         /// </summary>
         public DataSet GetList(string strWhere)

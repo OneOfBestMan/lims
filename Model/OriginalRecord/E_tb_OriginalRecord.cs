@@ -112,8 +112,7 @@ namespace Model.OriginalRecord
             get { return _sampleid; }
         }
         #endregion Model
-
-        #region 数据接口
+        
         /// <summary>
         /// 编辑类型
         /// </summary>
@@ -123,7 +122,16 @@ namespace Model.OriginalRecord
         /// 检验人名称
         /// </summary>
         public string DetectPersonnelName { get; set; }
-        #endregion
+
+        /// <summary>
+        /// 样品数据范围
+        /// </summary>
+        public string SampleDataRange { get; set; }
+
+        /// <summary>
+        /// 是否农药残留
+        /// </summary>
+        public int IsPesCheck { get; set; }
 
     }
 }

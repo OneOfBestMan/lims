@@ -1884,6 +1884,7 @@
     <Content Include="Skins\js\jquery-1.10.2.js" />
     <Content Include="Skins\js\jquery-1.8.3.min.js" />
     <Content Include="Skins\js\jquery.SuperSlide.js" />
+    <Content Include="Skins\js\pagejscommon.js" />
     <Content Include="SWFTools\pdf2swf.exe" />
     <Content Include="Views\UploadFile\UploadImg.aspx" />
     <Content Include="Web.config" />
