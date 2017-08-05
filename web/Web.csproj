@@ -87,8 +87,7 @@
     </Reference>
     <Reference Include="PageOffice, Version=2.0.0.1, Culture=neutral, PublicKeyToken=1d75ee5788809228, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dll\PageOffice.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>pageoffice\dll\PageOffice.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -228,6 +227,27 @@
     <Compile Include="Models\DataJQGrid.cs" />
     <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Mousse\DataHelper.cs" />
+    <Compile Include="pageoffice\login.aspx.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pageoffice\login.aspx.designer.cs">
+      <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pageoffice\seal.aspx.cs">
+      <DependentUpon>seal.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pageoffice\seal.aspx.designer.cs">
+      <DependentUpon>seal.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="pageoffice\sealPic.aspx.cs">
+      <DependentUpon>sealPic.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="pageoffice\sealPic.aspx.designer.cs">
+      <DependentUpon>sealPic.aspx</DependentUpon>
+    </Compile>
     <Compile Include="pageoffice\server.aspx.cs">
       <DependentUpon>server.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -252,6 +272,15 @@
     <Content Include="Dll\NPOI.OOXML.dll" />
     <Content Include="Dll\NPOI.OpenXml4Net.dll" />
     <Content Include="Dll\NPOI.OpenXmlFormats.dll" />
+    <Content Include="pageoffice\dll\PageOffice.dll" />
+    <Content Include="pageoffice\js\jquery.min.js" />
+    <Content Include="pageoffice\js\pageoffice.js" />
+    <Content Include="pageoffice\js\pobstyle.css" />
+    <Content Include="pageoffice\login.aspx" />
+    <Content Include="pageoffice\posetup.exe" />
+    <Content Include="pageoffice\seal.aspx" />
+    <Content Include="pageoffice\sealPic.aspx" />
+    <Content Include="pageoffice\sealsetup.exe" />
     <Content Include="Skins\admin\vendor\datetimepicker\css\bootstrap-datetimepicker.css" />
     <Content Include="Skins\admin\vendor\datetimepicker\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Skins\admin\vendor\datetimepicker\js\bootstrap-datetimepicker.js" />
@@ -547,7 +576,6 @@
     <Content Include="pageoffice\template\file006.pptx" />
     <None Include="Properties\PublishProfiles\LILMS.pubxml" />
     <Content Include="HtmlToPDF\wkhtmltopdf.exe" />
-    <Content Include="pageoffice\posetup.exe" />
     <Content Include="pageoffice\server.aspx" />
     <Content Include="Scripts\FlexPaper\FlexPaperViewer.swf" />
     <Content Include="Scripts\FlexPaper\js\expressInstall.swf" />
@@ -2087,7 +2115,7 @@
     <Content Include="Views\Device\DeviceRK.cshtml" />
     <Content Include="Views\EasyConsume\EasyConsumeCK.cshtml" />
     <Content Include="Views\EasyConsume\EasyConsumeRK.cshtml" />
-	 <Content Include="Views\Sample\SamplingSheet.cshtml" />
+    <Content Include="Views\Sample\SamplingSheet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -158,14 +158,6 @@ namespace BLL.OriginalRecord
         #endregion  Method
 
         #region 扩展方法
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        public DataSet GetListByPage(string strWhere, string orderby, int startIndex, int endIndex, ref int total)
-        {
-            return dal.GetListByPage(strWhere, orderby, startIndex, endIndex, ref total);
-        }
-
          /// <summary>
         /// 根据样品名称获取对应的原始记录ID集合
         /// </summary>

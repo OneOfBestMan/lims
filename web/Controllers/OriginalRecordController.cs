@@ -24,6 +24,8 @@ using Model.TestReport;
 using BLL.TestReport;
 using Model.EntrustManage;
 using System.Collections;
+using Comp;
+using DAL.OriginalRecord;
 
 namespace Web.Controllers
 {
@@ -31,6 +33,7 @@ namespace Web.Controllers
     {
         T_tb_Area tArea = new T_tb_Area();
         T_tb_OriginalRecord tOriginalRecord = new T_tb_OriginalRecord(); //原始记录管理
+        D_tb_OriginalRecord _dOriginalRecord = new D_tb_OriginalRecord();
         T_tb_Project tProject = new T_tb_Project();//项目管理
         T_tb_EntrustTesting tEntrustTesting = new T_tb_EntrustTesting();//委托检验管理
         T_tb_InPersonnel tInPersonnel = new T_tb_InPersonnel();//内部人员管理
@@ -43,18 +46,19 @@ namespace Web.Controllers
         //
         // GET: /Laboratory/
 
-        public ActionResult OriginalRecordList(E_tb_OriginalRecord eOriginalRecord)
+        public ActionResult OriginalRecordList(E_PageParameter ePageParameter)
         {
+            int pageIndex = Utils.GetInt(Request["page"]);
+            ePageParameter.pageindex = pageIndex > 0 ? pageIndex - 1 : pageIndex;
+            ePageParameter.pagesize = 20;
+
             ViewData["AreaList"] = PageTools.GetSelectList(tArea.GetList("").Tables[0], "AreaID", "AreaName", true);
             ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("").Tables[0], "ProjectID", "ProjectName", true);
-            if (Request["ApprovalPersonnelName"] != null)
-                ViewData["ApprovalPersonnelName"] = Request["ApprovalPersonnelName"].ToString();
-            else
-                ViewData["ApprovalPersonnelName"] = "";
-            ViewBag._userName = CurrentUserInfo.UserName;
-            eOriginalRecord.AreaID = CurrentUserInfo.AreaID;
-            ViewBag.IsDisabled = (CurrentUserInfo.RoleID != 1) ? "true" : "false"; //权限判断
-            return View(eOriginalRecord);
+
+            ViewBag.OriginalRecordList = this.GetList(ePageParameter);
+            ViewBag.ePageParameter = ePageParameter;
+            ViewBag.page = Utils.ShowPage(ePageParameter.count, ePageParameter.pagesize, pageIndex, 5);
+            return View("/views/OriginalRecord/OriginalRecordList.cshtml");
         }
 
         /// <summary>
@@ -62,70 +66,53 @@ namespace Web.Controllers
         /// 作者：小朱
         /// </summary>
         /// <returns>将DataTable转换为Json数据格式通过string类型返回</returns>
-        public string GetList(int pageNumber, int pageSize, string AreaID, string ProjectID, string StartTime, string EndTime, string TaskNo, string RecordID)
+        public DataTable GetList(E_PageParameter ePageParameter)
         {
-            DataTable dt = new DataTable();
             int total = 0;
-            string strWhere = "";
-            if (!string.IsNullOrEmpty(RecordID) && RecordID != "0")
+            StringBuilder strWhere = new StringBuilder();
+            if (ePageParameter.recordid>0)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.RecordID=" + RecordID);
+                strWhere.AddWhere("T.RecordID=" + ePageParameter.recordid);
             }
-            if (!string.IsNullOrEmpty(AreaID) && AreaID != "-1")
+            if (ePageParameter.areaid>0)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + AreaID);
+                strWhere.AddWhere("T.AreaID=" + ePageParameter.areaid);
             }
-            if (!string.IsNullOrEmpty(ProjectID) && ProjectID != "-1")
+            if (ePageParameter.projectid>0)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.ProjectID=" + ProjectID);
+                strWhere.AddWhere("T.ProjectID=" + ePageParameter.projectid);
             }
-            if (!string.IsNullOrEmpty(StartTime))
+            if (ePageParameter.starttime!=null)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.DetectTime>=cast('" + StartTime + "' as datetime)");
+                strWhere.AddWhere("T.DetectTime>=cast('" + ePageParameter.starttime + "' as datetime)");
             }
-            if (!string.IsNullOrEmpty(EndTime))
+            if (ePageParameter.endtime != null)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.DetectTime<=cast('" + EndTime + "' as datetime)");
+                strWhere.AddWhere("T.DetectTime<=cast('" + ePageParameter.endtime + "' as datetime)");
             }
-            if (!string.IsNullOrEmpty(TaskNo))
+            if (!string.IsNullOrEmpty(ePageParameter.taskno))
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.TaskNo like  '%" + TaskNo + "%'");
+                strWhere.AddWhere("T.TaskNo like  '%" + ePageParameter.taskno + "%'");
             }
 
             //添加数据权限判断
             switch (CurrentUserInfo.DataRange)
             {
                 case 2://区域
-                    strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + CurrentUserInfo.AreaID + " ");
+                    strWhere.AddWhere("T.AreaID=" + CurrentUserInfo.AreaID + " ");
                     break;
                 case 3://个人
-                    strWhere = PageTools.AddWhere(strWhere, "T.EditPersonnelID=" + CurrentUserInfo.PersonnelID + " ");
+                    strWhere.AddWhere("T.EditPersonnelID=" + CurrentUserInfo.PersonnelID + " ");
                     break;
             }
 
-            try
-            {
-                dt = tOriginalRecord.GetListByPage(strWhere, "", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
-                //dt.Columns.Add("ApprovalPersonnelID");
-                //for (int i = 0; i < dt.Rows.Count; i++)
-                //{
-                //    try
-                //    {
-                //        dt.Rows[i]["ApprovalPersonnelID"] = tDetectProject.GetListCountForReport(dt.Rows[i], "合格");
-                //    }
-                //    catch
-                //    {
-                //        continue;
-                //    }
-                //}
-            }
-            catch { }
-            string strJson = PublicClass.ToJson(dt, total);
-            if (strJson.Trim() == "")
-            {
-                strJson = "{\"total\":0,\"rows\":[]}";
-            }
-            return strJson;
+
+            DataTable dt = new DataTable();
+            int startindex = ePageParameter.pageindex * ePageParameter.pagesize + 1;
+            int endindex = (ePageParameter.pageindex + 1) * ePageParameter.pagesize;
+            dt = _dOriginalRecord.GetListByPage(strWhere.ToString(), "", startindex, endindex, ref total).Tables[0];
+            ePageParameter.count = total;
+            return dt;
         }
 
         /// <summary>

@@ -331,7 +331,7 @@ namespace DAL.OriginalRecord
             strSql.Append(" left join tb_Sample as E on T.SampleID=E.id");
             if (!string.IsNullOrEmpty(strWhere.Trim()))
             {
-                strSql.Append(" WHERE " + strWhere);
+                strSql.Append(strWhere);
             }
             strSql.Append(" ) TT");
             total = DbHelperSQL.GetCount(strSql.ToString());
