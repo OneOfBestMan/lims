@@ -132,7 +132,7 @@
        
             left: 1px;
             z-index: 99;
-            width: 1048px;
+            width: 640px;
         }
 
         a {
@@ -211,12 +211,15 @@
             #formdata.table tbody tr td select.form-control {
                 width: 150px;
             }
+        .panel-body {
+            padding: 0px;
+        }
     </style>
 </head>
 <body>
 
 
-    <div >
+    <div class="divList">
         @using (Ajax.BeginForm("EasyConsumeINCU", "EasyConsume", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "uploadfrm" }))
         {
             <input type="hidden" name="eId" value="@ViewBag.id" />

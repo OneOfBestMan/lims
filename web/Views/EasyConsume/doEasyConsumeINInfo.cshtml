@@ -132,7 +132,7 @@
             top: 40px;
             left: 1px;
             z-index: 99;
-            width: 1048px;
+            width: 640px;
         }
 
         a {
@@ -296,7 +296,7 @@
                 <tr>
                     <td width="90px" align="right">备注：</td>
                     <td align="left" colspan="3">
-                        @Html.TextAreaFor(m => m.remark)
+                        @Html.TextAreaFor(m => m.remark, new { style = "height:80px;width:333px" })
                     </td>
                 </tr>
                 <tr>
