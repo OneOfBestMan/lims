@@ -63,6 +63,7 @@
     <Compile Include="Laboratory\E_tb_Project.cs" />
     <Compile Include="News\E_tb_ElectronicsMagazine.cs" />
     <Compile Include="News\E_tb_News.cs" />
+    <Compile Include="OriginalRecord\E_InsStand.cs" />
     <Compile Include="OriginalRecord\E_tb_RecordSample.cs" />
     <Compile Include="PersonnelManage\E_tb_InPersonnel.cs" />
     <Compile Include="PersonnelManage\E_tb_OutPersonnel.cs" />

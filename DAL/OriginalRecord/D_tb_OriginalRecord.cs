@@ -181,11 +181,14 @@ namespace DAL.OriginalRecord
             strSql.Append($@"select 
 	                            A.*,
 	                            B.PersonnelName as detectpersonnelname, --检查人名称
-	                            C.SampleDataRange, --检查项目对应数据提取范围
-                                C.IsPesCheck		--是否农药残留
+	                            C.SampleDataRange,   --检查项目对应数据提取范围
+                                C.IsPesCheck,		 --是否农药残留
+                                C.projectname,		 --项目名称
+                                D.name as samplename --样品名称
                             from tb_OriginalRecord as A 
                             left join dbo.tb_InPersonnel as B on A.DetectPersonnelID=B.PersonnelID
                             left join dbo.tb_Project as C on A.ProjectID=C.ProjectID
+                            left join dbo.tb_Sample as D on A.SampleID=D.id
                             where RecordID={model.RecordID}");
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {

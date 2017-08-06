@@ -102,9 +102,14 @@ namespace Model
         public int count { get; set; }
 
         /// <summary>
-        /// 项目名称
+        /// 项目ID
         /// </summary>
         public int projectid { get; set; }
+
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        public string projectname { get; set; }
 
         /// <summary>
         /// 任务单号
@@ -115,5 +120,20 @@ namespace Model
         /// 原始记录ID
         /// </summary>
         public int recordid { get; set; }
+
+        /// <summary>
+        /// 实验计划ID
+        /// </summary>
+        public int planid { get; set; }
+
+        /// <summary>
+        /// 实验计划类别
+        /// </summary>
+        public int plantype { get; set; } = -1;
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public int status { get; set; }
     }
 }

@@ -26,6 +26,10 @@ using Model.EntrustManage;
 using System.Collections;
 using Comp;
 using DAL.OriginalRecord;
+using DAL.Sample;
+using DAL.Laboratory;
+using DAL.ExpePlan;
+using PageOffice;
 
 namespace Web.Controllers
 {
@@ -35,17 +39,19 @@ namespace Web.Controllers
         T_tb_OriginalRecord tOriginalRecord = new T_tb_OriginalRecord(); //原始记录管理
         D_tb_OriginalRecord _dOriginalRecord = new D_tb_OriginalRecord();
         T_tb_Project tProject = new T_tb_Project();//项目管理
+        D_tb_Project _dProject = new D_tb_Project();
         T_tb_EntrustTesting tEntrustTesting = new T_tb_EntrustTesting();//委托检验管理
         T_tb_InPersonnel tInPersonnel = new T_tb_InPersonnel();//内部人员管理
         tb_SampleBLL tSample = new tb_SampleBLL();//样品管理
+        D_Sample _dSample = new D_Sample();
         T_tb_RecordSample tRecordSample = new T_tb_RecordSample();//原始记录样品计算结果
         T_tb_ExpePlan tExpePlan = new T_tb_ExpePlan();//实验计划
+        D_tb_ExpePlan _dExpePlan = new D_tb_ExpePlan();
         T_tb_TestReport tTestReport = new T_tb_TestReport();//检验报告
         T_tb_TestReportData tTestReportData = new T_tb_TestReportData();//检验报告数据
 
         //
         // GET: /Laboratory/
-
         public ActionResult OriginalRecordList(E_PageParameter ePageParameter)
         {
             int pageIndex = Utils.GetInt(Request["page"]);
@@ -63,7 +69,6 @@ namespace Web.Controllers
 
         /// <summary>
         /// 获取所有数据列表
-        /// 作者：小朱
         /// </summary>
         /// <returns>将DataTable转换为Json数据格式通过string类型返回</returns>
         public DataTable GetList(E_PageParameter ePageParameter)
@@ -116,431 +121,103 @@ namespace Web.Controllers
         }
 
         /// <summary>
+        /// 生成原始记录
+        /// </summary>
+        /// <param name="PlanID">实验计划ID</param>
+        /// <returns>返回生成结果</returns>
+        public JsonResult CreateOriginalRecord(int PlanID)
+        {
+            E_tb_ExpePlan eExpePlan = _dExpePlan.GetModel(PlanID);
+            E_tb_Project eProject = _dProject.GetModel(Convert.ToInt32(eExpePlan.ProjectID));
+
+            //定义原始记录实体
+            E_tb_OriginalRecord eOriginalRecord = new E_tb_OriginalRecord();
+            eOriginalRecord.ProjectID = eExpePlan.ProjectID;
+            eOriginalRecord.TaskNo = eExpePlan.TaskNo;
+            eOriginalRecord.DetectTime = eExpePlan.InspectTime;
+            eOriginalRecord.DetectPersonnelID = CurrentUserInfo.PersonnelID;
+            //提前给定最终文件保存名称
+            eOriginalRecord.FilePath = "OriginalRecordFile/LIMS" + DateTime.Now.ToString("yyyyMMddhhmmss") + "." + eProject.FilePath.Split('.')[1];
+            eOriginalRecord.Contents = "";
+            eOriginalRecord.AreaID = CurrentUserInfo.AreaID;
+            eOriginalRecord.EditPersonnelID = CurrentUserInfo.PersonnelID;
+            eOriginalRecord.SampleID = eExpePlan.SampleID;
+            //默认给第一个标准， 后续可修改
+            eOriginalRecord.InsStand = eProject.InsStand.Split('、')[0].ToString();
+
+            bool result = _dOriginalRecord.Add(eOriginalRecord) > 0;
+            return Json(new { result = result, msg = "生成成功！" }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 显示详情页
         /// </summary>
         /// <param name="EditType">编辑类型</param>
         /// <returns>返回编辑结果</returns>
-        public ActionResult OriginalRecordEdit(int? InfoID)
+        public ActionResult OriginalRecordEdit(int InfoID)
         {
+            E_tb_OriginalRecord eOriginalRecord = _dOriginalRecord.GetModel(new E_tb_OriginalRecord() { RecordID = Convert.ToInt32(InfoID) });
             List<string> InsStandList = new List<string>();
-            DataTable SampleList = null;
-            DataTable ExpePlanList = null;
-
-            E_tb_OriginalRecord eOriginalRecord = new E_tb_OriginalRecord();
-            eOriginalRecord.DetectPersonnelID = CurrentUserInfo.PersonnelID;
-            eOriginalRecord.DetectPersonnelName = CurrentUserInfo.PersonnelName;
-
-            //判断是否存在原始记录ID
-            if (InfoID!=null&&InfoID > 0)
+            E_tb_Project eProject = _dProject.GetModel(Convert.ToInt32(eOriginalRecord.ProjectID));
+            if (!string.IsNullOrEmpty(eProject.InsStand))
             {
-                eOriginalRecord = _dOriginalRecord.GetModel(new E_tb_OriginalRecord() { RecordID =Convert.ToInt32(InfoID)});
-                //获取检验标准
-                string strinsstand = new BLL.Laboratory.T_tb_Project().GetModel(eOriginalRecord.ProjectID.Value).InsStand;
-                if (!string.IsNullOrEmpty(strinsstand))
+                foreach (var item in eProject.InsStand.Split('、'))
                 {
-                    string[] ins = strinsstand.Split('、');
-                    for (int i = 0; i < ins.Length; i++)
-                    {
-                        InsStandList.Add(ins[i]);
-                    }
+                    InsStandList.Add(item);
                 }
-                //获取对应样品
-                SampleList = tSample.GetList(" id = " + eOriginalRecord.SampleID).Tables[0];
-                //获取实验计划
-                ExpePlanList = tExpePlan.GetList("ProjectID=" + eOriginalRecord.ProjectID).Tables[0];
             }
 
-            ViewData["ProjectList"] = tProject.GetListByOriginalRecord("");
-            ViewData["InsStandList"] = InsStandList;
-            ViewData["SampleList"] = SampleList;
-            ViewData["ExpePlanList"] = ExpePlanList;
-
-
-            ViewBag.EditorHtml = GetPageOfficePageOutHtml(eOriginalRecord.FilePath, eOriginalRecord.SampleDataRange,
-                eOriginalRecord.ProjectID == null ? 0 : Convert.ToInt32(eOriginalRecord.ProjectID),
-                eOriginalRecord.SampleID == null ? 0 : Convert.ToInt32(eOriginalRecord.SampleID),
-                eOriginalRecord.IsPesCheck == 1);
-
-            //#region 文档预览
-            //string filename = eOriginalRecord.FilePath;
-            //E_tb_Project eProject = tProject.GetModel(Convert.ToInt32(eOriginalRecord.ProjectID));
-            //if (!string.IsNullOrEmpty(filename))
-            //{
-            //    Page page = new Page();
-            //    string controlOutput = string.Empty;
-            //    PageOffice.PageOfficeCtrl pc = new PageOffice.PageOfficeCtrl();
-            //    pc.SaveFilePage = "/OriginalRecord/SaveDoc?filename=" + filename;
-            //    pc.ServerPage = "/pageoffice/server.aspx";
-            //    PageOffice.ExcelWriter.Workbook wb = new PageOffice.ExcelWriter.Workbook();
-            //    PageOffice.ExcelWriter.Sheet sheetOrder = wb.OpenSheet("Sheet1");
-            //    PageOffice.ExcelWriter.Table table = sheetOrder.OpenTable(eProject.SampleDataRange.Replace("：", ":").ToUpper());
-            //    pc.SetWriter(wb);
-            //    pc.SaveDataPage = "/OriginalRecord/SaveData?FilePath=" + filename + "&ProjectID=" + eOriginalRecord.ProjectID.ToString();
-
-            //    if (EditType != "Edit" && eProject.IsPesCheck != 1)
-            //    {
-            //        tb_Sample eSample = tSample.GetModel(int.Parse(eOriginalRecord.SampleID.ToString()));
-
-            //        ArrayList CellArr = new ArrayList { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-            //        string StrDataRange = eProject.SampleDataRange.Replace("：", ":").ToUpper();
-            //        int CellStartIndex = CellArr.IndexOf(StrDataRange.Split(':')[0].Substring(0, 1).ToUpper());
-            //        int DRangeStartIndex = int.Parse(StrDataRange.Split(':')[0].Substring(1, StrDataRange.Split(':')[0].Length - 1)) + 1;
-            //        int DRangeEndIndex = int.Parse(StrDataRange.Split(':')[1].Substring(1, StrDataRange.Split(':')[0].Length - 1));
-
-            //        //定义Workbook对象
-            //        PageOffice.ExcelWriter.Workbook workBook = new PageOffice.ExcelWriter.Workbook();
-            //        //定义Sheet对象，"Sheet1"是打开的Excel表单的名称
-            //        PageOffice.ExcelWriter.Sheet sheet = workBook.OpenSheet("Sheet1");
-            //        for (int i = DRangeStartIndex; i <= DRangeEndIndex; i++)
-            //        {
-            //            //或者直接给Cell赋值
-            //            sheet.OpenCell(CellArr[CellStartIndex].ToString() + i).Value = eSample.sampleNum;                         //样品编号
-            //            sheet.OpenCell(CellArr[CellStartIndex + 1].ToString() + i).Value = eSample.name;                          //样品名称
-            //            sheet.OpenCell(CellArr[CellStartIndex + 2].ToString() + i).Value = eSample.productDate.ToString(); ;      //成品日期
-            //            sheet.OpenCell(CellArr[CellStartIndex + 3].ToString() + i).Value = eSample.detectionDate.ToString();      //抽样日期
-            //        }
-            //        pc.SetWriter(workBook);// 注意不要忘记此代码，如果缺少此句代码，不会赋值成功。
-            //    }
-
-            //    var openmodeltype = PageOffice.OpenModeType.docAdmin;
-            //    var filenames = filename.Split('.');
-            //    switch (filenames[1])
-            //    {
-            //        case "doc":
-            //            openmodeltype = PageOffice.OpenModeType.docNormalEdit;
-            //            break;
-            //        case "docx":
-            //            openmodeltype = PageOffice.OpenModeType.docNormalEdit;
-            //            break;
-            //        case "xlsx":
-            //            openmodeltype = PageOffice.OpenModeType.xlsNormalEdit;
-            //            break;
-            //        case "xls":
-            //            openmodeltype = PageOffice.OpenModeType.xlsNormalEdit;
-            //            break;
-            //        case "pptx":
-            //            openmodeltype = PageOffice.OpenModeType.pptNormalEdit;
-            //            break;
-            //        case "ppt":
-            //            openmodeltype = PageOffice.OpenModeType.pptNormalEdit;
-            //            break;
-            //    }
-            //    pc.WebOpen("/UpFile/" + filename, openmodeltype, "s");
-            //    page.Controls.Add(pc);
-            //    StringBuilder sb = new StringBuilder();
-            //    using (StringWriter sw = new StringWriter(sb))
-            //    {
-            //        using (HtmlTextWriter htw = new HtmlTextWriter(sw))
-            //        {
-            //            Server.Execute(page, htw, false); controlOutput = sb.ToString();
-            //        }
-            //    }
-            //    ViewBag.EditorHtml = controlOutput;
-            //}
-            //#endregion
-
-            return View(eOriginalRecord);
-        }
-
-        /// <summary>
-        /// 添加原始记录
-        /// </summary>
-        public ActionResult OriginalRecordAdd(E_tb_OriginalRecord eOriginalRecord, string EditType, int? InfoID, int? ProjectID, int? SampleID)
-        {
-
-            if (eOriginalRecord == null)
-            {
-                eOriginalRecord = new E_tb_OriginalRecord();
-            }
-            //获取符合格式要求的项目列表
-            //ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("FilePath is not null and FilePath !='' and (SampleDataRange like '%:%' or SampleDataRange like '%：%')").Tables[0], "ProjectID", "ProjectName", false);
-            DataTable SampleDt = tSample.GetList("id in (select SampleID from tb_ExpePlan where Status=0)").Tables[0];
-            ViewData["SampleList"] = PageTools.GetSelectList(SampleDt, "id", "name", false);
-            string strWhere = "FilePath is not null and FilePath !='' and (SampleDataRange like '%:%' or SampleDataRange like '%：%') and " + "ProjectID in (select ProjectID from tb_ExpePlan where Status=0 and SampleID=" + SampleDt.Rows[0]["id"].ToString() + ")";
-            if (SampleID != null)
-            {
-                strWhere = "FilePath is not null and FilePath !='' and (SampleDataRange like '%:%' or SampleDataRange like '%：%') and " + "ProjectID in (select ProjectID from tb_ExpePlan where Status=0 and SampleID=" + SampleID + ")";
-            }
-            ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetListByOriginalRecord(strWhere), "ProjectID", "ProjectName", false);
-
-            if (EditType == "Edit")
-            {
-                eOriginalRecord = _dOriginalRecord.GetModel(new E_tb_OriginalRecord() {RecordID= Convert.ToInt32(InfoID)});
-                if (eOriginalRecord.DetectPersonnelID != null && eOriginalRecord.DetectPersonnelID > 0)
-                {
-                    eOriginalRecord.DetectPersonnelName = tInPersonnel.GetModel(Convert.ToInt32(eOriginalRecord.DetectPersonnelID)).PersonnelName;
-                }
-                ViewData["InsStandList"] = new SelectList(new List<SelectListItem>());
-                if (!String.IsNullOrEmpty(eOriginalRecord.InsStand))
-                {
-                    List<SelectListItem> list = new List<SelectListItem>();
-
-                    list.Add(new SelectListItem() { Text = eOriginalRecord.InsStand, Value = eOriginalRecord.InsStand, Selected = true });
-
-                    ViewData["InsStandList"] = new SelectList(list, "Value", "Text");
-                }
-
-
-                ViewData["ExpePlanList"] = PageTools.GetSelectList(tExpePlan.GetList("ProjectID=" + eOriginalRecord.ProjectID).Tables[0], "TaskNo", "TaskNo", false);
-            }
-            else
-            {
-                int FirstSampleID = int.Parse((this.ViewData["SampleList"] as SelectList).First().Value);
-                if (SampleID != null && SampleID > 0)
-                {
-                    FirstSampleID = Convert.ToInt32(SampleID);
-                }
-
-                int FirstProjectID = 0;
-                if ((this.ViewData["ProjectList"] as SelectList).Count() > 0)
-                {
-                    FirstProjectID = int.Parse((this.ViewData["ProjectList"] as SelectList).First().Value);
-                }
-                string projectwhere = "";
-                if (ProjectID > 0)
-                {
-                    projectwhere += "" + ProjectID;
-                }
-                else
-                {
-                    projectwhere += "" + FirstProjectID;
-                }
-                projectwhere += " and SampleID=" + FirstSampleID;
-                ViewData["ExpePlanList"] = PageTools.GetSelectList(tExpePlan.GetList("ProjectID=" + projectwhere).Tables[0], "TaskNo", "TaskNo", false);
-
-                if (FirstProjectID == 0)
-                {
-                    return View(eOriginalRecord);
-                }
-                ViewData["InsStandList"] = new SelectList(new List<SelectListItem>());
-                String InsStand = "";
-                if (ProjectID != null && ProjectID > 0)
-                {
-                    FirstProjectID = Convert.ToInt32(ProjectID);
-                }
-                if (FirstProjectID > 0)
-                {
-                    try
-                    {
-                        InsStand = new BLL.Laboratory.T_tb_Project().GetModel(FirstProjectID).InsStand;
-                        if (!String.IsNullOrEmpty(InsStand))
-                        {
-                            String[] ins = InsStand.Split('、');
-                            if (ins.Length > 0)
-                            {
-                                List<SelectListItem> list = new List<SelectListItem>();
-                                for (int i = 0; i < ins.Length; i++)
-                                {
-                                    list.Add(new SelectListItem() { Text = ins[i], Value = ins[i], Selected = true });
-                                }
-                                ViewData["InsStandList"] = new SelectList(list, "Value", "Text");
-                            }
-                        }
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                eOriginalRecord.InsStand = InsStand;
-                eOriginalRecord.SampleID = FirstSampleID;
-                eOriginalRecord.ProjectID = FirstProjectID;
-
-                try
-                {
-                    eOriginalRecord.DetectTime = tExpePlan.GetModelList(string.Format("Status=0 and SampleID={0} and ProjectID={1}", FirstSampleID, FirstProjectID)).First().InspectTime;
-                }
-                catch
-                {
-
-                }
-                string TempFileName = tProject.GetModel(FirstProjectID).FilePath;
-                string Suffix = TempFileName.Split('.')[1];
-                string NewFileName = Guid.NewGuid().ToString() + "." + Suffix;
-                string TempFilePath = Server.MapPath("~/UpFile/" + tProject.GetModel(FirstProjectID).FilePath);
-                string NewFilePath = Server.MapPath("~/UpFile/OriginalRecordFile/" + NewFileName);
-                try
-                {
-                    System.IO.File.Copy(TempFilePath, NewFilePath);
-                }
-                catch (Exception ex)
-                {
-                    var script = ex.Message;
-                    return Content(script, "text/html");
-                }
-                eOriginalRecord.FilePath = "OriginalRecordFile/" + NewFileName; //显示默认的模版目录
-            }
-            ViewBag.FilePath = eOriginalRecord.FilePath;
             ViewBag.DetectPersonnelID = CurrentUserInfo.PersonnelID;
             ViewBag.DetectPersonnelName = CurrentUserInfo.PersonnelName;
-            ViewBag.SampleID = eOriginalRecord.SampleID;
-            ViewBag.ProjectID = eOriginalRecord.ProjectID;
-            eOriginalRecord.EditType = EditType;
-
-
-            #region 文档预览
-            string filename = eOriginalRecord.FilePath;
-            E_tb_Project eProject = tProject.GetModel(Convert.ToInt32(eOriginalRecord.ProjectID));
-            if (!string.IsNullOrEmpty(filename))
-            {
-                Page page = new Page();
-                string controlOutput = string.Empty;
-                PageOffice.PageOfficeCtrl pc = new PageOffice.PageOfficeCtrl();
-                pc.SaveFilePage = "/OriginalRecord/SaveDoc?filename=" + filename;
-                pc.ServerPage = "/pageoffice/server.aspx";
-
-                PageOffice.ExcelWriter.Workbook wb = new PageOffice.ExcelWriter.Workbook();
-                PageOffice.ExcelWriter.Sheet sheetOrder = wb.OpenSheet("Sheet1");
-                PageOffice.ExcelWriter.Table table = sheetOrder.OpenTable(eProject.SampleDataRange.Replace("：", ":").ToUpper());
-                pc.SetWriter(wb);
-                pc.SaveDataPage = "/OriginalRecord/SaveData?FilePath=" + filename + "&ProjectID=" + eOriginalRecord.ProjectID.ToString();
-
-                if (EditType != "Edit" && eProject.IsPesCheck != 1)
-                {
-                    tb_Sample eSample = tSample.GetModel(int.Parse(eOriginalRecord.SampleID.ToString()));
-
-                    ArrayList CellArr = new ArrayList { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-                    string StrDataRange = eProject.SampleDataRange.Replace("：", ":").ToUpper();
-                    int CellStartIndex = CellArr.IndexOf(StrDataRange.Split(':')[0].Substring(0, 1).ToUpper());
-                    int DRangeStartIndex = int.Parse(StrDataRange.Split(':')[0].Substring(1, StrDataRange.Split(':')[0].Length - 1)) + 1;
-                    int DRangeEndIndex = int.Parse(StrDataRange.Split(':')[1].Substring(1, StrDataRange.Split(':')[0].Length - 1));
-
-                    //定义Workbook对象
-                    PageOffice.ExcelWriter.Workbook workBook = new PageOffice.ExcelWriter.Workbook();
-                    //定义Sheet对象，"Sheet1"是打开的Excel表单的名称
-                    PageOffice.ExcelWriter.Sheet sheet = workBook.OpenSheet("Sheet1");
-                    for (int i = DRangeStartIndex; i <= DRangeEndIndex; i++)
-                    {
-                        //或者直接给Cell赋值
-                        sheet.OpenCell(CellArr[CellStartIndex].ToString() + i).Value = eSample.sampleNum;                         //样品编号
-                        sheet.OpenCell(CellArr[CellStartIndex + 1].ToString() + i).Value = eSample.name;                          //样品名称
-                        sheet.OpenCell(CellArr[CellStartIndex + 2].ToString() + i).Value = eSample.productDate.ToString(); ;      //成品日期
-                        sheet.OpenCell(CellArr[CellStartIndex + 3].ToString() + i).Value = eSample.detectionDate.ToString();      //抽样日期
-                    }
-                    pc.SetWriter(workBook);// 注意不要忘记此代码，如果缺少此句代码，不会赋值成功。
-                }
-
-                var openmodeltype = PageOffice.OpenModeType.docAdmin;
-                try
-                {
-                    var filenames = filename.Split('.');
-                    switch (filenames[1])
-                    {
-                        case "doc":
-                            openmodeltype = PageOffice.OpenModeType.docNormalEdit;
-                            break;
-                        case "docx":
-                            openmodeltype = PageOffice.OpenModeType.docNormalEdit;
-                            break;
-                        case "xlsx":
-                            openmodeltype = PageOffice.OpenModeType.xlsNormalEdit;
-                            break;
-                        case "xls":
-                            openmodeltype = PageOffice.OpenModeType.xlsNormalEdit;
-                            break;
-                        case "pptx":
-                            openmodeltype = PageOffice.OpenModeType.pptNormalEdit;
-                            break;
-                        case "ppt":
-                            openmodeltype = PageOffice.OpenModeType.pptNormalEdit;
-                            break;
-                    }
-                }
-                catch
-                {
-
-                }
-                pc.WebOpen("/UpFile/" + filename, openmodeltype, "s");
-                page.Controls.Add(pc);
-                StringBuilder sb = new StringBuilder();
-                using (StringWriter sw = new StringWriter(sb))
-                {
-                    using (HtmlTextWriter htw = new HtmlTextWriter(sw))
-                    {
-                        Server.Execute(page, htw, false); controlOutput = sb.ToString();
-                    }
-                }
-                ViewBag.EditorHtml = controlOutput;
-            }
-            #endregion
-
-
+            ViewData["InsStandList"] = InsStandList;
             return View(eOriginalRecord);
+        }
+        
+        /// <summary>
+        /// 删除实验室信息
+        /// </summary>
+        /// <param name="InfoID">要删除的实验室</param>
+        /// <returns>返回是否删除成功</returns>
+        public JsonResult Delete(int id)
+        {
+            tRecordSample.DeleteListByWhere("RecordID=" + id); //删除对应的样品记录信息
+            bool result = tOriginalRecord.Delete(id); //删除原始记录
+            return Json("删除成功！", JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
         /// 保存实验室信息
-        /// 作者：小朱
         /// </summary>
         /// <param name="eOriginalRecord">要处理的对象</param>
         /// <returns>返回是否处理成功</returns>
-        public string Save(E_tb_OriginalRecord eOriginalRecord)
+        public JsonResult Save(E_tb_OriginalRecord eOriginalRecord)
         {
-            string msg = "0";
             eOriginalRecord.EditPersonnelID = CurrentUserInfo.PersonnelID;
-            eOriginalRecord.AreaID = CurrentUserInfo.AreaID;
-            if (eOriginalRecord.EditType == "Add")
-            {
+            bool result = tOriginalRecord.Update(eOriginalRecord);
 
-                tOriginalRecord.Add(eOriginalRecord);
-                msg = "1";
-            }
-            else
-            {
-                tOriginalRecord.Update(eOriginalRecord);
-                msg = "1";
-            }
-            //关联样品数据
-            tRecordSample.UpdateRecordIDByFilePath(eOriginalRecord.RecordID, eOriginalRecord.FilePath);
+            //关联样品数据(废弃，因无录入行为)
+            //tRecordSample.UpdateRecordIDByFilePath(eOriginalRecord.RecordID, eOriginalRecord.FilePath);
 
-            //生成检验报告
-            E_tb_ExpePlan eExpePlan = tExpePlan.GetModelList("TaskNo='" + eOriginalRecord.TaskNo + "' and SampleID=" + eOriginalRecord.SampleID.Value).FirstOrDefault();
-            //E_tb_ExpePlan eExpePlan = tExpePlan.GetModelList(" Status=0 and SampleID=" + eOriginalRecord.SampleID.Value).FirstOrDefault();
-            if (eExpePlan != null)
-            {
-                //tb_Sample eSample = tSample.GetModel(int.Parse(eExpePlan.SampleID.ToString()));
-                Updatethings(eOriginalRecord, eExpePlan);
-            }
-            else
-            {
-                /*这一段章建国写的如果出错请删除
-                eExpePlan = new E_tb_ExpePlan();
-                var tempsample = tSample.GetModel(eOriginalRecord.SampleID.Value);
-                eExpePlan.PlanTypeID = 1;
-                eExpePlan.ProjectID = eOriginalRecord.ProjectID;
-                eExpePlan.SampleID = tempsample.id;
-                eExpePlan.InspectTime = eOriginalRecord.DetectTime;
-                eExpePlan.InspectMethod = tempsample.testMethod;
-                if (!String.IsNullOrEmpty(tempsample.InspectAddress))
-                {
-                    eExpePlan.InspectPlace = tempsample.InspectAddress;
-                }
-                else if (!String.IsNullOrEmpty(tempsample.detectionAdress))
-                {
-                    eExpePlan.InspectPlace = tempsample.detectionAdress;
-                }
-                eExpePlan.HeadPersonnelID = CurrentUserInfo.PersonnelID;
-                eExpePlan.TaskNo = eOriginalRecord.TaskNo;
-                eExpePlan.AreaID = CurrentUserInfo.AreaID;
-                eExpePlan.EditPersonnelID = CurrentUserInfo.PersonnelID;
-                eExpePlan.Status = 0;
-                eExpePlan.UpdateTime = DateTime.Now;
-                tExpePlan.Add(eExpePlan);
-                eExpePlan = tExpePlan.GetModelList("TaskNo='" + eOriginalRecord.TaskNo + "' and SampleID=" + eOriginalRecord.SampleID.Value).FirstOrDefault();
-                Updatethings(eOriginalRecord,eExpePlan);*/
-            }
-            return msg;
+            ////生成检验报告(该功能有前台触发)
+            //E_tb_ExpePlan eExpePlan = tExpePlan.GetModelList("TaskNo='" + eOriginalRecord.TaskNo + "' and SampleID=" + eOriginalRecord.SampleID.Value).FirstOrDefault();
+            //Updatethings(eOriginalRecord, eExpePlan);
+
+            return Json(new { result = result, msg = "修改成功！" });
         }
-
-        private void Updatethings(E_tb_OriginalRecord eOriginalRecord, E_tb_ExpePlan eExpePlan)
+        
+        /// <summary>
+        /// 更新检验报告
+        /// </summary>
+        /// <param name="eOriginalRecord"></param>
+        /// <param name="eExpePlan"></param>
+        public JsonResult UpdateTestReport(int RecordID)
         {
+            E_tb_OriginalRecord eOriginalRecord = _dOriginalRecord.GetModel(new E_tb_OriginalRecord() { RecordID = RecordID });
+            E_tb_ExpePlan eExpePlan = _dExpePlan.GetExpePlanInfo(new E_tb_ExpePlan() { TaskNo = eOriginalRecord.TaskNo });
+
             tb_Sample eSample = tSample.GetModel(eOriginalRecord.SampleID.Value);
             string productNum = eSample.protNum;//产品批次
             E_tb_TestReport eTestReport = null;
-            //if (!String.IsNullOrEmpty(productNum))
-            //{
-            //    eTestReport = tTestReport.GetModelList("productNum='" + productNum + "'").First();
-            //}
             var tempmodel = tTestReport.GetModelList(" SampleNum = '" + eSample.sampleNum + "'");
             if (tempmodel != null && tempmodel.Count > 0)
             {
@@ -557,15 +234,6 @@ namespace Web.Controllers
                 eTestReport.ProductionTime = eSample.productDate;//生产日期
                 eTestReport.Specifications = eSample.modelType;//规格型号
                 eTestReport.ShelfLife = eSample.expirationDate;//保质期
-                //string Department = "/";
-                //if (eExpePlan.TaskNo.IndexOf("JN") < 0)
-                //{
-                //    E_tb_EntrustTesting eEntrustTesting = tEntrustTesting.GetModelList("TaskNo='" + eExpePlan.TaskNo + "'").FirstOrDefault();
-                //    if (eEntrustTesting != null)
-                //    {
-                //        Department = eEntrustTesting.EntrustCompany;
-                //    }
-                //}
                 string Department = "/";
                 if (eSample.isDetection)
                 {
@@ -583,9 +251,7 @@ namespace Web.Controllers
                 eTestReport.SamplingPersonnel = eSample.detectionUser;//抽样者
                 eTestReport.Packing = eSample.packaging;//包装形式
                 eTestReport.SamplingTime = eSample.detectionDate;//抽样日期
-                //eTestReport.TestBasis = eSample.testMethod;//检验依据
                 eTestReport.TestBasis = new BLL.Laboratory.T_tb_Project().GetModel(eOriginalRecord.ProjectID.Value).ExpeMethod;
-
                 eTestReport.TestTime = eOriginalRecord.DetectTime;//检验日期
                 DataTable dt = tOriginalRecord.GetRecordIDListBySampleID(int.Parse(eExpePlan.SampleID.ToString()));
                 string RecordIDS = "";
@@ -745,113 +411,11 @@ namespace Web.Controllers
                     }
                 }
             }
+            return Json(new { result = true, msg = "更新成功！" }, JsonRequestBehavior.AllowGet);
         }
-
-        public ActionResult SaveData(string FilePath, string ProjectID)
-        {
-            PageOffice.ExcelReader.Workbook wb = new PageOffice.ExcelReader.Workbook();
-            PageOffice.ExcelReader.Sheet sheet = wb.OpenSheet("Sheet1");
-            E_tb_Project eProject = tProject.GetModel(int.Parse(ProjectID));
-            PageOffice.ExcelReader.Table table = sheet.OpenTable(eProject.SampleDataRange.Replace("：", ":").ToUpper());
-            DataTable dt = new DataTable();
-            for (int i = 0; i < table.DataFields.Count; i++)
-            {
-                dt.Columns.Add(table.DataFields[i].Text);
-            }
-            table.NextRow();
-            while (!table.EOF)
-            {
-                //获取提交的数值
-                if (!table.DataFields.IsEmpty)
-                {
-                    DataRow row = dt.NewRow();
-                    for (int i = 0; i < table.DataFields.Count; i++)
-                    {
-                        row[i] = table.DataFields[i].Text;
-                    }
-                    dt.Rows.Add(row);
-                }
-
-                try
-                {
-                    table.NextRow(); //循环进入下一行
-                }
-                catch
-                {
-                    break;
-                }
-            }
-
-            //删除历史数据
-            tRecordSample.DeleteListByWhere("RecordFilePath='" + FilePath + "'");
-            tTestReportData.DeleteByWhere("RecordFilePath='" + FilePath + "'");
-
-            //关联检验报告
-            Regex reg = new Regex("^[0-9]+(.[0-9])?$");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                if (eProject.IsPesCheck != null && Convert.ToInt32(eProject.IsPesCheck.ToString()) == 1) //判断是否为检验农药残留项目
-                {
-                    DataRow item = dt.Rows[i];
-                    string SampleName = item["样品名称"].ToString(); //样品名称
-                    string strResult = item["复检值2"].ToString();//复检值2
-                    if (strResult.Trim() == "")
-                    {
-                        strResult = item["最终值"].ToString();//最终值
-                    }
-                    if (!string.IsNullOrEmpty(SampleName.Trim()))
-                    {
-                        E_tb_TestReportData eTestReportData = new E_tb_TestReportData();
-                        eTestReportData.RecordID = 0;               //原始记录ID
-                        eTestReportData.RecordFilePath = FilePath;  //原始记录文件名
-                        eTestReportData.ReportID = 0;               //检验报告ID
-                        eTestReportData.TestName = SampleName;      //检验名称/检验项目名称 (农药残留检验项目，直接显示样品名称)
-                        eTestReportData.TestStandard = "";          //检验标准
-                        eTestReportData.TestResult = strResult;     //检验结果
-                        eTestReportData.QualifiedLevel = "";        //是否合格
-                        eTestReportData.TestPersonnelName = "";     //检验人
-                        tTestReportData.Add(eTestReportData);
-                    }
-                }
-                else
-                {
-                    DataRow item = dt.Rows[i];
-                    string strSampleID = item["编号"].ToString();
-                    string strResult = item["最终值"].ToString();
-                    tb_Sample eSample = tSample.GetModelList("sampleNum='" + strSampleID.Trim() + "'").FirstOrDefault();
-                    if (eSample != null && !string.IsNullOrEmpty(strResult))
-                    {
-                        E_tb_TestReportData eTestReportData = new E_tb_TestReportData();
-                        eTestReportData.RecordID = 0;               //原始记录ID
-                        eTestReportData.RecordFilePath = FilePath;  //原始记录文件名
-                        eTestReportData.ReportID = 0;               //检验报告ID
-                        eTestReportData.TestName = "";              //检验名称/检验项目名称
-                        eTestReportData.TestStandard = "";          //检验标准
-                        eTestReportData.TestResult = strResult;     //检验结果
-                        eTestReportData.QualifiedLevel = "";        //是否合格
-                        eTestReportData.TestPersonnelName = "";     //检验人
-                        tTestReportData.Add(eTestReportData);
-                    }
-                }
-            }
-            table.Close();
-            wb.Close();
-            return View();
-        }
-
-        /// <summary>
-        /// 删除实验室信息
-        /// 作者：小朱
-        /// </summary>
-        /// <param name="InfoID">要删除的实验室</param>
-        /// <returns>返回是否删除成功</returns>
-        public JsonResult Delete(int id)
-        {
-            tRecordSample.DeleteListByWhere("RecordID=" + id); //删除对应的样品记录信息
-            string str = (tOriginalRecord.Delete(id)) ? "删除成功！" : "删除失败！";
-            return Json(str, JsonRequestBehavior.AllowGet);
-        }
-
+        
+        //*********************************原有代码****************************************************
+        
         /// <summary>
         /// 阅览文件
         /// 作者：章建国
@@ -870,18 +434,6 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 根据样品ID获取对应的 未完成的实验计划对应的项目
-        /// </summary>
-        /// <param name="SampleID"></param>
-        /// <returns></returns>
-        public JsonResult GetProjectList(string SampleID)
-        {
-            List<E_tb_Project> list = new List<E_tb_Project>();
-            list = tProject.GetModelList("ProjectID in (select ProjectID from tb_ExpePlan where Status=0 and SampleID=" + SampleID + ")");
-            return Json(list, JsonRequestBehavior.AllowGet);
-        }
-
-        /// <summary>
         /// 根据样品ID 项目ID
         /// </summary>
         /// <param name="SampleID"></param>
@@ -893,7 +445,6 @@ namespace Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        #region 文件预览
         /// <summary>
         /// 通过pageoffice展示数据
         /// 作者：章建国
@@ -968,98 +519,6 @@ namespace Web.Controllers
             ViewBag._SWFURL = filename;
             return View();
         }
-
-        /// <summary>
-        /// 保存在线修改的office文件
-        /// 作者：章建国
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult SaveDoc(string filename)
-        {
-            ViewBag.Message = "Your app description page.";
-            string filePath = AppDomain.CurrentDomain.BaseDirectory + "UpFile//" + filename;
-            PageOffice.FileSaver fs = new PageOffice.FileSaver();
-            fs.SaveToFile(filePath);
-            fs.Close();
-
-            return View();
-        }
-        #endregion
-
-
-        /// <summary>
-        /// 获取PageOffice控件输出内容
-        /// </summary>
-        /// <returns></returns>
-        public string GetPageOfficePageOutHtml(string filename, string SampleDataRange,int ProjectID,int SampleID,bool IsPesCheck)
-        {
-            Page page = new Page();
-            PageOffice.PageOfficeCtrl pc = new PageOffice.PageOfficeCtrl();
-            pc.SaveFilePage = "/OriginalRecord/SaveDoc?filename=" + filename;
-            pc.ServerPage = "/pageoffice/server.aspx";
-            PageOffice.ExcelWriter.Workbook wb = new PageOffice.ExcelWriter.Workbook();
-            PageOffice.ExcelWriter.Sheet sheetOrder = wb.OpenSheet("Sheet1");
-            PageOffice.ExcelWriter.Table table = sheetOrder.OpenTable(SampleDataRange.Replace("：", ":").ToUpper());
-            pc.SetWriter(wb);
-            pc.SaveDataPage = "/OriginalRecord/SaveData?FilePath=" + filename + "&ProjectID=" + ProjectID;
-
-            if (!IsPesCheck)
-            {
-                tb_Sample eSample = tSample.GetModel(SampleID);
-                ArrayList CellArr = new ArrayList { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-                string StrDataRange = SampleDataRange.Replace("：", ":").ToUpper();
-                int CellStartIndex = CellArr.IndexOf(StrDataRange.Split(':')[0].Substring(0, 1).ToUpper());
-                int DRangeStartIndex = int.Parse(StrDataRange.Split(':')[0].Substring(1, StrDataRange.Split(':')[0].Length - 1)) + 1;
-                int DRangeEndIndex = int.Parse(StrDataRange.Split(':')[1].Substring(1, StrDataRange.Split(':')[0].Length - 1));
-                //定义Workbook对象
-                PageOffice.ExcelWriter.Workbook workBook = new PageOffice.ExcelWriter.Workbook();
-                //定义Sheet对象，"Sheet1"是打开的Excel表单的名称
-                PageOffice.ExcelWriter.Sheet sheet = workBook.OpenSheet("Sheet1");
-                for (int i = DRangeStartIndex; i <= DRangeEndIndex; i++)
-                {
-                    //或者直接给Cell赋值
-                    sheet.OpenCell(CellArr[CellStartIndex].ToString() + i).Value = eSample.sampleNum;                         //样品编号
-                    sheet.OpenCell(CellArr[CellStartIndex + 1].ToString() + i).Value = eSample.name;                          //样品名称
-                    sheet.OpenCell(CellArr[CellStartIndex + 2].ToString() + i).Value = eSample.productDate.ToString(); ;      //生产日期
-                    sheet.OpenCell(CellArr[CellStartIndex + 3].ToString() + i).Value = eSample.detectionDate.ToString();      //抽样日期
-                }
-                pc.SetWriter(workBook);// 注意不要忘记此代码，如果缺少此句代码，不会赋值成功。
-            }
-
-            var openmodeltype = PageOffice.OpenModeType.docAdmin;
-            var filenames = filename.Split('.');
-            switch (filenames[1])
-            {
-                case "doc":
-                    openmodeltype = PageOffice.OpenModeType.docNormalEdit;
-                    break;
-                case "docx":
-                    openmodeltype = PageOffice.OpenModeType.docNormalEdit;
-                    break;
-                case "xlsx":
-                    openmodeltype = PageOffice.OpenModeType.xlsNormalEdit;
-                    break;
-                case "xls":
-                    openmodeltype = PageOffice.OpenModeType.xlsNormalEdit;
-                    break;
-                case "pptx":
-                    openmodeltype = PageOffice.OpenModeType.pptNormalEdit;
-                    break;
-                case "ppt":
-                    openmodeltype = PageOffice.OpenModeType.pptNormalEdit;
-                    break;
-            }
-            pc.WebOpen("/UpFile/" + filename, openmodeltype, "s");
-            page.Controls.Add(pc);
-            StringBuilder controlOutput = new StringBuilder();
-            using (StringWriter sw = new StringWriter(controlOutput))
-            {
-                using (HtmlTextWriter htw = new HtmlTextWriter(sw))
-                {
-                    Server.Execute(page, htw, false);
-                }
-            }
-            return controlOutput.ToString();
-        }
+        
     }
 }

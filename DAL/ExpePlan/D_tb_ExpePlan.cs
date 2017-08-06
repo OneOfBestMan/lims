@@ -44,11 +44,36 @@ namespace DAL.ExpePlan
             return list;
         }
 
+        /// <summary>
+        /// 获取符合要求的样品详情
+        /// </summary>
+        /// <param name="model">查询实体</param>
+        /// <returns>返回对应实体信息</returns>
+        public E_tb_ExpePlan GetExpePlanInfo(E_tb_ExpePlan model)
+        {
+            StringBuilder strWhere = new StringBuilder();
+            if (model.SampleID > 0) //样品ID
+            {
+                strWhere.AddWhere($"SampleID={model.SampleID}");
+            }
+            if (model.ProjectID > 0) //项目ID
+            {
+                strWhere.AddWhere($"ProjectID={model.ProjectID}");
+            }
+            if (!string.IsNullOrEmpty(model.TaskNo)) //样品编号
+            {
+                strWhere.AddWhere($"TaskNo='{model.TaskNo}'");
+            }
 
-
-        public D_tb_ExpePlan()
-        { }
-        #region  Method
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"select top 1 * from tb_ExpePlan {strWhere.ToString()}");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                model = conn.Query <E_tb_ExpePlan> (strSql.ToString(), model)?.FirstOrDefault();
+            }
+            return model;
+        }
+        
         /// <summary>
         /// 是否存在该记录
         /// </summary>
@@ -64,8 +89,7 @@ namespace DAL.ExpePlan
 
             return DbHelperSQL.Exists(strSql.ToString(), parameters);
         }
-
-
+        
         /// <summary>
         /// 增加一条数据
         /// </summary>
@@ -219,8 +243,7 @@ namespace DAL.ExpePlan
                 return false;
             }
         }
-
-
+        
         /// <summary>
         /// 得到一个对象实体
         /// </summary>
@@ -338,35 +361,7 @@ namespace DAL.ExpePlan
             strSql.Append(" order by " + filedOrder);
             return DbHelperSQL.Query(strSql.ToString());
         }
-
-        /*
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        public DataSet GetList(int PageSize,int PageIndex,string strWhere)
-        {
-            SqlParameter[] parameters = {
-                    new SqlParameter("@tblName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@fldName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@PageSize", SqlDbType.Int),
-                    new SqlParameter("@PageIndex", SqlDbType.Int),
-                    new SqlParameter("@IsReCount", SqlDbType.Bit),
-                    new SqlParameter("@OrderType", SqlDbType.Bit),
-                    new SqlParameter("@strWhere", SqlDbType.VarChar,1000),
-                    };
-            parameters[0].Value = "tb_ExpePlan";
-            parameters[1].Value = "PlanID";
-            parameters[2].Value = PageSize;
-            parameters[3].Value = PageIndex;
-            parameters[4].Value = 0;
-            parameters[5].Value = 0;
-            parameters[6].Value = strWhere;	
-            return DbHelperSQL.RunProcedure("UP_GetRecordByPage",parameters,"ds");
-        }*/
-
-        #endregion  Method
-
-        #region 数据接口
+        
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -383,14 +378,16 @@ namespace DAL.ExpePlan
             {
                 strSql.Append("order by T.PlanID desc");
             }
-            strSql.Append(")AS Row, T.*,A.ProjectName,B.PersonnelName as HeadPersonnelName,C.name as SampleName ");
+            strSql.Append(")AS Row, T.*,A.ProjectName,B.PersonnelName as HeadPersonnelName,C.name as SampleName,D.RecordID ");
             strSql.Append(@"from tb_ExpePlan T  
                             left join tb_Project as A on T.ProjectID=A.ProjectID
                             left join tb_InPersonnel as B on T.HeadPersonnelID=B.PersonnelID 
-                            left join tb_Sample as C on T.SampleID=C.id ");
+                            left join tb_Sample as C on T.SampleID=C.id
+                            left join tb_OriginalRecord as D on T.TaskNo=D.TaskNo
+");
             if (!string.IsNullOrEmpty(strWhere.Trim()))
             {
-                strSql.Append(" WHERE " + strWhere);
+                strSql.Append(strWhere);
             }
             strSql.Append(" ) TT");
             total = DbHelperSQL.GetCount(strSql.ToString());
@@ -435,8 +432,7 @@ namespace DAL.ExpePlan
                 return Convert.ToInt32(obj);
             }
         }
-
-
+        
         /// <summary>
         /// 获得实验计划超出检验时间内容
         /// 作者：章建国
@@ -460,8 +456,7 @@ dbo.tb_ExpePlan.HeadPersonnelID,dbo.tb_InPersonnel.PersonnelName
    ORDER BY unfinish desc");
             return DbHelperSQL.Query(strSql.ToString());
         }
-
-
+        
         public DataSet GetAllUNFinishList()
         {
             StringBuilder strSql = new StringBuilder();
@@ -476,8 +471,5 @@ HeadPersonnelID,PersonnelName
    ORDER BY unfinish desc");
             return DbHelperSQL.Query(strSql.ToString());
         }
-        #endregion
-
-
     }
 }

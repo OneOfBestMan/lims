@@ -357,72 +357,49 @@ namespace Web.Controllers
 
         /// <summary>
         /// 保存实验室信息
-        /// 作者：小朱
         /// </summary>
         /// <param name="eTestReport">要处理的对象</param>
         /// <returns>返回是否处理成功</returns>
         [ValidateInput(false)]
         public bool Save(E_tb_TestReport eTestReport)
         {
-            try
+            //检验数据
+            List<E_ReportData> ReportDataList = new List<E_ReportData>();
+            string strJson = eTestReport.TestReportDataJson;
+            if (!string.IsNullOrEmpty(strJson))
             {
-                //检验数据
-                List<E_ReportData> ReportDataList = new List<E_ReportData>();
-                string strJson = eTestReport.TestReportDataJson;
-                if (!string.IsNullOrEmpty(strJson))
-                {
-                    strJson = strJson.Replace("\r\n", "");
-                    ReportDataList = JsonHelper.JsonDeserialize<List<E_ReportData>>(strJson);
-                }
-                //删除原有检验数据
-                tTestReportData.DeleteByWhere("ReportID=" + eTestReport.ReportID);
-                foreach (E_ReportData item in ReportDataList)
-                {
-                    E_tb_TestReportData eTestReportData = new E_tb_TestReportData();
-                    eTestReportData.ReportID = eTestReport.ReportID;
-                    eTestReportData.TestName = item.TestName;
-                    eTestReportData.TestStandard = item.TestStandard;
-                    eTestReportData.TestResult = item.TestResult;
-                    eTestReportData.QualifiedLevel = item.QualifiedLevel;
-                    eTestReportData.TestPersonnelName = item.TestPersonnelName;
-                    eTestReportData.RecordID = int.Parse(item.RecordID);
-                    eTestReportData.RecordFilePath = item.RecordFilePath;
-                    tTestReportData.Add(eTestReportData);
-                }
-
-                //结论
-                //eTestReport.Conclusion = "合格";
-                DataTable TestReportDataDT = tTestReportData.GetList("ReportID=" + eTestReport.ReportID + " and QualifiedLevel=''").Tables[0];
-                //if (TestReportDataDT != null && TestReportDataDT.Rows.Count > 0)
-                //{
-                //    eTestReport.Conclusion = "";
-                //}
-                //TestReportDataDT = tTestReportData.GetList("ReportID=" + eTestReport.ReportID + " and QualifiedLevel='不合格'").Tables[0];
-                //if (TestReportDataDT != null && TestReportDataDT.Rows.Count > 0)
-                //{
-                //    eTestReport.Conclusion = "不合格";
-                //}
-
-                eTestReport.EditPersonnelID = CurrentUserInfo.PersonnelID;
-                eTestReport.AreaID = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(eTestReport.MainTestPersonnelID.Value).AreaID;
-                //if (CurrentUserInfo.DataRange != 1)
-                //{
-                //    eTestReport.AreaID = CurrentUserInfo.AreaID;
-                //}
-                eTestReport.RecordIDS = eTestReport.RecordIDS.TrimEnd(',');
-                eTestReport.TaskNoS = eTestReport.TaskNoS.TrimEnd(',');
-                eTestReport.UpdateTime = DateTime.Now;
-                tTestReport.Update(eTestReport);
-
-                //判断检验报告是否审核通过
-                if (eTestReport.ApprovalPersonnelID > 0 && eTestReport.examinePersonnelID > 0 && eTestReport.MainTestPersonnelID > 0)
-                {
-                    tExpePlan.UpdateStatusByPlanIDS(eTestReport.TaskNoS, eTestReport.ReportID);
-                }
+                strJson = strJson.Replace("\r\n", "");
+                ReportDataList = JsonHelper.JsonDeserialize<List<E_ReportData>>(strJson);
             }
-            catch (Exception ex)
+            //删除原有检验数据
+            tTestReportData.DeleteByWhere("ReportID=" + eTestReport.ReportID);
+            foreach (E_ReportData item in ReportDataList)
             {
-                return false;
+                E_tb_TestReportData eTestReportData = new E_tb_TestReportData();
+                eTestReportData.ReportID = eTestReport.ReportID;
+                eTestReportData.TestName = item.TestName;
+                eTestReportData.TestStandard = item.TestStandard;
+                eTestReportData.TestResult = item.TestResult;
+                eTestReportData.QualifiedLevel = item.QualifiedLevel;
+                eTestReportData.TestPersonnelName = item.TestPersonnelName;
+                eTestReportData.RecordID = int.Parse(item.RecordID);
+                eTestReportData.RecordFilePath = item.RecordFilePath;
+                tTestReportData.Add(eTestReportData);
+            }
+
+            //结论
+            DataTable TestReportDataDT = tTestReportData.GetList("ReportID=" + eTestReport.ReportID + " and QualifiedLevel=''").Tables[0];
+            eTestReport.EditPersonnelID = CurrentUserInfo.PersonnelID;
+            eTestReport.AreaID = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(eTestReport.MainTestPersonnelID.Value).AreaID;
+            eTestReport.RecordIDS = eTestReport.RecordIDS.TrimEnd(',');
+            eTestReport.TaskNoS = eTestReport.TaskNoS.TrimEnd(',');
+            eTestReport.UpdateTime = DateTime.Now;
+            tTestReport.Update(eTestReport);
+
+            //判断检验报告是否审核通过
+            if (eTestReport.ApprovalPersonnelID > 0 && eTestReport.examinePersonnelID > 0 && eTestReport.MainTestPersonnelID > 0)
+            {
+                tExpePlan.UpdateStatusByPlanIDS(eTestReport.TaskNoS, eTestReport.ReportID);
             }
             return true;
         }
@@ -444,7 +421,7 @@ namespace Web.Controllers
         /// </summary>
         public JsonResult Examine(string ids)
         {
-            bool result=dTestReport.Examine(ids, CurrentUserInfo.PersonnelID);
+            bool result = dTestReport.Examine(ids, CurrentUserInfo.PersonnelID);
             return Json(result ? "True" : "审核失败", JsonRequestBehavior.AllowGet);
         }
 
@@ -567,7 +544,7 @@ namespace Web.Controllers
                     Pss.UseShellExecute = false;
                     Pss.RedirectStandardInput = true;
                     Pss.RedirectStandardOutput = true;
-                    
+
                     bool bresult = false;
                     using (Process PS = new Process())
                     {
@@ -584,7 +561,7 @@ namespace Web.Controllers
                     iFile[i] = FilePath;
                 }
             }
-            
+
             string oFile = AppDomain.CurrentDomain.BaseDirectory + "UpFile//DownLoads//" + strs + ".zip";
             PublicClass.CompressFiles(iFile, oFile);
             return File(oFile, "application/octet-stream", strs + ".zip");

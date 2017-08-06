@@ -30,70 +30,31 @@
     </style>
 </head>
 <body>
-    <div id="formdata" style="width:800px;">
+    <div id="formdata" style="width:600px;">
         @Html.HiddenFor(m => m.RecordID, new { @id = "HidRecordID" })
-        @Html.HiddenFor(m => m.EditType, new { @id = "HidEditType" })
         @Html.HiddenFor(m => m.FilePath, new { @id = "HidFilePath" })
         @Html.HiddenFor(m => m.DetectPersonnelID, new { @id = "HidDetectPersonnelID" }) <!--通过Js进行赋值-->
         @Html.HiddenFor(m => m.DetectTime, new { @id = "HidDetectTime" })
         @Html.HiddenFor(m => m.ProjectID, new { @id = "HidProjectID" })
-        @Html.HiddenFor(m => m.SampleID)
+        @Html.HiddenFor(m => m.SampleID, new { @id = "SampleID" })
+        @Html.HiddenFor(m => m.TaskNo, new { @id = "TaskNo" })
+
         <table border="0" cellpadding="0" cellspacing="0" width="98%" class="DialogTable">
+            +
             <tr>
                 <td width="70px" align="right">样品名称：</td>
                 <td align="left" style="width:210px;">
-                    <select id="drop_Sample" name="SampleID" style="width:200px;">
-                        @{
-                            var SampleList = ViewData["SampleList"] as DataTable;
-                            if (SampleList != null)
-                            {
-                                foreach (DataRow item in SampleList.Rows)
-                                {
-                                    <option value="@item["id"].ToString()" @(Convert.ToInt32(item["id"]) == Model.SampleID ? "selected" : "")>@item["name"].ToString()</option>
-                                }
-                            }
-                        }
-                    </select>
+                    <input type="text" value="@Model.samplename" disabled="disabled" style="width:200px;" />
                 </td>
                 <td width="70px" align="right">项目名称：</td>
                 <td align="left">
-                    <select id="drop_Project" name="ProjectID" style="width:200px;">
-                        @{ 
-                            var ProjectList = ViewData["ProjectList"] as DataTable;
-                            if (ProjectList != null)
-                            {
-                                foreach (DataRow item in ProjectList.Rows)
-                                {
-                                    <option value="@item["ProjectID"].ToString()" @(Convert.ToInt32(item["ProjectID"])==Model.ProjectID?"selected":"") >@item["ProjectName"].ToString()</option>
-                                }
-                            }
-                        }
-                    </select>
+                    <input type="text" value="@Model.projectname" disabled="disabled" style="width:200px;" />
                 </td>
             </tr>
-
-            <!--根据需求，去除该列-->
-            <tr style="display:none;">
-                <td colspan="4">
-                    <select name="TaskNo" style="width:200px;">
-                        @{
-                            var ExpePlanList = ViewData["ExpePlanList"] as DataTable;
-                            if (ExpePlanList != null)
-                            {
-                                foreach (DataRow item in ExpePlanList.Rows)
-                                {
-                                    <option value="@item["TaskNo"].ToString()" @(item["TaskNo"].ToString() == Model.TaskNo ? "selected" : "")>@item["TaskNo"].ToString()</option>
-                                }
-                            }
-                        }
-                    </select>
-                </td>
-            </tr>
-
             <tr>
                 <td width="70px" align="right">检测日期：</td>
                 <td align="left">
-                    @Html.TextBoxFor(m => m.DetectTime, new { @style = "width:200px;", @id = "txt_DetectTime", @onclick = "WdatePicker()", @disabled = "disabled" })
+                    <input type="text" value="@Model.DetectTime" disabled="disabled" style="width:200px;" />
                 </td>
                 <td width="70px" align="right">备注：</td>
                 <td align="left">
@@ -103,11 +64,12 @@
             <tr>
                 <td width="70px" align="right">检验人：</td>
                 <td align="left">
-                    @Html.TextBoxFor(m => m.DetectPersonnelName, new { @style = "width:200px;", @id = "txt_DetectPersonnelName", @disabled = "disabled" })
+                    @Html.TextBoxFor(m => m.DetectPersonnelName, new { @style = "width:110px;", @id = "txt_DetectPersonnelName", @disabled = "disabled" })
+                    <input type="button" id="Btn_Detect" style="width:80px" value="检验" onclick="Detect('@ViewBag.DetectPersonnelID','@ViewBag.DetectPersonnelName')" />
                 </td>
                 <td width="70px" align="right">检验标准：</td>
                 <td align="left" style="width:150px;">
-                    <select name="InsStand" style="width:200px;">
+                    <select id="drop_InsStand" name="InsStand" style="width:200px;">
                         @{
                             var InsStandList = ViewData["InsStandList"] as List<string>;
                             foreach (var item in InsStandList)
@@ -116,19 +78,11 @@
                             }
                         }
                     </select>
-                </td>       
-            </tr>
-            <tr>
-                <td colspan="4" align="center">
-                    <input type="button" id="Btn_Detect" style="width:80px" value="检验" onclick="Detect('@ViewBag.DetectPersonnelID','@ViewBag.DetectPersonnelName')" />
-                    <input type="button" id="btn_Save" value="保存" style="width:80px" onclick="LimsJs.FromSubmit('formdata', '/OriginalRecord/Save')" />
-                    <a href="/UpFile/@ViewBag.FilePath">导出Execl</a>
                 </td>
             </tr>
             <tr>
-                <td colspan="4" style="height:700px;">
-                    <!--阅览OFFICE-->
-                    @Html.Raw(ViewBag.EditorHtml)
+                <td colspan="4" align="center">
+                    <input type="button" id="btn_Save" value="保存" style="width:80px" onclick="LimsJs.FromSubmit('formdata', '/OriginalRecord/Save')" />
                 </td>
             </tr>
         </table>

@@ -11,9 +11,7 @@ namespace Model.OriginalRecord
     [Serializable]
     public partial class E_tb_OriginalRecord
     {
-        public E_tb_OriginalRecord()
-        { }
-        #region Model
+
         private int _recordid;
         private int? _projectid;
         private string _taskno;
@@ -111,7 +109,6 @@ namespace Model.OriginalRecord
             set { _sampleid = value; }
             get { return _sampleid; }
         }
-        #endregion Model
         
         /// <summary>
         /// 编辑类型
@@ -132,6 +129,16 @@ namespace Model.OriginalRecord
         /// 是否农药残留
         /// </summary>
         public int IsPesCheck { get; set; }
+
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        public string projectname { get; set; }
+
+        /// <summary>
+        /// 样品名称
+        /// </summary>
+        public string samplename { get; set; }
 
     }
 }
