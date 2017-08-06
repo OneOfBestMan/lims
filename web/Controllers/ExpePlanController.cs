@@ -16,6 +16,7 @@ using BLL.RoleManage;
 using BLL;
 using Model.Laboratory;
 using DAL.Sample;
+using Model;
 
 namespace Web.Controllers
 {
@@ -128,7 +129,7 @@ namespace Web.Controllers
             ViewData["PlanTypeList"] = this.GetPlanTypeList(false);
             ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("").Tables[0], "ProjectID", "ProjectName", false);
             ViewData["PersonnelList"] = PageTools.GetSelectList(tInPersonnel.GetList(" AreaID=" + CurrentUserInfo.AreaID.ToString()).Tables[0], "PersonnelID", "PersonnelName", false);
-            ViewData["SampleList"] = PageTools.GetSelectList(_dSample.GetSampleDt("id,name", "handleUser=0"), "id", "name", false);
+            
             //ViewData["SampleList"] = PageTools.GetSelectList(tSample.GetList(" (handleUser='' or handleUser is null) order by id ").Tables[0], "id", "name", false);
             ViewBag.PersonnelID = CurrentUserInfo.PersonnelID;
             ViewBag.AreaAddr = tArea.GetModel(int.Parse(CurrentUserInfo.AreaID.ToString())).AreaName;
@@ -140,6 +141,12 @@ namespace Web.Controllers
                 ViewBag.SampleID = eExpePlan.SampleID;
                 ViewBag.ProjectID = eExpePlan.ProjectID;
             }
+
+            //默认获取前200条数据，避免因option过多导致加载过慢
+            List<tb_Sample> SampleList=_dSample.GetModelList(200,"id,name", " where handleUser=0", eExpePlan.SampleID != null ? Convert.ToInt32(eExpePlan.SampleID) : 0);
+            
+            ViewData["SampleList"] = SampleList; 
+
             eExpePlan.EditType = EditType;
             return View(eExpePlan);
         }
@@ -150,9 +157,10 @@ namespace Web.Controllers
         /// </summary>
         /// <param name="eExpePlan">要处理的对象</param>
         /// <returns>返回是否处理成功</returns>
-        public string Save(E_tb_ExpePlan eExpePlan)
+        public JsonResult Save(E_tb_ExpePlan eExpePlan)
         {
-            string msg = "0";
+            string msg = "";
+            bool result = false;
             eExpePlan.UpdateTime = DateTime.Now;
             eExpePlan.EditPersonnelID = CurrentUserInfo.PersonnelID;
             eExpePlan.AreaID = CurrentUserInfo.AreaID;
@@ -161,20 +169,22 @@ namespace Web.Controllers
                 eExpePlan.Status = 0;
                 if (tExpePlan.IsExistsTaskNo(eExpePlan.TaskNo) > 0)
                 {
-                    msg = "2";
+                    msg = "任务单号已存在！";
                 }
                 else
                 {
                     tExpePlan.Add(eExpePlan);
-                    msg = "1";
+                    msg = "添加成功";
+                    result = true;
                 }
             }
             else
             {
                 tExpePlan.Update(eExpePlan);
-                msg = "1";
+                msg = "修改成功";
+                result = true;
             }
-            return msg;
+            return Json(new { result = result, msg = msg });
         }
 
         /// <summary>
@@ -256,20 +266,19 @@ namespace Web.Controllers
         /// </summary>
         /// <param name="PlanTypeID">计划类型（1：计划内、2：计划外）</param>
         /// <returns></returns>
-        public JsonResult GetSampleList(string PlanTypeID)
+        public JsonResult GetSampleList(string PlanTypeID,int SampleID)
         {
-            List<Model.tb_Sample> list = new List<Model.tb_Sample>();
+            List<tb_Sample> list = new List<tb_Sample>();
             if (PlanTypeID == "2")
             {
                 //读取计划外的 委托检验 未销毁 未完成的委托检验对应的样品
-                list = tSample.GetModelList("handleUser=0 and id in (select SampleID from tb_EntrustTesting where IsComplete=0)");
+                list = _dSample.GetModelList(200, "id,name", "where handleUser=0 and id in (select SampleID from tb_EntrustTesting where IsComplete=0)", SampleID);
             }
             else
             {
                 //获取全部未销毁样品
-                list = tSample.GetModelList("handleUser=0");
+                list = _dSample.GetModelList(200, "id,name", "where handleUser=0", SampleID);
             }
-
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 

@@ -348,26 +348,20 @@ namespace DAL.Laboratory
         public DataSet GetListByPage(string strWhere, string orderby, int startIndex, int endIndex, ref int total)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("SELECT * FROM ( ");
-            strSql.Append(" SELECT ROW_NUMBER() OVER (");
-            if (!string.IsNullOrEmpty(orderby.Trim()))
-            {
-                strSql.Append("order by T." + orderby);
-            }
-            else
-            {
-                strSql.Append("order by T.UpdateTime desc");
-            }
-            strSql.Append(")AS Row, T.*,B.AreaName,C.LaboratoryName,D.TypeName  from tb_Project T left join tb_Area as B on T.AreaID=B.AreaID left join tb_Laboratory as C on T.LaboratoryID=C.LaboratoryID left join tb_TypeDict as D on T.ProjectTypeID=D.TypeID");
-
-            if (!string.IsNullOrEmpty(strWhere.Trim()))
-            {
-                strSql.Append(" WHERE " + strWhere);
-            }
-            strSql.Append(" ) TT");
+            strSql.Append($@"select * from (
+		                            SELECT 
+			                            ROW_NUMBER() OVER (order by T.UpdateTime desc)AS Row, 
+			                            T.*,B.AreaName,C.LaboratoryName,D.TypeName  
+		                            from tb_Project T 
+		                            left join tb_Area as B on T.AreaID=B.AreaID 
+		                            left join tb_Laboratory as C on T.LaboratoryID=C.LaboratoryID 
+		                            left join tb_TypeDict as D on T.ProjectTypeID=D.TypeID 
+	                            ) as temp {strWhere}");
+            
             total = DbHelperSQL.GetCount(strSql.ToString());
-            strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
-            return DbHelperSQL.Query(strSql.ToString());
+
+            string listSql = $"SELECT * FROM ({strSql.ToString()}) TT  WHERE TT.Row between {startIndex} and {endIndex}";
+            return DbHelperSQL.Query(listSql);
         }
 
         /// <summary>

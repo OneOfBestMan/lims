@@ -7,6 +7,8 @@ using System.Data;
 using BLL.Laboratory;
 using Model.Laboratory;
 using Common;
+using System.Text;
+using Comp;
 
 namespace Web.Controllers
 {
@@ -25,9 +27,6 @@ namespace Web.Controllers
             return View();
         }
 
-
-        
-
         /// <summary>
         /// 获取所有数据列表
         /// 作者：小朱
@@ -37,32 +36,29 @@ namespace Web.Controllers
         {
             DataTable dt = new DataTable();
             int total = 0;
-            string strWhere = "";
+            StringBuilder strWhere = new StringBuilder();
             if (!string.IsNullOrEmpty(AreaID) && AreaID.Trim() != "-1") //区域ID
             {
-                strWhere = PageTools.AddWhere(strWhere, "AreaID=" + AreaID);
+                strWhere.AddWhere("AreaID=" + AreaID);
             }
             if (!string.IsNullOrEmpty(ProjectName))//项目名称
             {
-                strWhere = PageTools.AddWhere(strWhere, "ProjectName like '%" + ProjectName + "%'");
+                strWhere.AddWhere("ProjectName like '%" + ProjectName + "%'");
             }
             if (!string.IsNullOrEmpty(ExpeType))//检验类型
             {
-                strWhere = PageTools.AddWhere(strWhere, "ExpeType like '%" + ExpeType + "%'");
+                strWhere.AddWhere("ExpeType like '%" + ExpeType + "%'");
             }
             if (!string.IsNullOrEmpty(ProjectTypeID) && ProjectTypeID.Trim() != "-1")//项目类别ID
             {
-                strWhere = PageTools.AddWhere(strWhere, "ProjectTypeID=" + ProjectTypeID);
+                strWhere.AddWhere("ProjectTypeID=" + ProjectTypeID);
             }
             if (!string.IsNullOrEmpty(LaboratoryID) && LaboratoryID.Trim() != "-1")//实验室ID
             {
-                strWhere = PageTools.AddWhere(strWhere, "LaboratoryID=" + LaboratoryID);
+                strWhere.AddWhere("LaboratoryID=" + LaboratoryID);
             }
-            try
-            {
-                dt = tProject.GetListByPage(strWhere, "", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
-            }
-            catch { }
+            dt = tProject.GetListByPage(strWhere.ToString(), "", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
+
             string strJson = PublicClass.ToJson(dt, total);
             if (strJson.Trim() == "")
             {

@@ -51,6 +51,32 @@ namespace DAL.Sample
         }
 
         /// <summary>
+        /// 依据查询条件获取查询实体(性能优化版)
+        /// </summary>
+        /// <param name="strWhere">查询条件</param>
+        /// <param name="columns">需要查询的列</param>
+        /// <returns>返回对应查询实体</returns>
+        public List<tb_Sample> GetModelList(int top, string fields, string strWhere, int SampleID)
+        {
+            List<tb_Sample> list = new List<tb_Sample>();
+            StringBuilder search = new StringBuilder();
+            search.Append($@"select distinct {fields} from(
+	                            select * from
+	                            (
+	                                select top {top} {fields} from tb_Sample {strWhere} order by createDate desc
+	                            ) as T
+	                            union all
+	                            select {fields} from tb_Sample where id={SampleID}
+                            ) as TT");
+            //执行查询语句
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<tb_Sample>(search.ToString())?.ToList();
+            }
+            return list;
+        }
+        
+        /// <summary>
         /// 获取实验考核数据列表
         /// </summary>
         /// <param name="ePageParameter">页面参数实体</param>
@@ -147,19 +173,7 @@ namespace DAL.Sample
             return list;
         }
 
-        /// <summary>
-        /// 获取数据集合
-        /// </summary>
-        /// <param name="fields">字段列表</param>
-        /// <param name="strwhere">查询条件</param>
-        /// <returns>返回对应数据集合</returns>
-        public DataTable GetSampleDt(string fields, string strwhere)
-        {
-            //主查询Sql
-            StringBuilder search = new StringBuilder();
-            search.AppendFormat($"select {fields} from tb_Sample where {strwhere}");
-            return DbHelperSQL.Query(search.ToString()).Tables[0];
-        }
+        
 
         /// <summary>
         /// 获取样品详情

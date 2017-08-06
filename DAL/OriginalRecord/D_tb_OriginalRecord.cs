@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using Model.OriginalRecord;
+using Dapper;
 
 namespace DAL.OriginalRecord
 {
@@ -13,9 +14,6 @@ namespace DAL.OriginalRecord
     /// </summary>
     public partial class D_tb_OriginalRecord
     {
-        public D_tb_OriginalRecord()
-        { }
-        #region  Method
         /// <summary>
         /// 是否存在该记录
         /// </summary>
@@ -177,71 +175,23 @@ namespace DAL.OriginalRecord
         /// <summary>
         /// 得到一个对象实体
         /// </summary>
-        public E_tb_OriginalRecord GetModel(int RecordID)
+        public E_tb_OriginalRecord GetModel(E_tb_OriginalRecord model)
         {
-
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select  top 1 * from tb_OriginalRecord");
-            strSql.Append(" where RecordID=@RecordID");
-            SqlParameter[] parameters = {
-					new SqlParameter("@RecordID", SqlDbType.Int,4)
-            };
-            parameters[0].Value = RecordID;
-
-            E_tb_OriginalRecord model = new E_tb_OriginalRecord();
-            DataSet ds = DbHelperSQL.Query(strSql.ToString(), parameters);
-            if (ds.Tables[0].Rows.Count > 0)
+            strSql.Append($@"select 
+	                            A.*,
+	                            B.PersonnelName as detectpersonnelname, --检查人名称
+	                            C.SampleDataRange, --检查项目对应数据提取范围
+                                C.IsPesCheck		--是否农药残留
+                            from tb_OriginalRecord as A 
+                            left join dbo.tb_InPersonnel as B on A.DetectPersonnelID=B.PersonnelID
+                            left join dbo.tb_Project as C on A.ProjectID=C.ProjectID
+                            where RecordID={model.RecordID}");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
-                if (ds.Tables[0].Rows[0]["RecordID"].ToString() != "")
-                {
-                    model.RecordID = int.Parse(ds.Tables[0].Rows[0]["RecordID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["ProjectID"].ToString() != "")
-                {
-                    model.ProjectID = int.Parse(ds.Tables[0].Rows[0]["ProjectID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["TaskNo"] != null)
-                {
-                    model.TaskNo = ds.Tables[0].Rows[0]["TaskNo"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["DetectTime"].ToString() != "")
-                {
-                    model.DetectTime = DateTime.Parse(ds.Tables[0].Rows[0]["DetectTime"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["DetectPersonnelID"].ToString() != "")
-                {
-                    model.DetectPersonnelID = int.Parse(ds.Tables[0].Rows[0]["DetectPersonnelID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["FilePath"] != null)
-                {
-                    model.FilePath = ds.Tables[0].Rows[0]["FilePath"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Contents"] != null)
-                {
-                    model.Contents = ds.Tables[0].Rows[0]["Contents"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["AreaID"].ToString() != "")
-                {
-                    model.AreaID = int.Parse(ds.Tables[0].Rows[0]["AreaID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["EditPersonnelID"].ToString() != "")
-                {
-                    model.EditPersonnelID = int.Parse(ds.Tables[0].Rows[0]["EditPersonnelID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["SampleID"].ToString() != "")
-                {
-                    model.SampleID = int.Parse(ds.Tables[0].Rows[0]["SampleID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["InsStand"] != null)
-                {
-                    model.InsStand = ds.Tables[0].Rows[0]["InsStand"].ToString();
-                }
-                return model;
+                model = conn.Query<E_tb_OriginalRecord>(strSql.ToString(), model)?.FirstOrDefault();
             }
-            else
-            {
-                return null;
-            }
+            return model;
         }
 
         /// <summary>
@@ -280,34 +230,7 @@ namespace DAL.OriginalRecord
             return DbHelperSQL.Query(strSql.ToString());
         }
 
-        /*
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        public DataSet GetList(int PageSize,int PageIndex,string strWhere)
-        {
-            SqlParameter[] parameters = {
-                    new SqlParameter("@tblName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@fldName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@PageSize", SqlDbType.Int),
-                    new SqlParameter("@PageIndex", SqlDbType.Int),
-                    new SqlParameter("@IsReCount", SqlDbType.Bit),
-                    new SqlParameter("@OrderType", SqlDbType.Bit),
-                    new SqlParameter("@strWhere", SqlDbType.VarChar,1000),
-                    };
-            parameters[0].Value = "tb_OriginalRecord";
-            parameters[1].Value = "RecordID";
-            parameters[2].Value = PageSize;
-            parameters[3].Value = PageIndex;
-            parameters[4].Value = 0;
-            parameters[5].Value = 0;
-            parameters[6].Value = strWhere;	
-            return DbHelperSQL.RunProcedure("UP_GetRecordByPage",parameters,"ds");
-        }*/
-
-        #endregion  Method
-
-        #region 数据接口
+       
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -331,7 +254,7 @@ namespace DAL.OriginalRecord
             strSql.Append(" left join tb_Sample as E on T.SampleID=E.id");
             if (!string.IsNullOrEmpty(strWhere.Trim()))
             {
-                strSql.Append(" WHERE " + strWhere);
+                strSql.Append(strWhere);
             }
             strSql.Append(" ) TT");
             total = DbHelperSQL.GetCount(strSql.ToString());
@@ -350,7 +273,5 @@ namespace DAL.OriginalRecord
             strSql.Append("select RecordID from tb_OriginalRecord as A left join tb_ExpePlan as B on A.TaskNo=B.TaskNo where B.SampleID=" + SampleID + " group by RecordID");
             return DbHelperSQL.Query(strSql.ToString()).Tables[0];
         }
-        #endregion
-
     }
 }

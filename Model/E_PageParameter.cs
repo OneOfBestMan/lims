@@ -100,5 +100,20 @@ namespace Model
         /// 数据行数
         /// </summary>
         public int count { get; set; }
+
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        public int projectid { get; set; }
+
+        /// <summary>
+        /// 任务单号
+        /// </summary>
+        public string taskno { get; set; }
+
+        /// <summary>
+        /// 原始记录ID
+        /// </summary>
+        public int recordid { get; set; }
     }
 }

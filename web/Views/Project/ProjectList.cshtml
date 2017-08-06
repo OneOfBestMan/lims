@@ -39,9 +39,9 @@
                     { field: 'AreaName', title: '区域', align: 'center' },
                     { field: 'ProjectName', title: '项目名称', align: 'center' },
                     { field: 'ExpeType', title: '检验类别', align: 'center' },
-                    { field: 'InsStand', title: '检验标准', align: 'center' },
+                    { field: 'InsStand', title: '检验标准', align: 'left',width:200,formatter: function(value,row,index){return '<span  title='+value+'>'+value+'</span>'}},
                     { field: 'ExpeMethod', title: '检验依据', align: 'center' },
-                    { field: 'ExpRange', title: '检验范围', align: 'center' },
+                    { field: 'ExpRange', title: '检验范围', align: 'left', width: 200, formatter: function (value, row, index) { return '<span  title=' + value + '>' + value + '</span>' } },
                     { field: 'TypeName', title: '分类', align: 'center' },
      //               { field: 'LaboratoryName', title: '实验室名称', align: 'center' },
 //                    { field: 'FilePath', title: '原始记录模版', align: 'center' },
@@ -123,7 +123,7 @@
             var ProjectTypeID = $("#Input_Search_3").val();
             var LaboratoryID = $("#Input_Search_4").val();
 
-            var strurl = "/Project/GetList?pageNumber=1&pageSize=8&AreaID=" + AreaID
+            var strurl = "/Project/GetList?pageNumber=1&pageSize=20&AreaID=" + AreaID
             var WhereTypeID=$("#ddl_search").val();
             if (WhereTypeID == 1) {
                 strurl += "&ProjectName=" + ProjectName

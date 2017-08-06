@@ -26,6 +26,9 @@
     <script type="text/javascript" src='@Url.Content("~/Scripts/Validform/Validform_v5.3.2_min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/My97DatePicker/WdatePicker.js")'></script>
 
+    <script src="/skins/artDialog/dist/dialog.js"></script>
+    <script src="/skins/artDialog/dist/dialog-plus.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             var LaboratoryID = $("#HidLaboratoryID").val();
@@ -164,39 +167,52 @@
     <script type="text/javascript">
         //添加实验室
         function Add() {
-            $('#EditForms').window({ href: '/ExpePlan/ExpePlanEdit?EditType=Add' });
-            $('#EditForms').window('refresh');
-            $('#EditForms').window('open');
+            var d = dialog({
+                title: '实验计划',
+                url: '/ExpePlan/ExpePlanEdit?EditType=Add',
+                id: 'id-info',
+            });
+            d.showModal();
+
+            //$('#EditForms').window({ href: '/ExpePlan/ExpePlanEdit?EditType=Add' });
+            //$('#EditForms').window('refresh');
+            //$('#EditForms').window('open');
         }
 
         //弹出编辑页
         function Edit(InfoID) {
-            $('#EditForms').window({ href: '/ExpePlan/ExpePlanEdit?EditType=Edit&InfoID=' + InfoID });
-            $('#EditForms').window('refresh');
-            $('#EditForms').window('open');
+            var d = dialog({
+                title: '实验计划',
+                url: '/ExpePlan/ExpePlanEdit?EditType=Edit&InfoID=' + InfoID ,
+                id: 'id-info',
+            });
+            d.showModal();
+            //$('#EditForms').window({ href: '/ExpePlan/ExpePlanEdit?EditType=Edit&InfoID=' + InfoID });
+            //$('#EditForms').window('refresh');
+            //$('#EditForms').window('open');
         }
 
-        //关闭弹出层
-        function Close() {
-            $('#EditForms').window('close');
-        }
+        ////关闭弹出层
+        //function Close() {
+        //    $('#EditForms').window('close');
+        //}
 
-        //保存提示
-        function handle(e) {
-            if (e == "2") {
-                alert("该任务单号已存在！");
-            }
-            else if (e.$2._xmlHttpRequest.response == "1") {
-                alert("保存成功！");
-                $('#EditForms').window('close');
-                $('#dgtable').datagrid('reload');
-            } else {
-                alert("保存失败！");
-            }
-        }
-        function failed(e) {
-            alert("保存失败！");
-        }
+        ////保存提示
+        //function handle(e) {
+        //    if (e == "2") {
+        //        alert("该任务单号已存在！");
+        //    }
+        //    else if (e.$2._xmlHttpRequest.response == "1") {
+        //        alert("保存成功！");
+        //        $('#EditForms').window('close');
+        //        $('#dgtable').datagrid('reload');
+        //    } else {
+        //        alert("保存失败！");
+        //    }
+        //}
+        //function failed(e) {
+        //    alert("保存失败！");
+        //}
     </script>
 </head>
 <body>
