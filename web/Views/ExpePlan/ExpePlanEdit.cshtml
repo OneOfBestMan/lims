@@ -203,8 +203,8 @@
 
                     //更新检验标准
                     function UpdateExpeMethod() {
-                        
                         var ProjectID = $("#drop_ProjectID").val();
+                        alert(ProjectID);
                         $.ajax({
                             async: false,
                             type: "get",
@@ -282,16 +282,10 @@
                         UpdateExpeMethod();
                     }
 
-                    //初始化页面显示
-                    //LoadSampleList();  //根据计划类别加载样品列表
-                    //LoadProjectList(); //根据计划类别和样品id加载项目列表
-                    //LoadTaskNoList();  //加载对应的任务单号
-
                     if ($("#HidEditType").val() == "Edit") {
                         var SampleID=@ViewBag.SampleID;
                         var ProjectID=@ViewBag.ProjectID;
                         $("#drop_Sample").val(SampleID);
-                        LoadProjectList();
                         $("#drop_ProjectID").val(ProjectID);
                     }
                 });

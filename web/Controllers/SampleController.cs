@@ -71,9 +71,11 @@ namespace Web.Controllers
         public ActionResult Edit(int id)
         {
             tb_Sample eSample = new tb_Sample();
+            List<E_tb_ExpePlan> ExpePlanList = new List<E_tb_ExpePlan>();
             if (id > 0)
             {
                 eSample = _dSample.GetSampleInfo(new tb_Sample() { id = id });
+                ExpePlanList = new D_tb_ExpePlan().GetExpePlanList(new E_tb_ExpePlan() { SampleID = eSample.id });
             }
             else
             {
@@ -82,7 +84,7 @@ namespace Web.Controllers
             ViewBag.Info = eSample;
             ViewBag.ClientList = new BLL.ClientManage.T_tb_ClientManage().GetModelList("");
             ViewBag.ProjectList = new BLL.Laboratory.T_tb_Project().GetModelList("");
-            ViewBag.ExpePlanList = new D_tb_ExpePlan().GetExpePlanList(new E_tb_ExpePlan() { SampleID = eSample.id });
+            ViewBag.ExpePlanList = ExpePlanList;
             return View("/views/Sample/SampleEdit.cshtml");
         }
 

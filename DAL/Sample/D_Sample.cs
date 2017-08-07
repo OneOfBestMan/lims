@@ -14,6 +14,30 @@ namespace DAL.Sample
 {
     public class D_Sample
     {
+
+        /// <summary>
+        /// 获取为完成实验计划对应样品列表
+        /// </summary>
+        /// <returns>返回符合要求的样品列表</returns>
+        public List<tb_Sample> GetNoCompleteList()
+        {
+            List<tb_Sample> list = new List<tb_Sample>();
+
+            //主查询Sql
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat(@"select A.* 
+                                  from dbo.tb_Sample as A 
+                                  inner join tb_ExpePlan as B on A.id=B.SampleID
+                                  where B.Status=0");
+
+            //执行查询语句
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<Model.tb_Sample>(search.ToString())?.ToList();
+            }
+            return list;
+        }
+        
         /// <summary>
         /// 获取查询条件
         /// </summary>
@@ -76,12 +100,13 @@ namespace DAL.Sample
             return list;
         }
         
+
         /// <summary>
         /// 获取实验考核数据列表
         /// </summary>
         /// <param name="ePageParameter">页面参数实体</param>
         /// <returns></returns>
-        public List<Model.tb_Sample> GetSampleList(E_PageParameter ePageParameter, ref int count)
+        public List<tb_Sample> GetSampleList(E_PageParameter ePageParameter, ref int count)
         {
             List<Model.tb_Sample> list = new List<Model.tb_Sample>();
             
@@ -123,9 +148,9 @@ namespace DAL.Sample
         /// </summary>
         /// <param name="ePageParameter">查询参数实体</param>
         /// <returns>返回对应数据集合</returns>
-        public List<Model.tb_Sample> GetSampleList(E_PageParameter ePageParameter)
+        public List<tb_Sample> GetSampleList(E_PageParameter ePageParameter)
         {
-            List<Model.tb_Sample> list = new List<Model.tb_Sample>();
+            List<tb_Sample> list = new List<tb_Sample>();
             
             //主查询Sql
             StringBuilder search = new StringBuilder();

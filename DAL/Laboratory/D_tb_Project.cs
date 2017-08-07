@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using Model.Laboratory;
+using Dapper;
 
 namespace DAL.Laboratory
 {
@@ -13,9 +14,53 @@ namespace DAL.Laboratory
 	/// </summary>
 	public partial class D_tb_Project
 	{
-		public D_tb_Project()
-		{}
-        #region  Method
+        /// <summary>
+        /// 获取项目实体列表
+        /// </summary>
+        /// <param name="eProject">查询实体</param>
+        /// <returns>返回项目集合</returns>
+        public List<E_tb_Project> GetList(E_tb_Project eProject)
+        {
+            //定义返回列表
+            List<E_tb_Project> list = new List<E_tb_Project>();
+
+            //初始化查询语句
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat(@"select * from tb_Project");
+
+            //执行并返回结果
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<E_tb_Project>(search.ToString())?.ToList();
+            }
+            return list;
+
+        }
+
+        /// <summary>
+        /// 获取该样品对应未完成实验计划的实验项目
+        /// </summary>
+        /// <param name="SampleID">样品ID</param>
+        /// <returns>符合要求的项目集合</returns>
+        public List<E_tb_Project> GetNoCompleteList(int SampleID)
+        {
+            //定义返回列表
+            List<E_tb_Project> list = new List<E_tb_Project>();
+
+            //初始化查询语句
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat($@"select A.* from tb_Project as A
+                                inner join tb_ExpePlan as B on A.ProjectID=B.ProjectID
+                                where B.Status=0 and B.SampleID={SampleID}");
+
+            //执行并返回结果
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<E_tb_Project>(search.ToString())?.ToList();
+            }
+            return list;
+        }
+
         /// <summary>
         /// 是否存在该记录
         /// </summary>
@@ -31,8 +76,7 @@ namespace DAL.Laboratory
 
             return DbHelperSQL.Exists(strSql.ToString(), parameters);
         }
-
-
+        
         /// <summary>
         /// 增加一条数据
         /// </summary>
@@ -190,8 +234,7 @@ namespace DAL.Laboratory
                 return false;
             }
         }
-
-
+        
         /// <summary>
         /// 得到一个对象实体
         /// </summary>
@@ -313,35 +356,7 @@ namespace DAL.Laboratory
             strSql.Append(" order by " + filedOrder);
             return DbHelperSQL.Query(strSql.ToString());
         }
-
-        /*
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        public DataSet GetList(int PageSize,int PageIndex,string strWhere)
-        {
-            SqlParameter[] parameters = {
-                    new SqlParameter("@tblName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@fldName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@PageSize", SqlDbType.Int),
-                    new SqlParameter("@PageIndex", SqlDbType.Int),
-                    new SqlParameter("@IsReCount", SqlDbType.Bit),
-                    new SqlParameter("@OrderType", SqlDbType.Bit),
-                    new SqlParameter("@strWhere", SqlDbType.VarChar,1000),
-                    };
-            parameters[0].Value = "tb_Project";
-            parameters[1].Value = "ProjectID";
-            parameters[2].Value = PageSize;
-            parameters[3].Value = PageIndex;
-            parameters[4].Value = 0;
-            parameters[5].Value = 0;
-            parameters[6].Value = strWhere;	
-            return DbHelperSQL.RunProcedure("UP_GetRecordByPage",parameters,"ds");
-        }*/
-
-        #endregion  Method
-
-        #region 数据接口
+        
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -379,6 +394,5 @@ namespace DAL.Laboratory
             }
             return DbHelperSQL.Query(strSql.ToString()).Tables[0];
         }
-        #endregion
 	}
 }

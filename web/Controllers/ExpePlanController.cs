@@ -17,6 +17,8 @@ using BLL;
 using Model.Laboratory;
 using DAL.Sample;
 using Model;
+using System.Text;
+using Comp;
 
 namespace Web.Controllers
 {
@@ -32,20 +34,28 @@ namespace Web.Controllers
         //
         // GET: /DetectProject/
 
-        public ActionResult ExpePlanList(E_tb_ExpePlan eExpePlan)
+        public ActionResult ExpePlanList(E_PageParameter ePageParameter)
         {
+            int pageIndex = Utils.GetInt(Request["page"]);
+            ePageParameter.pageindex = pageIndex > 0 ? pageIndex - 1 : pageIndex;
+            ePageParameter.pagesize = 20;
+
+            ViewBag.ExpePlanList = this.GetList(ePageParameter);
+            ViewBag.ePageParameter = ePageParameter;
+            ViewBag.page = Utils.ShowPage(ePageParameter.count, ePageParameter.pagesize, pageIndex, 5);
+
             ViewData["PlanTypeList"] = this.GetPlanTypeList(true);
             ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("").Tables[0], "ProjectID", "ProjectName", true);
             ViewData["AreaList"] = PageTools.GetSelectList(tArea.GetList("").Tables[0], "AreaID", "AreaName", true);
-            if (Request["ApprovalPersonnelName"] != null)
-                ViewData["ApprovalPersonnelName"] = Request["ApprovalPersonnelName"].ToString();
-            else
-                ViewData["ApprovalPersonnelName"] = "";
-            ViewBag._userName = CurrentUserInfo.UserName;
-            eExpePlan.AreaID = CurrentUserInfo.AreaID;
-            ViewBag.IsDisabled = (CurrentUserInfo.RoleID != 1) ? "true" : "false"; //权限判断
+            return View("/views/ExpePlan/ExpePlanList.cshtml");
 
-            return View(eExpePlan);
+            //if (Request["ApprovalPersonnelName"] != null)
+            //    ViewData["ApprovalPersonnelName"] = Request["ApprovalPersonnelName"].ToString();
+            //else
+            //    ViewData["ApprovalPersonnelName"] = "";
+            //ViewBag._userName = CurrentUserInfo.UserName;
+            //eExpePlan.AreaID = CurrentUserInfo.AreaID;
+            //ViewBag.IsDisabled = (CurrentUserInfo.RoleID != 1) ? "true" : "false"; //权限判断
         }
 
         /// <summary>
@@ -53,70 +63,63 @@ namespace Web.Controllers
         /// 作者：小朱
         /// </summary>
         /// <returns>将DataTable转换为Json数据格式通过string类型返回</returns>
-        public string GetList(int pageNumber, int pageSize, string AreaID, string PlanTypeID, string InspectTimeStart, string InspectTimeEnd, string TaskNo, string ProjectID, string PlanID, string SampleName, string Status)
+        public DataTable GetList(E_PageParameter ePageParameter)
         {
-            DataTable dt = new DataTable();
-            int total = 0;
-            string strWhere = "";
-            if (!string.IsNullOrEmpty(PlanID) && PlanID != "0")
+            StringBuilder strWhere = new StringBuilder();
+            if (ePageParameter.planid>0)
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.PlanID=" + PlanID + " ");
+                strWhere.AddWhere("T.PlanID=" + ePageParameter.planid + " ");
             }
-
-            if (!string.IsNullOrEmpty(AreaID))//区域
+            if (ePageParameter.areaid>0)//区域
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + AreaID + " ");
+                strWhere.AddWhere("T.AreaID=" + ePageParameter.areaid + " ");
             }
-            if (!string.IsNullOrEmpty(PlanTypeID))//计划类别
+            if (ePageParameter.plantype>-1)//计划类别
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.PlanTypeID=" + PlanTypeID + " ");
+                strWhere.AddWhere("T.PlanTypeID=" + ePageParameter.plantype + " ");
             }
-            if (!string.IsNullOrEmpty(InspectTimeStart))//检验开始时间
+            if (ePageParameter.starttime!=null)//检验开始时间
             {
-                strWhere = PageTools.AddWhere(strWhere, "InspectTime>=cast('" + InspectTimeStart + "' as datetime) ");
+                strWhere.AddWhere("InspectTime>=cast('" + ePageParameter.starttime.ToString() + "' as datetime) ");
             }
-            if (!string.IsNullOrEmpty(InspectTimeEnd))//送检结束时间
+            if (ePageParameter.endtime!=null)//送检结束时间
             {
-                strWhere = PageTools.AddWhere(strWhere, "InspectTime<=cast('" + InspectTimeEnd + "' as datetime) ");
+                strWhere.AddWhere("InspectTime<=cast('" + ePageParameter.endtime.ToString() + "' as datetime) ");
             }
-            if (!string.IsNullOrEmpty(TaskNo))//任务单号
+            if (!string.IsNullOrEmpty(ePageParameter.taskno))//任务单号
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.TaskNo like '%" + TaskNo.Trim() + "%' ");
+                strWhere.AddWhere("T.TaskNo like '%" + ePageParameter.taskno.Trim() + "%' ");
             }
-            if (!string.IsNullOrEmpty(ProjectID))//检验项目
+            if (ePageParameter.projectid>0)//检验项目
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.ProjectID=" + ProjectID + " ");
+                strWhere.AddWhere("T.ProjectID=" + ePageParameter.projectid + " ");
             }
-            if (!string.IsNullOrEmpty(SampleName))//样品名称
+            if (!string.IsNullOrEmpty(ePageParameter.samplename))//样品名称
             {
-                strWhere = PageTools.AddWhere(strWhere, "C.name like '%" + SampleName + "%' ");
+                strWhere.AddWhere("C.name like '%" + ePageParameter.samplename + "%' ");
             }
-            if (!string.IsNullOrEmpty(Status))//样品名称
+            if (ePageParameter.status>0)//样品名称
             {
-                strWhere = PageTools.AddWhere(strWhere, "T.Status =" + Status);
+                strWhere.AddWhere("T.Status =" + ePageParameter.status);
             }
             //添加数据权限判断
             switch (CurrentUserInfo.DataRange)
             {
                 case 2://区域
-                    strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + CurrentUserInfo.AreaID + " ");
+                    strWhere.AddWhere("T.AreaID=" + CurrentUserInfo.AreaID + " ");
                     break;
                 case 3://个人
-                    strWhere = PageTools.AddWhere(strWhere, "T.EditPersonnelID=" + CurrentUserInfo.PersonnelID + " ");
+                    strWhere.AddWhere("T.EditPersonnelID=" + CurrentUserInfo.PersonnelID + " ");
                     break;
             }
 
-            try
-            {
-                dt = tExpePlan.GetListByPage(strWhere, "InspectTime desc", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
-            }
-            catch { }
-            string strJson = PublicClass.ToJson(dt, total);
-            if (strJson.Trim() == "")
-            {
-                strJson = "{\"total\":0,\"rows\":[]}";
-            }
-            return strJson;
+            DataTable dt = new DataTable();
+            int total = 0;
+            int startindex = ePageParameter.pageindex * ePageParameter.pagesize + 1;
+            int endindex = (ePageParameter.pageindex + 1) * ePageParameter.pagesize;
+            dt = tExpePlan.GetListByPage(strWhere.ToString(), "InspectTime desc", startindex, endindex, ref total).Tables[0];
+            ePageParameter.count = total;
+            return dt;
         }
 
         /// <summary>
@@ -129,7 +132,7 @@ namespace Web.Controllers
             ViewData["PlanTypeList"] = this.GetPlanTypeList(false);
             ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("").Tables[0], "ProjectID", "ProjectName", false);
             ViewData["PersonnelList"] = PageTools.GetSelectList(tInPersonnel.GetList(" AreaID=" + CurrentUserInfo.AreaID.ToString()).Tables[0], "PersonnelID", "PersonnelName", false);
-            
+
             //ViewData["SampleList"] = PageTools.GetSelectList(tSample.GetList(" (handleUser='' or handleUser is null) order by id ").Tables[0], "id", "name", false);
             ViewBag.PersonnelID = CurrentUserInfo.PersonnelID;
             ViewBag.AreaAddr = tArea.GetModel(int.Parse(CurrentUserInfo.AreaID.ToString())).AreaName;
@@ -143,9 +146,9 @@ namespace Web.Controllers
             }
 
             //默认获取前200条数据，避免因option过多导致加载过慢
-            List<tb_Sample> SampleList=_dSample.GetModelList(200,"id,name", " where handleUser=0", eExpePlan.SampleID != null ? Convert.ToInt32(eExpePlan.SampleID) : 0);
-            
-            ViewData["SampleList"] = SampleList; 
+            List<tb_Sample> SampleList = _dSample.GetModelList(200, "id,name", " where handleUser=0", eExpePlan.SampleID != null ? Convert.ToInt32(eExpePlan.SampleID) : 0);
+
+            ViewData["SampleList"] = SampleList;
 
             eExpePlan.EditType = EditType;
             return View(eExpePlan);
@@ -266,7 +269,7 @@ namespace Web.Controllers
         /// </summary>
         /// <param name="PlanTypeID">计划类型（1：计划内、2：计划外）</param>
         /// <returns></returns>
-        public JsonResult GetSampleList(string PlanTypeID,int SampleID)
+        public JsonResult GetSampleList(string PlanTypeID, int SampleID)
         {
             List<tb_Sample> list = new List<tb_Sample>();
             if (PlanTypeID == "2")
