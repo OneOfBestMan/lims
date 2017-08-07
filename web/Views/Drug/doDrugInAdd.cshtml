@@ -109,7 +109,7 @@
            
             left: 1px;
             z-index: 99;
-            width: 1048px;
+            /*width: 1048px;*/
         }
 
         a {
@@ -178,7 +178,7 @@
         @using (Ajax.BeginForm("NewDrugIN", "Drug", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "frmNew" }))
         {
             @Html.HiddenFor(m => m.GPS)
-            <table style="font-family: '宋体'; font-size: 12px" width="800">
+            <table style="font-family: '宋体'; font-size: 12px" width="800px">
                 <tr>
                     <td width="100" align="right">编号：</td>
                     <td align="left">@Html.TextBoxFor(m => m.drugCode)</td>

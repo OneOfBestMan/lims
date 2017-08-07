@@ -151,11 +151,13 @@
                     $('#dlg').dialog('open');
                 }
                   function rk_Edit(_itemId) {
-                    window.frames["doDevicefm"].location = '@Url.Action("DeviceRK", "Device")' + "?id=" + _itemId;
+                      window.frames["doDevicefm"].location = '@Url.Action("DeviceRK", "Device")' + "?id=" + _itemId;
+                    //  $('#dlg').dialog({ height: 600});
                     $('#dlg').dialog('open');
                 }
            function ck_Edit(_itemId) {
-                    window.frames["doDevicefm"].location = '@Url.Action("DeviceCK", "Device")' + "?id=" + _itemId;
+               window.frames["doDevicefm"].location = '@Url.Action("DeviceCK", "Device")' + "?id=" + _itemId;
+                
                     $('#dlg').dialog('open');
                 }
                 function click_Search() {

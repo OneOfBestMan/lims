@@ -9,11 +9,11 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title></title>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/default/easyui.css")'/>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/icon.css")'/>
+    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/default/easyui.css")' />
+    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/icon.css")' />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/uploader/uploadify.css")' />
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")'  />
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/ligerUI/skins/Aqua/css/ligerui-tree.css")'  />
+    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")' />
+    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/ligerUI/skins/Aqua/css/ligerui-tree.css")' />
 
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/jquery.easyui.min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/locale/easyui-lang-zh_CN.js")'></script>
@@ -27,8 +27,8 @@
     <script type="text/javascript" src='@Url.Content("~/Scripts/ligerUI/js/core/base.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/ligerUI/js/plugins/ligerTree.js")'></script>
 
-     
- 
+
+
 
     <script type="text/javascript">
         var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel).PersonnelID)';
@@ -39,7 +39,7 @@
                 pagination: true,//分页控件
                 singleSelect: true,//是否单选
                 rownumbers: true,
-                fitColumns: true,
+               // fitColumns: true,就是这个J8搞得样式乱掉了。坑B
                 queryParams: { 'pageNumber': 1, 'pageSize': 10, '_type': "", '_text': "", 'cid': _lid },
                 columns: [[
                     { field: 'doc_Name', title: '文件', width: 230, align: 'center' },
@@ -451,7 +451,10 @@
         /************************文件权限样式  结束************************/
     </script>
     <style type="text/css">
-        .divList {width: 1048px;}
+        .divList {
+            width: 1048px;
+        }
+
         a {
             text-decoration: none;
             color: #000;
@@ -516,10 +519,9 @@
 <body style="background-color: transparent; overflow: auto;">
     <!--新增-->
     <div id="dlg" class="easyui-window" title="文件管理" data-options="iconCls:'icon-save',modal:true,closed:true,minimizable:false" style="width:700px;height:230px;">
-       
+
     </div>
     <!--End 新增-->
-
     <div style="background: #faf1e8; height: 30px; width: 100%;">
         <table align="left" width="100%" height="27px">
             <tr>
@@ -534,34 +536,36 @@
                 <td>
                     <table cellpadding="0" cellspacing="0" width="1040px">
                         <tr>
-                            <td style="font-family: '宋体'; font-size: 12px; color: #10607c;width:480px">单位：
+                            <td style="font-family: '宋体'; font-size: 12px; color: #10607c;width:480px">
+                                单位：
                                 @if ((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel).DataRange == 1)
                                 {
-                                    @Html.DropDownList("ddl_company", ViewData["ddl_company"] as SelectList, new { @id = "ddlcompany",@style="height:22px" })
+                                    @Html.DropDownList("ddl_company", ViewData["ddl_company"] as SelectList, new { @id = "ddlcompany", @style = "height:22px" })
                                 }
                                 else
-                                { 
-                                    @Html.DropDownList("ddl_company", ViewData["ddl_company"] as SelectList, new { @id = "ddlcompany",@disabled = "disabled",@style="height:22px" })
+                                {
+                                    @Html.DropDownList("ddl_company", ViewData["ddl_company"] as SelectList, new { @id = "ddlcompany", @disabled = "disabled", @style = "height:22px" })
                                 }
-                            按：      
-                                    <select id="ddl_search" style="height:22px">
-                                        <option value="文件名称">文件名称</option>
-                                        <option value="实施日期">实施日期</option>
-                                        <option value="更新日期">更新日期</option>
-                                        <option value="作者">作者</option>
-                                        <option value="关键字">关键字</option>
-                                    </select>
+                                按：
+                                <select id="ddl_search" style="height:22px">
+                                    <option value="文件名称">文件名称</option>
+                                    <option value="实施日期">实施日期</option>
+                                    <option value="更新日期">更新日期</option>
+                                    <option value="作者">作者</option>
+                                    <option value="关键字">关键字</option>
+                                </select>
                                 <input style="border: 1px solid #3496d6;height:19px" width="150px" type="text" id="txt_search" />
                             </td>
                             <td style="width:80px">
                                 <a href="javascript:void(0)" onclick="click_search()"><img src='@Url.Content("~/Content/Images/chaxun.png")' /></a>
                             </td>
                             <td align="right">
-@if (Convert.ToBoolean(ViewData["97b5ed02"]))
-{
-                                <a href="javascript:void(0)" onclick="click_Edit(0)">
-                                    <img src='@Url.Content("~/Content/Images/xinzeng.png")' /></a>
-}
+                                @if (Convert.ToBoolean(ViewData["97b5ed02"]))
+                                {
+                                    <a href="javascript:void(0)" onclick="click_Edit(0)">
+                                        <img src='@Url.Content("~/Content/Images/xinzeng.png")' />
+                                    </a>
+                                }
                             </td>
                         </tr>
                     </table>
@@ -569,8 +573,7 @@
             </tr>
             <tr>
                 <td>
-                    <table cellpadding="0" cellspacing="0" class="biaoge" id="dgtable" height="400px">
-                    </table>
+                    <table cellpadding="0" cellspacing="0" class="biaoge" id="dgtable" height="400px"></table>
                 </td>
             </tr>
         </table>

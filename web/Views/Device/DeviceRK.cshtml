@@ -78,13 +78,13 @@
             alert("保存失败！");
         }
     </script>
-    <style type="text/css">
+    @*<style type="text/css">
         .divList {
             position: absolute;
             top: 40px;
             left: 1px;
             z-index: 99;
-            width: 1048px;
+            /*width: 1048px;*/
         }
 
         a {
@@ -144,7 +144,7 @@
                     .data_tab02 dd a:focus {
                         color: #ff9c00;
                     }
-    </style>
+    </style>*@
 </head>
 <body>
     @using (Ajax.BeginForm("DeviceINCU", "Device", new AjaxOptions { HttpMethod = "Post", OnSuccess = "handle", OnFailure = "failed" }, new { @id = "uploadfrm" }))
@@ -157,7 +157,7 @@
         @Html.HiddenFor(m => m.temp2, new { @id = "temp2E" })
         @Html.HiddenFor(m => m.updateDate, new { @id = "updateDateE" })
         @Html.HiddenFor(m => m.updateUser, new { @id = "updateUserE" })
-        <table align="left" height="200px" style="font-family: '宋体'; font-size: 12px;">
+        <table align="left"  style="font-family: '宋体'; font-size: 12px;">
             <tr>
  
 
