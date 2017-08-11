@@ -2119,6 +2119,8 @@
     <Content Include="Views\EasyConsume\EasyConsumeCK.cshtml" />
     <Content Include="Views\EasyConsume\EasyConsumeRK.cshtml" />
     <Content Include="Views\Sample\SamplingSheet.cshtml" />
+    <Content Include="Views\Task\Info.cshtml" />
+    <Content Include="Views\Task\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
