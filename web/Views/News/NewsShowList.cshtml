@@ -2,6 +2,7 @@
 @model Model.News.E_tb_News
 @{
     ViewBag.Title = "NewsList";
+    Layout = "~/Views/Share/_LayOut.cshtml";
 }
 
 <!DOCTYPE html>
@@ -87,14 +88,8 @@
     </style>
 </head>
 <body>
-    <!--标题-->
-    <div class="title">
-        <h2>公告列表</h2>
-        <a href="javascript:history.go(-1);">返回</a>
-    </div>
-
     <!--数据列表-->
-    <div class="divList">
+    <div class="divList" style="padding-top:20px;">
         <table cellpadding="0" cellspacing="0" width="100%" class="WhereTable">
             <tr>
                 <td align="right"style="width:70px;">公告标题：</td>

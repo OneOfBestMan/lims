@@ -148,7 +148,7 @@
 .hy_con .hy_jh .tw .wz:hover a{color:#0088ff;}
 .hy_con .hy_jh .tw .wz:hover span{color:#0088ff;}
 .hy_con .hy_jh ul li{display:block; background:url(../images/jt2.png) no-repeat left 4px; padding:0 0 7px 20px; line-height:22px;}
-.hy_con .hy_jh ul li a{font-size:12px; display:block;}
+.hy_con .hy_jh ul li a{font-size:12px; width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; display:block;}
 .hy_con .hy_jh ul li a:hover{color:#0088ff;}
 
 @media only screen and (min-width:1440px) {

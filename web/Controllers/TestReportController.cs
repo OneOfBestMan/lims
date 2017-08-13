@@ -60,6 +60,10 @@ namespace Web.Controllers
             DataTable dt = new DataTable();
             int total = 0;
             string strWhere = "";
+            if (ePageParameter.reportid > 0)
+            {
+                strWhere = PageTools.AddWhere(strWhere, "T.ReportID=" + ePageParameter.reportid);
+            }
             if (ePageParameter.areaid > 0)
             {
                 strWhere = PageTools.AddWhere(strWhere, "T.AreaID=" + ePageParameter.areaid);

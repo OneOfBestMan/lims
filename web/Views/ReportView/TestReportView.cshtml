@@ -4,121 +4,26 @@
     Layout = null;
 }
 <style type="text/css">
-    * {
-        font-size: 14px;
-    }
-
-    li {
-        list-style: none;
-    }
-
-    body {
-        width: 1000px;
-        margin: 0px auto;
-    }
-
-    .OriginalRecordSelect {
-        width: 100%;
-        padding-top: 10px;
-        margin: 0px auto;
-    }
-
-        .OriginalRecordSelect h2 {
-            width: 100%;
-            height: 25px;
-            line-height: 25px;
-            text-align: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-    .MainTable {
-        width: 100%;
-        margin: 0px auto;
-    }
-
-        .MainTable thead th {
-            height: 45px;
-            line-height: 45px;
-        }
-
-        .MainTable tbody td {
-            height: 30px;
-            line-height: 30px;
-        }
-
-    .Cover {
-        width: 100%;
-    }
-
-        .Cover ul {
-            padding-top: 10px;
-            width: 100%;
-            padding-bottom: 160px;
-        }
-
-        .Cover li {
-            width: 100%;
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-            padding-top: 10px;
-            font-family: 微软雅黑;
-        }
-
-        .Cover table {
-            margin: 0px auto;
-            width: 60%;
-        }
-
-            .Cover table td {
-                height: 30px;
-                line-height: 30px;
-                font-size: 14px;
-            }
-
-    .Explain {
-        width: 100%;
-        padding-top: 10px;
-        
-    }
-
-    .TestReport {
-        width: 100%;
-        padding-top: 10px;
-        text-align:center;
-    }
-
-    h2 {
-        width: 100%;
-        height: 30px;
-        line-height: 30px;
-        font-size: 32px;
-        text-align: center;
-        padding-bottom: 10px;
-    }
-
-    .TestReport table {
-        margin: 0px auto;
-        width: 100%;
-    }
-
-        .TestReport table td {
-            height: 35px;
-            line-height: 35px;
-        }
-
-    .table_jybg {
-        width: 100%;
-        font-size: 24px;
-        text-align:center;
-    }
-
-        .table_jybg tr {
-            text-align: center;
-            vertical-align: middle;
-            height: 100px;
-        }
+   *{font-size:14px}
+li{list-style:none}
+body{width:1000px;margin:0 auto}
+.OriginalRecordSelect{width:100%;padding-top:10px;margin:0 auto}
+.OriginalRecordSelect h2{width:100%;height:25px;line-height:25px;text-align:center;font-size:12px;font-weight:700}
+.MainTable{width:100%;margin:0 auto}
+.MainTable thead th{height:45px;line-height:45px}
+.MainTable tbody td{height:30px;line-height:30px}
+.Cover{width:100%}
+.Cover ul{padding-top:10px;width:100%;padding-bottom:160px}
+.Cover li{width:100%;text-align:center;font-size:16px;font-weight:700;padding-top:10px;font-family:微软雅黑}
+.Cover table{margin:0 auto;width:60%}
+.Cover table td{height:30px;line-height:30px;font-size:14px}
+.Explain{width:100%;padding-top:10px}
+.TestReport{width:100%;padding-top:10px;text-align:center}
+h2{width:100%;height:30px;line-height:30px;font-size:32px;text-align:center;padding-bottom:10px}
+.TestReport table{margin:0 auto;width:100%}
+.TestReport table td{height:35px;line-height:35px}
+.table_jybg{width:100%;font-size:24px;text-align:center}
+.table_jybg tr{text-align:center;vertical-align:middle;height:100px}
 </style>
 <center>
     <div title="封面" style="height:1550px">
@@ -283,7 +188,8 @@
                         <td align="center" style="font-size:24px;">
                             @*@TempRow["TestStandard"].ToString()*@
                             @{
-                                        var originalrecodr = new BLL.OriginalRecord.T_tb_OriginalRecord().GetModel(Convert.ToInt32(TempRow["RecordID"]));
+                                var eOriginalRecord = new Model.OriginalRecord.E_tb_OriginalRecord() { RecordID = Convert.ToInt32(TempRow["RecordID"])};
+                                var originalrecodr = new DAL.OriginalRecord.D_tb_OriginalRecord().GetModel(eOriginalRecord);
                                     }
                                     @originalrecodr.InsStand
                         </td>

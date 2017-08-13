@@ -10,7 +10,6 @@
     <title>药品柜管理</title>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/default/easyui.css")'>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/themes/icon.css")'>
-    <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/jquery-easyui/demo.css")'>
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/uploader/uploadify.css")' />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")'  />
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-1.8.2.min.js")'></script>
@@ -125,7 +124,7 @@
                 onmouseover_img(num, 9);
             }
 
-            $("#img_" + num).attr("src", "../../Content/Images/Lock/" + imgname + "+" + ".PNG");
+            $("#img_" + num).attr("src", "../../Content/Images/Lock/" + imgname + "hover" + ".PNG");
         }
 
         function onmouseover_img(num, count) {
@@ -137,7 +136,7 @@
                 $("#img_" + i).attr("src", "../../Content/Images/Lock/" + imgname + ".PNG");
             }
             imgname = switch_GetImgName(num);
-            $("#img_" + num).attr("src", "../../Content/Images/Lock/" + imgname + "+" + ".PNG");
+            $("#img_" + num).attr("src", "../../Content/Images/Lock/" + imgname + "hover" + ".PNG");
         }
 
         function onmouseout_img(num) {
@@ -200,7 +199,7 @@
                 $("#img_" + i).attr("src", "../../Content/Images/Lock/" + imgname + ".PNG");
             }
             imgname = switch_GetImgName_for_lcg(num);
-            $("#img_" + num).attr("src", "../../Content/Images/Lock/" + imgname + "+" + ".PNG");
+            $("#img_" + num).attr("src", "../../Content/Images/Lock/" + imgname + "hover" + ".PNG");
         }
 
         function onmouseout_img_for_lcg(num) {

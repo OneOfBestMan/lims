@@ -135,5 +135,10 @@ namespace Model
         /// 状态
         /// </summary>
         public int status { get; set; }
+
+        /// <summary>
+        /// 检验报告ID
+        /// </summary>
+        public int reportid { get; set; }
     }
 }

@@ -70,7 +70,7 @@ namespace Web.Controllers
                 ////ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetUNFinishList();
                 ////张伟修改，增加统计委外未完成的数据
                 //ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetAllUNFinishList();
-                ViewData["_expList"] = new T_tb_ExpePlan().GetList(8, "status=0", "InspectTime desc");
+                ViewData["_expList"] = new T_tb_ExpePlan().GetList(10, "status=0", "InspectTime desc");
             }
             catch
             {

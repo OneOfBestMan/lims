@@ -7,258 +7,260 @@
     Layout = "~/Views/Share/_LayOut.cshtml";
 }
 
-    <link href="/skins/css/style.css" rel="stylesheet" type="text/css" />
-    <link href="/skins/css/huiyuan.css" rel="stylesheet" type="text/css" />
+<link href="/skins/css/style.css" rel="stylesheet" type="text/css" />
+<link href="/skins/css/huiyuan.css" rel="stylesheet" type="text/css" />
 
-    @*<script src="/skins/js/jquery-1.8.3.min.js"></script>*@
+@*<script src="/skins/js/jquery-1.8.3.min.js"></script>*@
 
-    <script src="/skins/js/jquery.SuperSlide.js"></script>
+<script src="/skins/js/jquery.SuperSlide.js"></script>
 
-    <script type="text/javascript">
-    window.onload = function(){
-　  $(".hy_lf").css("height",$(".hy_nr").innerHeight());
-  }
-    </script>
-    <script type="text/javascript">
-  $(document).ready(function() {
-	$(".hy_lf ul li").click(function() {
-	  $(this).addClass("on");
-	  $(this).siblings().removeClass("on");
-	  $(this).find(".hy_ej").slideToggle(function(){
-        if($(this).is(':hidden')) {
-          $(this).parent("li").removeClass("on");
-        }
-	  });
-	  $(this).siblings().find(".hy_ej").slideUp();
+<script type="text/javascript">
+    window.onload = function () {
+        $(".hy_lf").css("height", $(".hy_nr").innerHeight());
+    }
+
+    $(document).ready(function () {
+        $(".hy_lf ul li").click(function () {
+            $(this).addClass("on");
+            $(this).siblings().removeClass("on");
+            $(this).find(".hy_ej").slideToggle(function () {
+                if ($(this).is(':hidden')) {
+                    $(this).parent("li").removeClass("on");
+                }
+            });
+            $(this).siblings().find(".hy_ej").slideUp();
+        });
     });
-  });
-    </script>
+</script>
 
-    <div class="hy_con">
-        <div class="hy_nr">
-            <div class="hy_rt">
-                <div class="hy_zc">
-                    <div class="hy_bn">
-                        <a href="javascript:void(0);" class="prev"></a>
-                        <a href="javascript:void(0);" class="next"></a>
-                        <div class="hd">
-                            <ul></ul>
-                        </div>
-                        <div class="bd">
-                            <ul>
-                                @*<li><img src="/skins/images/ban.jpg" /></li>
-                                <li><img src="/skins/images/ban.jpg" /></li>
-                                <li><img src="/skins/images/ban.jpg" /></li>*@
-                                @{
-                                    for (int i = 0; i < (ViewData["MaxImgDt"] as DataTable).Rows.Count; i++)
-                                    {
-                                       
-                                            <li>
-                                                <a href="/Magazine/MagazineView?FilePath=@((ViewData["MaxImgDt"] as DataTable).Rows[i]["FilePath"])">
-                                                    <img title="@((ViewData["MaxImgDt"] as DataTable).Rows[i]["ImgName"])" src="/UpFile/@((ViewData["MaxImgDt"] as DataTable).Rows[i]["ImgPath"])" />
-                                                </a>
-                                            </li>
-                                       
-                                    }
-                                }
-                            </ul>
-                        </div>
+<div class="hy_con" style="padding-top:20px;">
+    <div class="hy_nr">
+        <div class="hy_rt" style="height:1100px;">
+            <div class="hy_zc">
+                <div class="hy_bn">
+                    <a href="javascript:void(0);" class="prev"></a>
+                    <a href="javascript:void(0);" class="next"></a>
+                    <div class="hd">
+                        <ul></ul>
                     </div>
-                    <script type="text/javascript">
-          jQuery(".hy_bn").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",autoPlay:true,scroll:1,interTime:3000});
-                    </script>
-                    <div class="clear"></div>
-                    <div class="hy_bg">
-                        <h3><span>检验报告</span><a href="#">More>></a></h3>
-
+                    <div class="bd">
                         <ul>
                             @{
-                                List<Model.TestReport.E_tb_TestReport> testreportlist = ViewData["testreportlist"] as List<Model.TestReport.E_tb_TestReport>;
-                                if (testreportlist != null && testreportlist.Count > 0)
+                                for (int i = 0; i < (ViewData["MaxImgDt"] as DataTable).Rows.Count; i++)
                                 {
-                                    foreach (var item in testreportlist)
-                                    {
 
-                                        <li>
-                                            <span><a href="/TestReport/DownById?id=@item.ReportID" target="_blank">[下载]</a></span>
-                                            <a href="#">@item.SampleName<i>@item.TestTime.Value.ToShortDateString()</i></a>
-
-                                        </li>
-                                    }
-                                }
-                            }
-
-
-                        </ul>
-                    </div>
-                    <div class="clear"></div>
-                    <div class="hy_rw">
-                        <h3><span>实验任务</span><a href="#">More>></a></h3>
-                        <ul>
-                            <li>
-                                <span><a href="#">主检</a></span>
-                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
-                            </li>
-                            <li>
-                                <span><a href="#">主检</a></span>
-                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
-                            </li>
-                            <li>
-                                <span><a href="#">主检</a></span>
-                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
-                            </li>
-                            <li>
-                                <span><a href="#">主检</a></span>
-                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
-                            </li>
-                            <li>
-                                <span><a href="#">主检</a></span>
-                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
-                            </li>
-                            <li>
-                                <span><a href="#">主检</a></span>
-                                <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="hy_tx">
-                        <h3><span>实验任务</span><a href="#">More>></a></h3>
-                        <ul>
-                            <li>
-                                <span>有效期：2015/05/10</span>
-                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
-                            </li>
-                            <li>
-                                <span>有效期：2015/05/10</span>
-                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
-                            </li>
-                            <li>
-                                <span>有效期：2015/05/10</span>
-                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
-                            </li>
-                            <li>
-                                <span>有效期：2015/05/10</span>
-                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
-                            </li>
-                            <li>
-                                <span>有效期：2015/05/10</span>
-                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
-                            </li>
-                            <li style="border-bottom:1px dashed #fff;">
-                                <span>有效期：2015/05/10</span>
-                                <a href="#">LTRD094 银标亚硝酸盐快速</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="clear"></div>
-                    <div class="hy_yp">
-                        <h3><span>易耗品</span><a href="/Drug/Index">More>></a></h3>
-                        <ul>
-                           
-                            @{
-                                List<Model.tb_EasyConsumeIN> easyconsumelist = ViewData["easyConsumelist"] as List<Model.tb_EasyConsumeIN>;
-                                if (easyconsumelist != null && easyconsumelist.Count > 0)
-                                {
-                                    foreach (Model.tb_EasyConsumeIN item in easyconsumelist)
-                                    {
-                                        Model.tb_EasyConsume _easyConsume = new BLL.tb_EasyConsumeBLL().GetModel(@item.eId.Value);
-                                        <li>
-                                            <span>库存：<em>@_easyConsume.amount</em></span>
-                                            <a href="#">@_easyConsume.name<i>@item.validDate.Value.ToShortDateString()</i></a>
-                                        </li>
-                                    }
-                                }
-                            }
-                        </ul>
-                    </div>
-                    <div class="hy_jl">
-                        <h3><span>计量检定</span><a href="/Measure/MeasureCheck">More>></a></h3>
-                        <ul>
-                            @{
-                                List<tb_Measure> measurelist = ViewData["measurelist"] as List<tb_Measure>;
-                                if (measurelist != null && measurelist.Count > 0)
-                                {
-                                    foreach (var item in measurelist)
-                                    {
-                                       
-                                        <li>
-                                            <span>检定日期：@item.nextVerification.Value.ToShortDateString()</span>
-                                            <a href="#">@item.deviceName</a>
-                                        </li>
-                                    }
-                                }
-                            }
-                          
-                        </ul>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-                <div class="hy_yc">
-                    <div class="hy_news">
-                        <h3><span>通知公告</span><a href="/News/NewsShowList?NewTypeID=0">MORE>></a></h3>
-                        <ul>
-
-                            @{
-                                for (int i = 0; i < (ViewData["News2Dt"] as DataTable).Rows.Count; i++)
-                                {
                                     <li>
-                                        <span>@(Convert.ToDateTime((ViewData["News2Dt"] as DataTable).Rows[i]["UpdateTime"]).ToShortDateString())</span>
-                                        <a href="/News/NewsInfo?InfoID=@((ViewData["News2Dt"] as DataTable).Rows[i]["NewID"])">@((ViewData["News2Dt"] as DataTable).Rows[i]["Title"])</a>
-                                       
+                                        <a target="_blank" href="/Magazine/MagazineView?FilePath=@((ViewData["MaxImgDt"] as DataTable).Rows[i]["FilePath"])">
+                                            <img style="width:100%; height:auto; max-height:469px;" title="@((ViewData["MaxImgDt"] as DataTable).Rows[i]["ImgName"])" src="/UpFile/@((ViewData["MaxImgDt"] as DataTable).Rows[i]["ImgPath"])" />
+                                        </a>
+                                    </li>
+
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    jQuery(".hy_bn").slide({ titCell: ".hd ul", mainCell: ".bd ul", autoPage: true, effect: "left", autoPlay: true, scroll: 1, interTime: 3000 });
+                </script>
+                <div class="clear"></div>
+                <div class="hy_bg">
+                    <h3><span>检验报告</span><a href="/TestReport/TestReportList">More>></a></h3>
+
+                    <ul>
+                        @{
+                            List<Model.TestReport.E_tb_TestReport> testreportlist = ViewData["testreportlist"] as List<Model.TestReport.E_tb_TestReport>;
+                            if (testreportlist != null && testreportlist.Count > 0)
+                            {
+                                foreach (var item in testreportlist)
+                                {
+
+                                    <li>
+                                        <span><a href="/TestReport/DownById?id=@item.ReportID" target="_blank">[下载]</a></span>
+                                        <a href="/TestReport/TestReportList?reportid=@item.ReportID">@item.SampleName<i>@item.TestTime.Value.ToShortDateString()</i></a>
+
                                     </li>
                                 }
                             }
-                        </ul>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="hy_jh">
-                        <h3><span>实验计划</span><a href="#">More>></a></h3>
-                        @{DataSet expList = ViewData["_expList"] as DataSet;
-                            if (expList != null && expList.Tables != null && expList.Tables.Count > 0)
+                        }
+
+
+                    </ul>
+                </div>
+                <div class="clear"></div>
+
+
+                <div class="hy_rw" style="display:none;">
+                    <h3><span>实验任务</span><a href="#">More>></a></h3>
+                    <ul>
+                        <li>
+                            <span><a href="#">主检</a></span>
+                            <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                        </li>
+                        <li>
+                            <span><a href="#">主检</a></span>
+                            <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                        </li>
+                        <li>
+                            <span><a href="#">主检</a></span>
+                            <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                        </li>
+                        <li>
+                            <span><a href="#">主检</a></span>
+                            <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                        </li>
+                        <li>
+                            <span><a href="#">主检</a></span>
+                            <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                        </li>
+                        <li>
+                            <span><a href="#">主检</a></span>
+                            <a href="#"><i>2017-2-28</i>蔬菜（NP35-2WHPB、NP35-2CEP）JC20150930—014</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="hy_tx" style="display:none;">
+                    <h3><span>实验任务</span><a href="#">More>></a></h3>
+                    <ul>
+                        <li>
+                            <span>有效期：2015/05/10</span>
+                            <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                        </li>
+                        <li>
+                            <span>有效期：2015/05/10</span>
+                            <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                        </li>
+                        <li>
+                            <span>有效期：2015/05/10</span>
+                            <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                        </li>
+                        <li>
+                            <span>有效期：2015/05/10</span>
+                            <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                        </li>
+                        <li>
+                            <span>有效期：2015/05/10</span>
+                            <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                        </li>
+                        <li style="border-bottom:1px dashed #fff;">
+                            <span>有效期：2015/05/10</span>
+                            <a href="#">LTRD094 银标亚硝酸盐快速</a>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="clear"></div>
+                <div class="hy_yp"  style="min-height:270px;">
+                    <h3><span>易耗品</span><a href="/Drug/Index">More>></a></h3>
+                    <ul>
+
+                        @{
+                            List<Model.tb_EasyConsumeIN> easyconsumelist = ViewData["easyConsumelist"] as List<Model.tb_EasyConsumeIN>;
+                            if (easyconsumelist != null && easyconsumelist.Count > 0)
                             {
-                                int sum = 0;
-                                foreach (DataRow item in expList.Tables[0].Rows)
+                                foreach (Model.tb_EasyConsumeIN item in easyconsumelist)
                                 {
-                                    var m = new BLL.tb_SampleBLL().GetModel(Convert.ToInt32(item["SampleID"]));
-                                    sum++;
-                                    if (sum < 5 && m != null)
-                                    {
-                                        <div class="tw">
-                                            <div class="tp"><a href="#"><img src="/skins/images/a@(sum+1).jpg" width="150" height="140" /></a></div>
-                                            <div class="wz">
-                                                <a href="#">@m.name </a>
-                                                <span class="nr">@item["UpdateTime"]</span>
-                                            </div>
-                                            <div class="clear"></div>
-                                        </div>
-                                    }
-
-
+                                    Model.tb_EasyConsume _easyConsume = new BLL.tb_EasyConsumeBLL().GetModel(@item.eId.Value);
+                                    <li>
+                                        <span>库存：<em>@_easyConsume.amount</em></span>
+                                        <a href="#">@_easyConsume.name<i>@item.validDate.Value.ToShortDateString()</i></a>
+                                    </li>
                                 }
-                                sum = 0;
-                                  <ul>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="hy_jl" style="min-height:270px;">
+                    <h3><span>计量检定</span><a href="/Measure/MeasureCheck">More>></a></h3>
+                    <ul>
+                        @{
+                            List<tb_Measure> measurelist = ViewData["measurelist"] as List<tb_Measure>;
+                            if (measurelist != null && measurelist.Count > 0)
+                            {
+                                foreach (var item in measurelist)
+                                {
+
+                                    <li>
+                                        <span>检定日期：@item.nextVerification.Value.ToShortDateString()</span>
+                                        <a href="#">@item.deviceName</a>
+                                    </li>
+                                }
+                            }
+                        }
+
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="hy_yc">
+                <div class="hy_news">
+                    <h3><span>通知公告</span><a href="/News/NewsShowList?NewTypeID=0">MORE>></a></h3>
+                    <ul>
+
+                        @{
+                            for (int i = 0; i < (ViewData["News2Dt"] as DataTable).Rows.Count; i++)
+                            {
+                                <li>
+                                    <span>@(Convert.ToDateTime((ViewData["News2Dt"] as DataTable).Rows[i]["UpdateTime"]).ToShortDateString())</span>
+                                    <a href="/News/NewsInfo?InfoID=@((ViewData["News2Dt"] as DataTable).Rows[i]["NewID"])">@((ViewData["News2Dt"] as DataTable).Rows[i]["Title"])</a>
+
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <div class="clear"></div>
+                </div>
+                <div class="hy_jh">
+                    <h3><span>实验计划</span><a href="/ExpePlan/ExpePlanList">More>></a></h3>
+                    @{DataSet expList = ViewData["_expList"] as DataSet;
+                        if (expList != null && expList.Tables != null && expList.Tables.Count > 0)
+                        {
+                            int sum = 0;
+                            foreach (DataRow item in expList.Tables[0].Rows)
+                            {
+                                var m = new BLL.tb_SampleBLL().GetModel(Convert.ToInt32(item["SampleID"]));
+                                sum++;
+                                if (sum < 3 && m != null)
+                                {
+                                    <div class="tw">
+                                        <div class="tp"><a href="/ExpePlan/ExpePlanList?planid=@item["PlanID"]"><img src="/skins/images/a@(sum+1).jpg" width="150" height="140" /></a></div>
+                                        <div class="wz">
+                                            <a href="/ExpePlan/ExpePlanList?planid=@item["PlanID"]">@m.name </a>
+                                            <span class="nr">@item["UpdateTime"]</span>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                }
+
+
+                            }
+                            sum = 0;
+                            <ul>
                                 @foreach (DataRow item in expList.Tables[0].Rows)
                                 {
                                     var m = new BLL.tb_SampleBLL().GetModel(Convert.ToInt32(item["SampleID"]));
-                                  
+
                                     sum++;
-                                    if (sum >= 5 && m != null)
+                                    if (sum >= 3 && m != null)
                                     {
 
-                                        <li><a href="#">@m.name</a></li>
+                                        <li><a href="/ExpePlan/ExpePlanList?planid=@item["PlanID"]">@m.name</a></li>
 
                                     }
 
 
                                 }
-                                      </ul>
-                            }
+                            </ul>
                         }
-                         
-</div>
+                    }
+                    <div style="clear:both;"></div>
                 </div>
-            </div>
 
-            <div class="hy_ft">CopyRight @@2014-2017 中海油能源发展股份有限公司配餐服务分公司</div>
+                <div class="clear"></div>
+            </div>
         </div>
+
+        <div class="hy_ft">CopyRight @@2014-2017 中海油能源发展股份有限公司配餐服务分公司</div>
     </div>
+</div>

@@ -554,7 +554,9 @@ var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel)
         .divList {
             height: 350px;
             width: 1048px;
-            float:right;
+            float:left;
+            padding-left:20px;
+            padding-top:20px;
         }
 
         .divTree {
@@ -635,7 +637,7 @@ var _userid = '@((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel)
     <!--End 新增、编辑树节点-->
 
     <!--树节点列表-->
-    <div class="divTree">
+    <div class="divTree" style="margin-top:20px;">
         <ul id="tree1">
         </ul>
     </div>

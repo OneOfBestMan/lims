@@ -10,7 +10,7 @@ using Model.FileList;
 
 namespace Web.Controllers
 {
-    public class FileListController : Controller
+    public class FileListController : BaseController
     {
         T_tb_FileList tFileList = new T_tb_FileList();
         public ActionResult FileListList(E_tb_FileList eFileList)
