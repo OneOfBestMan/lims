@@ -1,0 +1,39 @@
+10:02:40# UrlReffer:http://localhost:1473/Home/Index
+Ex Name:Aspose.Words.FileCorruptedException 
+ Msg:The document appears to be corrupted and cannot be loaded. 
+ StackTrace:   ÔÚ .?.(Document , Stream , LoadOptions )
+   ÔÚ .?.(Document , Stream , LoadOptions )
+   ÔÚ Aspose.Words.Document..ctor(String fileName, LoadOptions loadOptions)
+   ÔÚ Aspose.Words.Document..ctor(String fileName)
+   ÔÚ Common.PDFViewer.ConvertToSwfByAspno.DOC2PDF(String sourcePath, String targetPath) Î»ÖÃ C:\Users\Administrator\Documents\GitHub\lims\Common\PDFViewer\ConvertToSwfByAspno.cs:ÐÐºÅ 57
+   ÔÚ Web.Controllers.MagazineController.Transfer(String FileURL, String sPath) Î»ÖÃ C:\Users\Administrator\Documents\GitHub\lims\web\Controllers\MagazineController.cs:ÐÐºÅ 225
+
+10:04:18# UrlReffer:http://localhost:1473/
+Ex Name:Aspose.Words.FileCorruptedException 
+ Msg:The document appears to be corrupted and cannot be loaded. 
+ StackTrace:   ÔÚ .?.(Document , Stream , LoadOptions )
+   ÔÚ .?.(Document , Stream , LoadOptions )
+   ÔÚ Aspose.Words.Document..ctor(String fileName, LoadOptions loadOptions)
+   ÔÚ Aspose.Words.Document..ctor(String fileName)
+   ÔÚ Common.PDFViewer.ConvertToSwfByAspno.DOC2PDF(String sourcePath, String targetPath) Î»ÖÃ C:\Users\Administrator\Documents\GitHub\lims\Common\PDFViewer\ConvertToSwfByAspno.cs:ÐÐºÅ 57
+   ÔÚ Web.Controllers.MagazineController.Transfer(String FileURL, String sPath) Î»ÖÃ C:\Users\Administrator\Documents\GitHub\lims\web\Controllers\MagazineController.cs:ÐÐºÅ 225
+
+10:09:05# UrlReffer:http://localhost:1473/
+Ex Name:Aspose.Words.FileCorruptedException 
+ Msg:The document appears to be corrupted and cannot be loaded. 
+ StackTrace:   ÔÚ .?.(Document , Stream , LoadOptions )
+   ÔÚ .?.(Document , Stream , LoadOptions )
+   ÔÚ Aspose.Words.Document..ctor(String fileName, LoadOptions loadOptions)
+   ÔÚ Aspose.Words.Document..ctor(String fileName)
+   ÔÚ Common.PDFViewer.ConvertToSwfByAspno.DOC2PDF(String sourcePath, String targetPath) Î»ÖÃ C:\Users\Administrator\Documents\GitHub\lims\Common\PDFViewer\ConvertToSwfByAspno.cs:ÐÐºÅ 57
+   ÔÚ Web.Controllers.MagazineController.Transfer(String FileURL, String sPath) Î»ÖÃ C:\Users\Administrator\Documents\GitHub\lims\web\Controllers\MagazineController.cs:ÐÐºÅ 225
+
+10:14:18# UrlReffer:
+Ex Name:System.Net.WebException 
+ Msg:Î´ÄÜÕÒµ½ÎÄ¼þ¡°C:\Users\Administrator\Documents\GitHub\lims\web\SWFTools\logo.jpg¡±¡£ 
+ StackTrace:   ÔÚ System.Net.FileWebRequest.EndGetResponse(IAsyncResult asyncResult)
+   ÔÚ System.Net.FileWebRequest.GetResponse()
+   ÔÚ iTextSharp.text.Image.GetInstance(Uri url)
+   ÔÚ iTextSharp.text.Image.GetInstance(String filename)
+   ÔÚ Common.PDFViewer.ConvertToSwfByAspno.PDFWatermark(String inputfilepath, String outputfilepath, String ModelPicName, Single top, Single left, Int32 Pages) Î»ÖÃ C:\Users\Administrator\Documents\GitHub\lims\Common\PDFViewer\ConvertToSwfByAspno.cs:ÐÐºÅ 198
+
