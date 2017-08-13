@@ -47,7 +47,7 @@
             PageInfo = "Role";
 
             $('#dgtable').datagrid({
-                url: "/" + PageInfo + "/GetList?pageNumber=1&pageSize=8",
+                url: "/" + PageInfo + "/GetList?pageNumber=1&pageSize=20",
                 pagination: true, //分页控件  
                 singleSelect: true, //是否单选
                 rownumbers: true,
@@ -97,7 +97,7 @@
             });
             var p = $('#dgtable').datagrid('getPager');
             $(p).pagination({
-                pageSize: 8, //每页显示的记录条数，默认为10  
+                pageSize: 20, //每页显示的记录条数，默认为10  
                 pageList: [8, 10, 15, 20], //可以设置每页记录条数的列表  
                 onSelectPage: function (pageNumber, pageSize) {
                     $('#dgtable').datagrid('options').url = "/" + PageInfo + "/GetList?pageNumber=" + pageNumber + "&pageSize=" + pageSize;

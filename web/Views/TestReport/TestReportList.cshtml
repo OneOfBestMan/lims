@@ -126,11 +126,17 @@
                             <!--用于后台区分是否需要查询-->
                             <input type="hidden" name="issearch" value="1" />
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
-                            <a class="btn btn-primary" href="javascript:Examine()"><i class="fa fa-check"></i> 批量审核 </a>
+                            @if (Convert.ToBoolean(ViewData["e765047d"]))
+                            {
+                                <a class="btn btn-primary" href="javascript:Examine()"><i class="fa fa-check"></i> 批量审核 </a>
+                            }
                         </div>
 
                         <div class="form-group pull-right">
-                            <a class="btn btn-info" href="javascript:ExpAllPDF()"><i class="fa fa-cloud-download"></i> 批量下载 </a>
+                            @if (Convert.ToBoolean(ViewData["b5994f84"]))
+                            {
+                                <a class="btn btn-info" href="javascript:ExpAllPDF()"><i class="fa fa-cloud-download"></i> 批量下载 </a>
+                            }
                             <!--用于请求导出文件-->
                             <iframe id="Expframe" src="" width="1" height="1"></iframe>
                         </div>
@@ -173,43 +179,39 @@
                                 var TestReportList = ViewBag.TestReportList as DataTable;
                                 foreach (DataRow item in TestReportList.Rows)
                                 {
-                            <tr>
-                                <td><input type="checkbox" value="@item["ReportID"].ToString()" class="ckSample" /></td>
-                                <td>@item["Row"].ToString()</td>
-                                <td>@item["SampleNum"].ToString()</td>
-                                <td title="@item["SampleName"].ToString()">@item["SampleName"].ToString()</td>
-                                <td>@(!Convert.IsDBNull(item["ProductionTime"]) ? Convert.ToDateTime(item["ProductionTime"]).ToShortDateString() : "")</td>
-                                <td>@item["Department"].ToString()</td>
-                                <td>@(!Convert.IsDBNull(item["SamplingTime"]) ? Convert.ToDateTime(item["SamplingTime"]).ToShortDateString() : "")</td>
-                                <td>@item["TestTypeName"].ToString()</td>
-                                <td>@Html.Raw(item["RecordIDS"].ToString())</td>
-                                <td>@Html.Raw(item["TaskNoS"].ToString())</td>
-                                <td>@(!Convert.IsDBNull(item["IssuedTime"]) ? Convert.ToDateTime(item["IssuedTime"]).ToShortDateString() : "") </td>
-                                <td class="">@item["MainTestPersonnelName"].ToString()</td>
-                                <td class="">@item["examinePersonnelName"].ToString()</td>
-                                <td class="">@item["ApprovalPersonnelName"].ToString()</td>
-                                <td class="displaycol">@item["Conclusion"].ToString()</td>
-                                <td class="displaybtn">。。。</td>
-                                <td>
-                                    @{
-                                                if ((bool)ViewData["f6fd17f1"])
-                                                {
-
-                                                }
-
-                                    }
-                                    <a href="javascript:void(0)" class="btn btn-info btn-xs" onclick="Edit(@item["ReportID"].ToString())">检验报告</a>
-                                    <a href="/TestReport/DownById?id=@item["ReportID"].ToString()" target="_blank" class="btn btn-info btn-xs">下载</a>
-                                    <a href="javascript:void(0)" class="btn btn-danger btn-xs" onclick="Delete(@item["ReportID"].ToString())">删除</a>
-                                    @{
-                                                if (!(bool)ViewData["b988fb96"])
-                                                {
-
-                                                }
-                                    }
-                                </td>
-                            </tr>
-                                                }
+                                    <tr>
+                                        <td><input type="checkbox" value="@item["ReportID"].ToString()" class="ckSample" /></td>
+                                        <td>@item["Row"].ToString()</td>
+                                        <td>@item["SampleNum"].ToString()</td>
+                                        <td title="@item["SampleName"].ToString()">@item["SampleName"].ToString()</td>
+                                        <td>@(!Convert.IsDBNull(item["ProductionTime"]) ? Convert.ToDateTime(item["ProductionTime"]).ToShortDateString() : "")</td>
+                                        <td>@item["Department"].ToString()</td>
+                                        <td>@(!Convert.IsDBNull(item["SamplingTime"]) ? Convert.ToDateTime(item["SamplingTime"]).ToShortDateString() : "")</td>
+                                        <td>@item["TestTypeName"].ToString()</td>
+                                        <td>@Html.Raw(item["RecordIDS"].ToString())</td>
+                                        <td>@Html.Raw(item["TaskNoS"].ToString())</td>
+                                        <td>@(!Convert.IsDBNull(item["IssuedTime"]) ? Convert.ToDateTime(item["IssuedTime"]).ToShortDateString() : "") </td>
+                                        <td class="">@item["MainTestPersonnelName"].ToString()</td>
+                                        <td class="">@item["examinePersonnelName"].ToString()</td>
+                                        <td class="">@item["ApprovalPersonnelName"].ToString()</td>
+                                        <td class="displaycol">@item["Conclusion"].ToString()</td>
+                                        <td class="displaybtn">。。。</td>
+                                        <td>
+                                            @if (Convert.ToBoolean(ViewData["f6fd17f1"]))
+                                            {
+                                                <a href="javascript:void(0)" class="btn btn-info btn-xs" onclick="Edit(@item["ReportID"].ToString())">检验报告</a>
+                                            }
+                                            @if (Convert.ToBoolean(ViewData["76707d20"]))
+                                            {
+                                                <a href="/TestReport/DownById?id=@item["ReportID"].ToString()" target="_blank" class="btn btn-info btn-xs">下载</a>
+                                            }
+                                            @if (Convert.ToBoolean(ViewData["b988fb96"]))
+                                            {
+                                                <a href="javascript:void(0)" class="btn btn-danger btn-xs" onclick="Delete(@item["ReportID"].ToString())">删除</a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>

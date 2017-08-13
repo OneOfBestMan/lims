@@ -32,7 +32,7 @@
                                         var arealist = ViewData["AreaList"] as SelectList;
                                         foreach (var item in arealist)
                                         {
-                                            <option value="@item.Value" @(ePageParameter.areaid.ToString() == item.Value ? "selected" : "")>@item.Text</option>
+                                    <option value="@item.Value" @(ePageParameter.areaid.ToString() == item.Value ? "selected" : "")>@item.Text</option>
                                         }
                                     }
                                 </select>
@@ -46,7 +46,7 @@
                                         var ProjectList = ViewData["ProjectList"] as SelectList;
                                         foreach (var item in ProjectList)
                                         {
-                                            <option value="@item.Value" @(ePageParameter.ToString() == item.Value ? "selected" : "")>@item.Text</option>
+                                    <option value="@item.Value" @(ePageParameter.ToString() == item.Value ? "selected" : "")>@item.Text</option>
                                         }
                                     }
                                 </select>
@@ -119,11 +119,26 @@
                                         <td>@item["DetectPersonnelName"].ToString()</td>
                                         <td>@item["Contents"].ToString()</td>
                                         <td>
-                                            <a href="javascript:Edit(@item["RecordID"].ToString())" class="btn btn-info btn-xs">编辑</a>
-                                            <a href="javascript:EditDoc(@item["RecordID"].ToString())" class="btn btn-info btn-xs">文档</a>
-                                            <a href="javascript:UpdateTestReport(@item["RecordID"].ToString())" class="btn btn-info btn-xs">更新检验报告</a>
-                                            <a href="/UpFile/@item["FilePath"].ToString()" class="btn btn-info btn-xs">导出</a>
-                                            <a href="javascript:Delete(@item["RecordID"].ToString())" class="btn btn-danger btn-xs">删除</a>
+                                            @if (Convert.ToBoolean(ViewData["5f2cf62b"]))
+                                            {
+                                                <a href="javascript:Edit(@item["RecordID"].ToString())" class="btn btn-info btn-xs">编辑</a>
+                                            }
+                                            @if (Convert.ToBoolean(ViewData["42110e97"]))
+                                            {
+                                                <a href="javascript:EditDoc(@item["RecordID"].ToString())" class="btn btn-info btn-xs">文档</a>
+                                            }
+                                            @if (Convert.ToBoolean(ViewData["72915aa7"]))
+                                            {
+                                                <a href="javascript:UpdateTestReport(@item["RecordID"].ToString())" class="btn btn-info btn-xs">更新检验报告</a>
+                                            }
+                                            @if (Convert.ToBoolean(ViewData["b88d23e1"]))
+                                            {
+                                                <a href="/UpFile/@item["FilePath"].ToString()" class="btn btn-info btn-xs">导出</a>
+                                            }
+                                            @if (Convert.ToBoolean(ViewData["3499aeb8"]))
+                                            {
+                                                <a href="javascript:Delete(@item["RecordID"].ToString())" class="btn btn-danger btn-xs">删除</a>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -181,8 +196,7 @@
     }
 
     //在线编辑文档
-    function EditDoc(InfoID)
-    {
+    function EditDoc(InfoID) {
         if (/msie/.test(navigator.userAgent.toLowerCase())) { //由于存在pageoffice浏览器兼容问题， 只有IE可以直接用普通页面方式打开
             var d = dialog({
                 title: '原始记录文档编辑',
@@ -197,8 +211,7 @@
     }
 
     //更新检验报告
-    function UpdateTestReport(InfoID)
-    {
+    function UpdateTestReport(InfoID) {
         $.getJSON("/OriginalRecord/UpdateTestReport?RecordID=" + InfoID,
             function (data) {
                 var jsondata = eval(data);

@@ -39,5 +39,19 @@ var LimsJs = {
                 }
             }
         });
+    },
+    /*
+   *  使用PageOffice预览文件
+   *  dom：当前对象
+   */
+    PageOfficeFileView: function (dom) {
+        var href = $(dom).attr("href");
+        if (/msie/.test(navigator.userAgent.toLowerCase())) { //由于存在pageoffice浏览器兼容问题， 只有IE可以直接用普通页面方式打开
+            return true;
+        }
+        else {
+            POBrowser.openWindow(href, 'width=1000px;height=820px;');
+        }
+        return false;
     }
 };

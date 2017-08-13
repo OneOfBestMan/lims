@@ -12,8 +12,14 @@
 <script src="/skins/artDialog/dist/dialog-plus.js"></script>
 
 <style type="text/css">
-    .displaybtn {text-align:center;color:#5cb85c;}
-    .displaycol {display:none;}
+    .displaybtn {
+        text-align: center;
+        color: #5cb85c;
+    }
+
+    .displaycol {
+        display: none;
+    }
 </style>
 
 <!-- /.row -->
@@ -48,48 +54,51 @@
                             <div class="input-group">
                                 <span class="input-group-addon">样品名称</span>
                                 <input type="text" class="form-control" id="txtSampleName" name="samplename" value="@ePageParameter.samplename" style="width:100px;" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">抽样人</span>
+                                <input type="text" class="form-control" id="txtdetectionUser" name="detectionuser" value="@ePageParameter.detectionuser" style="width:100px;" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">抽样日期</span>
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='starttime' name="starttime" value="@(ePageParameter.starttime!=null?Convert.ToDateTime(ePageParameter.starttime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                                至
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='endtime' name="endtime" value="@(ePageParameter.endtime!=null?Convert.ToDateTime(ePageParameter.endtime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">抽样人</span>
-                                    <input type="text" class="form-control" id="txtdetectionUser" name="detectionuser" value="@ePageParameter.detectionuser" style="width:100px;" />
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">抽样日期</span>
-                                    <div class='input-group date inputtime'>
-                                        <input type='text' class="form-control" id='starttime' name="starttime" value="@(ePageParameter.starttime!=null?Convert.ToDateTime(ePageParameter.starttime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                    至
-                                    <div class='input-group date inputtime'>
-                                        <input type='text' class="form-control" id='endtime' name="endtime" value="@(ePageParameter.endtime!=null?Convert.ToDateTime(ePageParameter.endtime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <!--用于后台区分是否需要查询-->
-                                <input type="hidden" name="issearch" value="1" />
-                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
-                                <button type="button" class="btn btn-success" onclick="Edit(0)" ><i class="fa fa-plus"></i> 添加 </button>
+                        <div class="form-group">
+                            <!--用于后台区分是否需要查询-->
+                            <input type="hidden" name="issearch" value="1" />
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
+                            @if (Convert.ToBoolean(ViewData["aadf1e6b"]))
+                            {
+                                <button type="button" class="btn btn-success" onclick="Edit(0)"><i class="fa fa-plus"></i> 添加 </button>
                                 <button type="button" class="btn btn-warning" onclick="BatchDestory(0)"><i class="fa fa-bitbucket"></i> 销毁 </button>
                                 <button type="button" class="btn btn-primary" onclick="ShowSamplingSheet()"><i class="fa fa-plus"></i> 生成分样单 </button>
-                            </div>
+                            }
+                        </div>
 
-                            <div class="form-group pull-right">
-                                <a class="btn btn-info" href="/Sample/ExportSample?areaid=@ePageParameter.areaid&samplename=@ePageParameter.samplename&detectionuser=@ePageParameter.detectionuser&starttime=@ePageParameter.starttime&endtime=@ePageParameter.endtime" target="_blank"><i class="fa fa-cloud-download"></i> 导出 </a>
-                            </div>
-</form>
+                        <div class="form-group pull-right">
+                            <a class="btn btn-info" href="/Sample/ExportSample?areaid=@ePageParameter.areaid&samplename=@ePageParameter.samplename&detectionuser=@ePageParameter.detectionuser&starttime=@ePageParameter.starttime&endtime=@ePageParameter.endtime" target="_blank"><i class="fa fa-cloud-download"></i> 导出 </a>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -141,7 +150,7 @@
                                         <td>@item.sampleNum</td>
                                         <td title="@item.name">@item.name</td>
                                         <td>@item.protNum</td>
-                                        <td>@(item.productDate!=null?Convert.ToDateTime(item.productDate).ToShortDateString():"")</td>
+                                        <td>@(item.productDate != null ? Convert.ToDateTime(item.productDate).ToShortDateString() : "")</td>
                                         <td>@(item.isDetection ? "抽样" : "送样")</td>
                                         <td>@(item.detectionDate != null ? Convert.ToDateTime(item.detectionDate).ToShortDateString() : "")</td>
                                         <td>@item.detectionUser</td>
@@ -155,23 +164,22 @@
                                         <td class="displaycol">@item.InspectAddress</td>
                                         <td class="displaycol">@item.storcondition</td>
                                         <td class="displaycol">@item.checkdepar</td>
-                                        <td class="displaycol">@(item.urgentlevel==2?"紧急":"普通")</td>
+                                        <td class="displaycol">@(item.urgentlevel == 2 ? "紧急" : "普通")</td>
                                         <td class="displaycol">@item.handleusername</td>
                                         <td class="displaycol">@item.handleDate</td>
                                         <td class="displaycol">@item.sampleAdmin</td>
                                         <td class="displaybtn">。。。</td>
                                         <td>
-                                            @{
-                                                if ((bool)ViewData["aadf1e6b"])
-                                                {
-                                                    <a href="javascript:void(0)" class="btn btn-info btn-xs" onclick="Edit(@item.id)">编辑</a>
-                                                    <a href="javascript:void(0)" class="btn btn-warning btn-xs" onclick="BatchDestory(@item.id)">销毁</a>
-                                                    <a href="javascript:void(0)" class="btn btn-danger btn-xs" onclick="Delete(@item.id)">删除</a>
-                                                }
+
+                                            @if (Convert.ToBoolean(ViewData["aadf1e6b"]))
+                                            {
+                                                <a href="javascript:void(0)" class="btn btn-info btn-xs" onclick="Edit(@item.id)">编辑</a>
+                                                <a href="javascript:void(0)" class="btn btn-warning btn-xs" onclick="BatchDestory(@item.id)">销毁</a>
+                                                <a href="javascript:void(0)" class="btn btn-danger btn-xs" onclick="Delete(@item.id)">删除</a>
                                             }
                                         </td>
                                     </tr>
-                                                }
+                                }
                             }
                         </tbody>
                     </table>

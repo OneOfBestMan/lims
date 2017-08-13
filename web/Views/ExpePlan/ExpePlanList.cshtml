@@ -87,7 +87,7 @@
                                         var ProjectList = ViewData["ProjectList"] as SelectList;
                                         foreach (var item in ProjectList)
                                         {
-                                    <option value="@item.Value" @(ePageParameter.projectid.ToString() == item.Value ? "selected" : "")>@item.Text</option>
+                                            <option value="@item.Value" @(ePageParameter.projectid.ToString() == item.Value ? "selected" : "")>@item.Text</option>
                                         }
                                     }
                                 </select>
@@ -114,7 +114,10 @@
                             <!--用于后台区分是否需要查询-->
                             <input type="hidden" name="issearch" value="1" />
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
-                            <a class="btn btn-success" href="javascript:Add()"><i class="fa fa-plus"></i> 添加 </a>
+                            @if (Convert.ToBoolean(ViewData["4935c772"]))
+                            {
+                                <a class="btn btn-success" href="javascript:Add()"><i class="fa fa-plus"></i> 添加 </a>
+                            }
                         </div>
                     </div>
                 </form>
@@ -160,19 +163,28 @@
                                         <td>@(item["Status"].ToString() == "1" ? "完成" : "未完成")</td>
                                         <td>@item["Remark"].ToString()</td>
                                         <td>
-                                            <a href="javascript:Edit(@item["PlanID"].ToString())" class="btn btn-info btn-xs">编辑</a>
+                                            @if (Convert.ToBoolean(ViewData["4935c772"]))
+                                            {
+                                                <a href="javascript:Edit(@item["PlanID"].ToString())" class="btn btn-info btn-xs">编辑</a>
+                                            }
                                             @{
-                                                
+
                                                 if (Convert.IsDBNull(item["RecordID"])) //判断该实验计划对应的原始记录是否存在
                                                 {
-                                                    <a href="javascript:CreateOriginalRecord(@item["PlanID"].ToString())" class="btn btn-warning btn-xs">生成原始记录</a>
-                                                    <a href="javascript:Delete(@item["PlanID"].ToString())" class="btn btn-danger btn-xs">删除</a>
+                                                    if (Convert.ToBoolean(ViewData["40b7cbd0"]))
+                                                    {
+                                                        <a href="javascript:CreateOriginalRecord(@item["PlanID"].ToString())" class="btn btn-warning btn-xs">生成原始记录</a>
+                                                    }
+                                                    if (Convert.ToBoolean(ViewData["4935c772"]))
+                                                    {
+                                                        <a href="javascript:Delete(@item["PlanID"].ToString())" class="btn btn-danger btn-xs">删除</a>
+                                                    }
                                                 }
                                             }
-                                            
+
                                         </td>
                                     </tr>
-                                }
+                                                }
                             }
                         </tbody>
                     </table>

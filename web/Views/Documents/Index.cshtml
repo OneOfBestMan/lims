@@ -14,7 +14,6 @@
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/uploader/uploadify.css")' />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/Validform/style.css")' />
     <link rel="stylesheet" type="text/css" href='@Url.Content("~/Scripts/ligerUI/skins/Aqua/css/ligerui-tree.css")' />
-
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/jquery.easyui.min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/jquery-easyui/locale/easyui-lang-zh_CN.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/uploader/jquery.uploadify.min.js")'></script>
@@ -26,8 +25,8 @@
     <script type="text/javascript" src='@Url.Content("~/Scripts/My97DatePicker/WdatePicker.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/ligerUI/js/core/base.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/ligerUI/js/plugins/ligerTree.js")'></script>
-
-
+    <script src="/pageoffice/js/pageoffice.js" id="po_js_main"></script>
+    <script src="/Skins/js/pagejscommon.js"></script>
 
 
     <script type="text/javascript">
@@ -116,7 +115,7 @@
                         else {
                                     _editURL = '@Url.Action("vpoffice","Documents")' + "?filename=" + row.doc_URL + "&_pname=" + row.doc_Name + "&_ptype=文档预览";
                                 }
-                                var _editURL = "<a href='" + _editURL + "' target='mainFrame' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                                var _editURL = "<a href='" + _editURL + "' target='mainFrame' onclick='return LimsJs.PageOfficeFileView(this)' ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                                 return _editURL;
                             } else {
                                 return "";
@@ -448,6 +447,7 @@
             }
             return _strURL;
         }
+
         /************************文件权限样式  结束************************/
     </script>
     <style type="text/css">

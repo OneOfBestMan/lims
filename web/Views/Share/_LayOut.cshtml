@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>实验室信息管理系统</title>
-  
+
     <!-- Bootstrap Core CSS -->
     <link href="/Skins/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- MetisMenu CSS -->
@@ -35,8 +35,7 @@
     <script src="http://aui.github.io/artDialog/lib/jquery-1.10.2.js"></script>
 
     <script type="text/javascript">
-        function GetWeekDay()
-        {
+        function GetWeekDay() {
             var d = new Date()
             var weekday = new Array(7)
             weekday[0] = "星期天"
@@ -65,7 +64,7 @@
                             _f = _w.f2 + "_1.png";
                         }
                         var img = "<img width='16px' height='16px' src='http://i2.sinaimg.cn/dy/main/weather/weatherplugin/wthIco/20_20/" + _f + "' />";
-                        var tq = "<i>"+citytq+"</i>" + " " + img + " " + _w.s1 + " " + _w.t1 + "℃～" + _w.t2 + "℃ " + _w.d1 + _w.p1 + "级";
+                        var tq = "<i>" + citytq + "</i>" + " " + img + " " + _w.s1 + " " + _w.t1 + "℃～" + _w.t2 + "℃ " + _w.d1 + _w.p1 + "级";
 
                         $("#weather").html(tq);
                     }
@@ -79,11 +78,13 @@
     </script>
 </head>
 <body>
+
     <!--顶部内容-->
     <div class="index_header">
         <div class="lg lf"><a href="/home/index"><img src="/skins/images/logo.png" width="448" height="70" /></a></div>
         <div class="xx rt">
-            @(DateTime.Now.ToShortDateString())&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<script>GetWeekDay()</script><br />
+            @(DateTime.Now.ToShortDateString())&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <script>GetWeekDay()</script><br />
             <div id="weather"></div>
         </div>
         <div style="overflow:hidden; clear:both; height:0px;"></div>
@@ -99,7 +100,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-               
+
                 <a class="navbar-brand" href="index.html">
                     @{
                         var cookies = HttpContext.Current.Request.Cookies["lims.userinfo"];
@@ -117,13 +118,13 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li>
-                            <a href="#"><i class="fa fa-user fa-fw"></i> 帮助中心</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-gear fa-fw"></i> 修改密码</a>
-                        </li>
-                        <li class="divider"></li>
+                        @*<li>
+                                <a href="#"><i class="fa fa-user fa-fw"></i> 帮助中心</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-gear fa-fw"></i> 修改密码</a>
+                            </li>
+                            <li class="divider"></li>*@
                         <li>
                             <a href="/login/loginout"><i class="fa fa-sign-out fa-fw"></i> 退出</a>
                         </li>
@@ -141,216 +142,266 @@
                             <a href="/home/index" style="font-size:14px;font-weight:bold; text-align:center; color:#0361af;">检测中心</a>
                         </li>
 
-@if (Convert.ToBoolean(ViewData["fb1b136d"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-thermometer-2 fa-fw"></i> 实验室管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["9e469368"]))
-{  <li><a href="/Documents/Index?doc_Type=体系文件">体系文件</a></li>}
-                                <li>
-                                    <a href="#">文件管理 <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-@if (Convert.ToBoolean(ViewData["c2ad1e14"])) { 
-                                        <li><a href="/Documents/Index?doc_Type=工作手册">工作手册</a></li>
-}
-@if (Convert.ToBoolean(ViewData["3d2318d4"])) {
-                                        <li><a href="/DocManagerWithDir/Index">专业资料</a></li>
-}
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
+                        @if (Convert.ToBoolean(ViewData["fb1b136d"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-thermometer-2 fa-fw"></i> 实验室管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["9e469368"]))
+                                    {
+                                        <li><a href="/Documents/Index?doc_Type=体系文件">体系文件</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["8675e1f4"]))
+                                    {
+                                        <li>
+                                            <a href="#">文件管理 <span class="fa arrow"></span></a>
+                                            <ul class="nav nav-third-level">
+                                                @if (Convert.ToBoolean(ViewData["c2ad1e14"]))
+                                                {
+                                                    <li><a href="/Documents/Index?doc_Type=工作手册">工作手册</a></li>
+                                                }
+                                                @if (Convert.ToBoolean(ViewData["3d2318d4"]))
+                                                {
+                                                    <li><a href="/DocManagerWithDir/Index">专业资料</a></li>
+                                                }
+                                            </ul>
+                                            <!-- /.nav-third-level -->
+                                        </li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["9d5fa0bf"]))
+                                    {
+                                        <li><a href="/Task/List">任务考核</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["8d6148b3"]))
+                                    {
+                                        <li><a href="/labmanage/experimentcheck">实验考核</a></li>
+                                    }
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }
+                        @if (Convert.ToBoolean(ViewData["31afbeaf"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-medkit fa-fw"></i> 药品管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["b4b3da88"]))
+                                    {
+                                        <li><a href="/Drug/Index">药品维护</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["571d3f8a"]))
+                                    {
+                                        <li><a href="/Drug/DrugIn">药品入库</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["e8089bd6"]))
+                                    {
+                                        <li><a href="/Drug/DrugOut" class="">药品出库</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["8ec2589a"]))
+                                    {
+                                        <li><a href="/Drug/DrugCheck" class="">药品盘点</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["20bf97b3"]))
+                                    {
+                                        <li><a href="/Drug/DrugReport" class="">药品统计</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["3ea74d13"]))
+                                    {
+                                        <li><a href="/Drug/DrugLock" class="">药品柜管理</a></li>
+                                    }
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }
+                        @if (Convert.ToBoolean(ViewData["f2719eab"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-flask fa-fw"></i> 仪器设备<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["59bb818d"]))
+                                    {
+                                        <li><a href="/Device/Index" class="">仪器设备维护</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["0adeb18d"]))
+                                    {
+                                        <li><a href="/Device/DeviceIN" class="">仪器设备入库</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["005ae33b"]))
+                                    {
+                                        <li><a href="/Device/DeviceOUT" class="">仪器设备出库</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["8e0fd1ad"]))
+                                    {
+                                        <li><a href="/Device/DeviceLog" class="">仪器设备盘点</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["cfc6b5d4"]))
+                                    {
+                                        <li><a href="/Measure/MeasureCheck" class="">计量管理</a></li>
+                                    }
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }
+                        @if (Convert.ToBoolean(ViewData["e3251ffe"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-hourglass-half fa-fw"></i> 易耗品<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["49b6d95e"]))
+                                    {
+                                        <li><a href="/EasyConsume/Index" class="">易耗品维护</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["79244bfc"]))
+                                    {
+                                        <li><a href="/EasyConsume/EasyConsumeIN" class="">易耗品入库</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["8d545134"]))
+                                    {
+                                        <li><a href="/EasyConsume/EasyConsumeOUT" class="">易耗品出库</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["fc4e86e0"]))
+                                    {
+                                        <li><a href="/EasyConsume/EasyConsumeLog" class="">易耗品盘点</a></li>
+                                    }
 
-                                <li><a href="/Task/List">任务考核</a></li>
-                                <li><a href="/labmanage/experimentcheck">实验考核</a></li>
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }
+                        @if (Convert.ToBoolean(ViewData["7846b857"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-book fa-fw"></i> 图书资料<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["ab4fe7cf"]))
+                                    {
+                                        <li><a href="/Book/Index">图书资料管理</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["b8ff729c"]))
+                                    {
+                                        <li><a href="/Book/BorrowManage">图书资料借阅</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["e0a1333c"]))
+                                    {
+                                        <li><a href="/Book/BookLog">图书统计</a></li>}
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
 
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-}
-@if (Convert.ToBoolean(ViewData["31afbeaf"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-medkit fa-fw"></i> 药品管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["b4b3da88"])) { 
-                                <li><a href="/Drug/Index">药品维护</a></li>}
-                                 @if (Convert.ToBoolean(ViewData["571d3f8a"])) { 
-                                <li><a href="/Drug/DrugIn">药品入库</a></li>}
-                                     @if (Convert.ToBoolean(ViewData["e8089bd6"])) { 
-                                <li><a href="/Drug/DrugOut" class="">药品出库</a></li>}
-                                                                                  @if (Convert.ToBoolean(ViewData["8ec2589a"])) { 
-                                <li><a href="/Drug/DrugCheck"  class="">药品盘点</a></li>}
-                                     @if (Convert.ToBoolean(ViewData["20bf97b3"])) { 
-                                <li><a href="/Drug/DrugReport" class="">药品统计</a></li>
-                                     }
-                                     @if (Convert.ToBoolean(ViewData["3ea74d13"])) {
-                                <li><a href="/Drug/DrugLock"  class="">药品柜管理</a></li>
-                                     }
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-}
-@if (Convert.ToBoolean(ViewData["f2719eab"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-flask fa-fw"></i> 仪器设备<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["59bb818d"])) { 
-                                <li><a href="/Device/Index" class="">仪器设备维护</a></li>
-}
-@if (Convert.ToBoolean(ViewData["0adeb18d"])) { 
-                                <li><a href="/Device/DeviceIN" class="">仪器设备入库</a></li>
-}
-@if (Convert.ToBoolean(ViewData["005ae33b"])) { 
-                                <li><a href="/Device/DeviceOUT" class="">仪器设备出库</a></li>
-}
-@if (Convert.ToBoolean(ViewData["8e0fd1ad"])) { 
-                                <li><a href="/Device/DeviceLog" class="">仪器设备盘点</a></li>
-}
-@if (Convert.ToBoolean(ViewData["cfc6b5d4"]))
-                     {
-                                <li><a href="/Measure/MeasureCheck" class="">计量管理</a></li> 
-}
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-}
-@if (Convert.ToBoolean(ViewData["e3251ffe"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-hourglass-half fa-fw"></i> 易耗品<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["49b6d95e"])) { 
-                                <li><a href="/EasyConsume/Index" class="">易耗品维护</a></li>
-}
-@if (Convert.ToBoolean(ViewData["79244bfc"])) { 
-                                <li><a href="/EasyConsume/EasyConsumeIN" class="">易耗品入库</a></li>
-}
-@if (Convert.ToBoolean(ViewData["8d545134"])) { 
-                                <li><a href="/EasyConsume/EasyConsumeOUT" class="">易耗品出库</a></li>
-}
-@if (Convert.ToBoolean(ViewData["fc4e86e0"])) { 
-                                <li><a href="/EasyConsume/EasyConsumeLog" class="">易耗品盘点</a></li>
-}
-                               
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-}
-@if (Convert.ToBoolean(ViewData["7846b857"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-book fa-fw"></i> 图书资料<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["ab4fe7cf"])) { 
-                                <li><a href="/Book/Index">图书资料管理</a></li>
-}
-@if (Convert.ToBoolean(ViewData["b8ff729c"])) { 
-                                <li><a href="/Book/BorrowManage">图书资料借阅</a></li>
-}
-@if (Convert.ToBoolean(ViewData["e0a1333c"])) { 
-                                <li><a href="/Book/BookLog">图书统计</a></li>}
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
+                        }
+                        @if (Convert.ToBoolean(ViewData["ecd24fb7"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-bank fa-fw"></i> 实验管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["458cf6bf"]))
+                                    {
+                                        <li><a href="/Laboratory/LaboratoryList">实验室信息</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["3af01951"]))
+                                    {
+                                        <li><a href="/Project/ProjectList">项目一览</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["de3a376d"]))
+                                    {
+                                        <li><a href="/ExpePlan/ExpePlanList">实验计划</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["68b56a25"]))
+                                    {
+                                        <li><a href="/OriginalRecord/OriginalRecordList">原始记录</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["722a5e1c"]))
+                                    {
+                                        <li><a href="/TestReport/TestReportList">检验报告</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["4208340c"]))
+                                    {
+                                        <li><a href="/ExpeStatistics/ExpeStatisticsList">实验统计</a></li>
+                                    }
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }     @if (Convert.ToBoolean(ViewData["7076b0bd"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-balance-scale fa-fw"></i> 样品管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["0faa9106"]))
+                                    {
+                                        <li><a href="/sample/samplelist">样品管理</a></li>}
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
 
-}
-@if (Convert.ToBoolean(ViewData["ecd24fb7"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-bank fa-fw"></i> 实验管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["458cf6bf"])) { 
-                                <li><a href="/Laboratory/LaboratoryList">实验室信息</a></li>
-}
-@if (Convert.ToBoolean(ViewData["3af01951"])) {
-                                
-}
-                                <li><a href="/Project/ProjectList">项目一览</a></li>
-                                <li><a href="/ExpePlan/ExpePlanList">实验计划</a></li>
+                        }
+                        @if (Convert.ToBoolean(ViewData["600bfd3e"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-vcard fa-fw"></i> 人员管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["4346baab"]))
+                                    {
+                                        <li><a href="/PersonAptitude/PersonAptitudeList">人员资质</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["7e8269da"]))
+                                    {
+                                        <li><a href="/OutPersonnel/OutPersonnelList">外来人员</a></li>
+                                    }
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }        @if (Convert.ToBoolean(ViewData["0623a8ea"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-user fa-fw"></i> 客户管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["11163932"]))
+                                    {
+                                        <li><a href="/ClientManage/ClientManageList">客户管理</a></li>}
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }
+                        @if (Convert.ToBoolean(ViewData["3f4c9a44"]))
+                        {
+                            <li>
+                                <a href="#"><i class="fa fa-cog fa-fw"></i> 系统管理<span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level">
+                                    @if (Convert.ToBoolean(ViewData["9a83db13"]))
+                                    {
+                                        <li><a href="/ShowImage/ShowImageList" class="">首页图片管理</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["bafd49ae"]))
+                                    {
+                                        <li><a href="/Magazine/MagazineList" class="">电子杂志管理</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["ed1878f1"]))
+                                    {
+                                        <li><a href="/News/NewsList" class="">公告通知</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["f0d28332"]))
+                                    {
+                                        <li><a href="/InPersonnel/InPersonnelList">用户管理</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["7819fcc8"]))
+                                    {
+                                        <li><a href="/Role/RoleList">角色管理</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["d60c7672"]))
+                                    {
+                                        <li><a href="/Action/ActionList">系统模块管理</a></li>}
+                                    @if (Convert.ToBoolean(ViewData["4e4b434d"]))
+                                    {
+                                        <li><a href="/Area/AreaList">区域管理</a></li>
+                                    }
+                                    @if (Convert.ToBoolean(ViewData["541f97d5"]))
+                                    {
+                                        <li><a href="/TypeDict/TypeDictList?SubjectID=1" class="">公告类别管理</a></li>
 
-                               @if (Convert.ToBoolean(ViewData["de3a376d"])) { 
-                                
-                               }
-                               @if (Convert.ToBoolean(ViewData["68b56a25"])) { 
-                                <li><a href="/OriginalRecord/OriginalRecordList">原始记录</a></li>
-                               }
-                               @if (Convert.ToBoolean(ViewData["722a5e1c"])) { 
-                                <li><a href="/TestReport/TestReportList">检验报告</a></li>
-                               }
-                               @if (Convert.ToBoolean(ViewData["4208340c"])) { 
-                                <li><a href="/ExpeStatistics/ExpeStatisticsList">实验统计</a></li>
-                               }
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-}     @if (Convert.ToBoolean(ViewData["7076b0bd"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-balance-scale fa-fw"></i> 样品管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["0faa9106"])) { 
-                                <li><a href="/sample/samplelist">样品管理</a></li>}
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
+                                        <li><a href="/TypeDict/TypeDictList?SubjectID=2">项目类别管理</a></li>
 
-      }
-@if (Convert.ToBoolean(ViewData["600bfd3e"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-vcard fa-fw"></i> 人员管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["4346baab"]))
-{
-                                <li><a href="/PersonAptitude/PersonAptitudeList">人员资质</a></li>}
-@if (Convert.ToBoolean(ViewData["7e8269da"])) { 
-                                <li><a href="/OutPersonnel/OutPersonnelList">外来人员</a></li>
-}
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-}        @if (Convert.ToBoolean(ViewData["0623a8ea"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-user fa-fw"></i> 客户管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["11163932"])) { 
-                                <li><a href="/ClientManage/ClientManageList">客户管理</a></li>}
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-         }
-         @if (Convert.ToBoolean(ViewData["3f4c9a44"])) { 
-                        <li>
-                            <a href="#"><i class="fa fa-cog fa-fw"></i> 系统管理<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-@if (Convert.ToBoolean(ViewData["9a83db13"])) { 
-                                <li><a href="/ShowImage/ShowImageList" target="mainFrame" class="">首页图片管理</a></li>}
-                                                  @if (Convert.ToBoolean(ViewData["bafd49ae"]))
-                                                  {
-                                <li><a href="/Magazine/MagazineList" target="mainFrame" class="">电子杂志管理</a></li>}
-                                                    @if (Convert.ToBoolean(ViewData["ed1878f1"])) { 
-                                <li><a href="/News/NewsList" target="mainFrame" class="">公告通知</a></li>
-                                                    }
-                                       @if (Convert.ToBoolean(ViewData["f0d28332"])) { 
-                                <li><a href="/InPersonnel/InPersonnelList" target="mainFrame">用户管理</a></li>}
-                                            @if (Convert.ToBoolean(ViewData["7819fcc8"])) { 
-                                <li><a href="/Role/RoleList" target="mainFrame">角色管理</a></li>}
-                                      @if (Convert.ToBoolean(ViewData["d60c7672"])) { 
-                                <li><a href="/Action/ActionList" target="mainFrame">系统模块管理</a></li>}
-                                        @if (Convert.ToBoolean(ViewData["4e4b434d"])) { 
-                                <li><a href="/Area/AreaList" target="mainFrame">区域管理</a></li>
-                                        }
-                                        @if (Convert.ToBoolean(ViewData["541f97d5"]))
-                                        { 
-                                <li><a href="/TypeDict/TypeDictList?SubjectID=1" target="mainFrame" class="">公告类别管理</a></li>
-                                       
-                                <li><a href="/TypeDict/TypeDictList?SubjectID=2" target="mainFrame">项目类别管理</a></li>
-  
-                                <li><a href="/TypeDict/TypeDictList?SubjectID=3" target="mainFrame">职务类别管理</a></li>
-  
-                                <li><a href="/TypeDict/TypeDictList?SubjectID=4" target="mainFrame">实验室类别</a></li>
- 
-                                <li><a href="/TypeDict/TypeDictList?SubjectID=5" target="mainFrame">检验类别管理</a></li>
-  }
-                     
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-         }
+                                        <li><a href="/TypeDict/TypeDictList?SubjectID=3">职务类别管理</a></li>
+
+                                        <li><a href="/TypeDict/TypeDictList?SubjectID=4">实验室类别</a></li>
+
+                                        <li><a href="/TypeDict/TypeDictList?SubjectID=5">检验类别管理</a></li>
+                                    }
+
+                                </ul>
+                                <!-- /.nav-second-level -->
+                            </li>
+                        }
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -363,22 +414,21 @@
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
-
     <!-- Bootstrap Core JavaScript -->
     <script src="/Skins/admin/vendor/bootstrap/js/bootstrap.min.js"></script>
     <!-- Metis Menu Plugin JavaScript -->
     <script src="/Skins/admin/vendor/metisMenu/metisMenu.min.js"></script>
     <!-- DataTables JavaScript -->
     @*<script src="/Skins/admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="/Skins/admin/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
-    <script src="/Skins/admin/vendor/datatables-responsive/dataTables.responsive.js"></script>*@
+        <script src="/Skins/admin/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
+        <script src="/Skins/admin/vendor/datatables-responsive/dataTables.responsive.js"></script>*@
     <!-- Custom Theme JavaScript -->
     <script src="/Skins/admin/dist/js/sb-admin-2.js"></script>
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script src="/Skins/artDialog/dist/dialog.js"></script>
     <script src="/Skins/artDialog/dist/dialog-plus.js"></script>
     <script>
-        function showwindow(url,t,id) {
+        function showwindow(url, t, id) {
             var d = dialog({
                 title: t,
                 url: url,
@@ -391,4 +441,3 @@
     </script>
 </body>
 </html>
-
