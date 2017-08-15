@@ -249,12 +249,15 @@ namespace Web.Controllers
                 switch (_searchtype)
                 {
                     case "名称":
-                        where += string.Format(" and name like '%%{0}%%' ", _searchtext);
+                        if (string.IsNullOrEmpty(_searchtext)) { break; }
+                        where += string.Format(" and tb_EasyConsume.name like '%%{0}%%' ", _searchtext);
                         break;
                     case "厂家与场地":
+                        if (string.IsNullOrEmpty(_searchtext)) { break; }
                         where += string.Format(" and manufacturers like '%%{0}%%' ", _searchtext);
                         break;
                     case "经手人":
+                        if (string.IsNullOrEmpty(_searchtext)) { break; }
                         var listperson = new BLL.PersonnelManage.T_tb_InPersonnel().GetModelList(" PersonnelName like '%%" + _searchtext + "%%'");
                         string personids = "";
                         foreach (var item in listperson)
@@ -270,9 +273,11 @@ namespace Web.Controllers
                 switch (_datetype)
                 {
                     case "年":
+                        if (string.IsNullOrEmpty(_txtdate)) { break; }
                         where += string.Format(" and year(inDate) ={0} ", _txtdate);
                         break;
                     case "月":
+                        if (string.IsNullOrEmpty(_txtdate)) { break; }
                         DateTime _dtime = DateTime.Parse("1949-10-01"); DateTime.TryParse(_txtdate, out _dtime);
                         where += _dtime.Year > 1949 ? string.Format(" and year(inDate) = {0} and month(inDate) = {1} ", _dtime.Year, _dtime.Month) : "";
                         break;
@@ -280,29 +285,29 @@ namespace Web.Controllers
                 if (CurrentUserInfo.DataRange == 3)
                 {
                     int _userid = CurrentUserInfo.PersonnelID;
-                    where += string.Format(" and  createUser = (select PersonnelID from tb_InPersonnel where AreaID = {0} and PersonnelID = {1}) ", CurrentUserInfo.AreaID, _userid);
+                    where += string.Format(" and  T.createUser = (select PersonnelID from tb_InPersonnel where AreaID = {0} and PersonnelID = {1}) ", CurrentUserInfo.AreaID, _userid);
                 }
                 else if (_cid > 0 || CurrentUserInfo.DataRange == 2)
                 {
                     int _userid = CurrentUserInfo.PersonnelID;
-                    where += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", _cid);
+                    where += string.Format(" and T.createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", _cid);
                 }
                 dt = _easyconsumeinbll.GetListByPage(where, "updateDate desc", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize).Tables[0];
-                dt.Columns.Add("name");
-                dt.Columns.Add("type");
-                dt.Columns.Add("danwei");
-                dt.Columns.Add("PersonnelName");
+                //dt.Columns.Add("name");
+                //dt.Columns.Add("type");
+                //dt.Columns.Add("danwei");
+                //dt.Columns.Add("PersonnelName");
 
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    DataRow dr = dt.Rows[i];
-                    int eid = Convert.ToInt32(dr["eId"]);
-                    tb_EasyConsume _easyconsume = _easyconsumebll.GetModel(eid);
-                    dt.Rows[i]["name"] = _easyconsume.name;
-                    dt.Rows[i]["type"] = _easyconsume.type;
-                    dt.Rows[i]["danwei"] = new tb_BaseBLL().GetModel(_easyconsume.unit.Value).baseName;
-                    dt.Rows[i]["PersonnelName"] = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(Convert.ToInt32(dr["user1"])).PersonnelName;
-                }
+                //for (int i = 0; i < dt.Rows.Count; i++)
+                //{
+                //    DataRow dr = dt.Rows[i];
+                //    int eid = Convert.ToInt32(dr["eId"]);
+                //    tb_EasyConsume _easyconsume = _easyconsumebll.GetModel(eid);
+                //    dt.Rows[i]["name"] = _easyconsume.name;
+                //    dt.Rows[i]["type"] = _easyconsume.type;
+                //    dt.Rows[i]["danwei"] = new tb_BaseBLL().GetModel(_easyconsume.unit.Value).baseName;
+                //    dt.Rows[i]["PersonnelName"] = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(Convert.ToInt32(dr["user1"])).PersonnelName;
+                //}
 
                 total = dt.Rows.Count;
                 total = _easyconsumeinbll.GetEasyConsumeINCount(where);
@@ -480,12 +485,15 @@ namespace Web.Controllers
                 switch (_searchtype)
                 {
                     case "名称":
-                        where += string.Format(" and name like '%%{0}%%' ", _searchtext);
+                        if (string.IsNullOrEmpty(_searchtext)) { break; }
+                        where += string.Format(" and tb_EasyConsume.name like '%%{0}%%' ", _searchtext);
                         break;
                     case "厂家与场地":
+                        if (string.IsNullOrEmpty(_searchtext)) { break; }
                         where += string.Format(" and product like '%%{0}%%' ", _searchtext);
                         break;
                     case "经手人":
+                        if (string.IsNullOrEmpty(_searchtext)) { break; }
                         var listperson = new BLL.PersonnelManage.T_tb_InPersonnel().GetModelList(" PersonnelName like '%%" + _searchtext + "%%'");
                         string personids = "";
                         foreach (var item in listperson)
@@ -501,9 +509,11 @@ namespace Web.Controllers
                 switch (_datetype)
                 {
                     case "年":
+                        if (string.IsNullOrEmpty(_txtdate)) { break; }
                         where += string.Format(" and year(createDate) ={0} ", _txtdate);
                         break;
                     case "月":
+                        if (string.IsNullOrEmpty(_txtdate)) { break; }
                         DateTime _dtime = DateTime.Parse("1949-10-01"); DateTime.TryParse(_txtdate, out _dtime);
                         where += _dtime.Year > 1949 ? string.Format(" and year(createDate) = {0} and month(createDate) = {1} ", _dtime.Year, _dtime.Month) : "";
                         break;
@@ -511,29 +521,29 @@ namespace Web.Controllers
                 if (CurrentUserInfo.DataRange == 3)
                 {
                     int _userid = CurrentUserInfo.PersonnelID;
-                    where += string.Format(" and  CreateUser = (select PersonnelID from tb_InPersonnel where AreaID = {0} and PersonnelID = {1}) ", CurrentUserInfo.AreaID.Value, _userid);
+                    where += string.Format(" and  T.CreateUser = (select PersonnelID from tb_InPersonnel where AreaID = {0} and PersonnelID = {1}) ", CurrentUserInfo.AreaID.Value, _userid);
                 }
                 else if (_cid > 0 || CurrentUserInfo.DataRange == 2)
                 {
                     int _userid = CurrentUserInfo.PersonnelID;
-                    where += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", _cid);
+                    where += string.Format(" and T.createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", _cid);
                 }
                 dt = _easyconsumeoutbll.GetListByPage(where, "updateDate desc", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize).Tables[0];
-                dt.Columns.Add("name");
-                dt.Columns.Add("type");
-                dt.Columns.Add("danwei");
-                dt.Columns.Add("PersonnelName");
+                //dt.Columns.Add("name");
+                //dt.Columns.Add("type");
+                //dt.Columns.Add("danwei");
+                //dt.Columns.Add("PersonnelName");
 
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    DataRow dr = dt.Rows[i];
-                    int eid = Convert.ToInt32(dr["eId"]);
-                    tb_EasyConsume _easyconsume = _easyconsumebll.GetModel(eid);
-                    dt.Rows[i]["name"] = _easyconsume.name;
-                    dt.Rows[i]["type"] = _easyconsume.type;
-                    dt.Rows[i]["danwei"] = new tb_BaseBLL().GetModel(_easyconsume.unit.Value).baseName;
-                    dt.Rows[i]["PersonnelName"] = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(Convert.ToInt32(dr["user1"])).PersonnelName;
-                }
+                //for (int i = 0; i < dt.Rows.Count; i++)
+                //{
+                //    DataRow dr = dt.Rows[i];
+                //    int eid = Convert.ToInt32(dr["eId"]);
+                //    tb_EasyConsume _easyconsume = _easyconsumebll.GetModel(eid);
+                //    dt.Rows[i]["name"] = _easyconsume.name;
+                //    dt.Rows[i]["type"] = _easyconsume.type;
+                //    dt.Rows[i]["danwei"] = new tb_BaseBLL().GetModel(_easyconsume.unit.Value).baseName;
+                //    dt.Rows[i]["PersonnelName"] = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(Convert.ToInt32(dr["user1"])).PersonnelName;
+                //}
                 total = dt.Rows.Count;
                 total = _easyconsumeoutbll.GetEasyConsumeOUTCount(where);
             }

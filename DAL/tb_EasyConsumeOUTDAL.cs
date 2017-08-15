@@ -437,7 +437,17 @@ namespace DAL
             {
                 strSql.Append("order by T.id desc");
             }
-            strSql.Append(")AS Row, T.*  from tb_easyconsumeout T ");
+            strSql.Append(@")AS Row, T.*  
+                                            ,dbo.tb_EasyConsume.name,
+                                            dbo.tb_EasyConsume.type,
+                                            dbo.tb_Base.baseName AS danwei,
+                                            dbo.tb_InPersonnel.PersonnelName
+                                            FROM
+                                            dbo.tb_EasyConsumeIN T
+                                            LEFT  JOIN dbo.tb_EasyConsume ON T.eId = dbo.tb_EasyConsume.id
+                                            LEFT  JOIN dbo.tb_Base ON dbo.tb_EasyConsume.unit = dbo.tb_Base.id 
+                                             LEFT  JOIN dbo.tb_InPersonnel ON dbo.tb_InPersonnel.personnelid = T.user1  
+                                                            ");
             if (!string.IsNullOrEmpty(strWhere.Trim()))
             {
                 strSql.Append(" WHERE " + strWhere);

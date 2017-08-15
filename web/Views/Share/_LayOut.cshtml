@@ -439,5 +439,19 @@
             return false;
         }
     </script>
+    <script>
+        $(function () { 
+        var navobj = $("ul [class='nav nav-second-level collapse in']");
+        if (navobj && navobj.length>0) {
+           
+        } else {
+
+            var test = window.location.pathname;
+            var a = $("[href='" + window.location.pathname + "']");
+            a.parent().parent().addClass("in");
+            a.addClass("active");
+        }
+        })
+    </script>
 </body>
 </html>
