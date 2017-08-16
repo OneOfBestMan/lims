@@ -69,7 +69,7 @@
                     <tr>
                         <td>
                             <label>抽样形式：</label>
-                            <select class="form-control DetectionType" name="isDetection" onchange="DetectionChange()">
+                            <select class="form-control DetectionType" id="isDetection" name="isDetection" onchange="DetectionChange()">
                                 <option value="false" @(info.isDetection ? "" : "selected")>送样</option>
                                 <option value="true" @(info.isDetection ? "selected" : "")>抽样</option>
                             </select>
@@ -98,7 +98,7 @@
                         </td>
                         <td>
                             <label>送样单位：</label>
-                            <select class="form-control  DetectionType_False" name="InspectCompany">
+                            <select class="form-control  DetectionType_False" id="drop_InspectCompany" name="InspectCompany" onchange="GetInspectAddress()">
                                 @{
                                     var ClientList = ViewBag.ClientList as List<E_tb_ClientManage>;
                                     foreach (var item in ClientList)
@@ -110,7 +110,7 @@
                         </td>
                         <td>
                             <label>送样地址：</label>
-                            <input type="text" class="form-control DetectionType_False" name="InspectAddress" value="@info.InspectAddress" />
+                            <input type="text" class="form-control DetectionType_False" id="InspectAddress" name="InspectAddress" value="@info.InspectAddress" />
                         </td>
                     </tr>
                     <tr>
@@ -134,12 +134,12 @@
                             <input type="text" disabled="disabled" class="form-control" name="sampleAdmin" value="@info.sampleAdmin" />
 
                             <!--隐藏属性-->
-                            <input type="hidden" name="AreaID" value="@info.AreaID" />
+                            <input type="hidden" id="AreaID" name="AreaID" value="@info.AreaID" />
                             <input type="hidden" id="SampleID" name="id" value="@info.id"/>
-                            <input type="hidden" name="createDate" value="@info.createDate" />
-                            <input type="hidden" name="createUser" value="@info.createUser" />
-                            <input type="hidden" name="handleDate" value="@info.handleDate" />
-                            <input type="hidden" name="handleUser" value="@info.handleUser" />
+                            <input type="hidden" id="createDate" name="createDate" value="@info.createDate" />
+                            <input type="hidden" id="createUser" name="createUser" value="@info.createUser" />
+                            <input type="hidden" id="handleDate" name="handleDate" value="@info.handleDate" />
+                            <input type="hidden" id="handleUser" name="handleUser" value="@info.handleUser" />
                         </td>
                     </tr>
                 </tbody>
@@ -180,7 +180,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="button" id="btnAddExpePlan" class="btn btn-success" onclick="AddExpePlan()"><i class="fa fa-plus"></i> 添加 </button>
+                            <button type="button" id="btnAddExpePlan" class="btn btn-success" onclick="AddExpePlan()" title=""><i class="fa fa-plus"></i> 添加 </button>
                         </div>
                     </div>
                     <div style="min-height:200px;max-height:300px;overflow-y:auto;">
@@ -286,14 +286,36 @@
             });
 
             $.post("/Sample/Save", data, function (data) {
-                if (data == "True") {
-                    top.window.location.reload();
+                var jsondata = eval(data);
+                if (jsondata.result) {
+                    alert(jsondata.msg);
+                    $("#AreaID").val(jsondata.areaid);
+                    $("#SampleID").val(jsondata.sampleid);
+                    $("#createUser").val(jsondata.createuser);
+                    $("#createDate").val(jsondata.createdate);
+                    $("#btnAddExpePlan").removeAttr("disabled");
                 } else {
-                    alert("保存失败！");
+                    alert(jsondata.msg);
                 }
             });
             return false;
         }
+
+        //获取送样地址
+        function GetInspectAddress()
+        {
+            var ClientID=$("#drop_InspectCompany").val();
+            $.getJSON("/Sample/GetInspectAddress?clientid=" + ClientID, function (data) {
+                var jsondata = eval(data);
+                if (jsondata.result) {
+                    $("#InspectAddress").val(data.inspectaddress);
+                }
+                else {
+                    alert(jsondata.msg);
+                }
+            });
+        }
+        
 
         //页面初始化内容
         $(document).ready(function () {
@@ -304,13 +326,19 @@
                 todayBtn: true,//今日按钮
                 language: 'cn'
             });
+
             //初始化 抽样形式
             DetectionChange();
+
+            //初始化 送样地址
+            if ($("#isDetection").val() == "false") {
+                GetInspectAddress();
+            }
 
             //若为添加，则屏蔽实验室计划添加
             var SampleID = $("#SampleID").val();
             if (SampleID == "" || SampleID == "0") {
-                $("#btnAddExpePlan").attr("disabled", "disabled");
+                $("#btnAddExpePlan").attr("disabled", "disabled").attr("title","添加样品保存成功后可用！");
             }
         });
     </script>

@@ -19,6 +19,8 @@ using System.Reflection;
 using NPOI.XWPF.UserModel;
 using NPOI.OpenXmlFormats.Wordprocessing;
 using System.Text;
+using Model.ClientManage;
+using BLL.ClientManage;
 
 namespace Web.Controllers
 {
@@ -91,21 +93,50 @@ namespace Web.Controllers
         /// <summary>
         /// 保存样品
         /// </summary>
-        public bool Save(tb_Sample eSample)
+        public JsonResult Save(tb_Sample eSample)
         {
+            bool result = false;
+            string msg = "";
             eSample.updateUser = CurrentUserInfo.PersonnelID;
             eSample.updateDate = DateTime.Now;
             if (eSample.id > 0)//若存在数据，执行更新
             {
-                return _dSample.Update(eSample);
+                result = _dSample.Update(eSample);
+                msg = (result)?"修改成功": "修改失败";
             }
-            eSample.createUser = CurrentUserInfo.PersonnelID;
-            eSample.createDate = DateTime.Now;
-            eSample.AreaID = (int)CurrentUserInfo.AreaID;
-            eSample.sampleAdmin = CurrentUserInfo.PersonnelName;
-            return _dSample.Add(eSample)>0;//若不存在数据，直接插入
+            else {
+                eSample.createUser = CurrentUserInfo.PersonnelID;
+                eSample.createDate = DateTime.Now;
+                eSample.handleUser = 0;
+                eSample.AreaID = (int)CurrentUserInfo.AreaID;
+                eSample.sampleAdmin = CurrentUserInfo.PersonnelName;
+                eSample.id = _dSample.Add(eSample);//若不存在数据，直接插入
+                result = eSample.id > 0;
+                msg = (result)?"添加成功": "添加失败";
+            }
+            return Json(new { result = result,msg=msg, sampleid = eSample.id, areaid = eSample.AreaID, createuser = eSample.createUser, createdate = eSample.createDate }, JsonRequestBehavior.AllowGet);
         }
-        
+
+        /// <summary>
+        /// 获取送样地址
+        /// </summary>
+        /// <param name="clientid">客户ID</param>
+        /// <returns>返回对应送样地址</returns>
+        public JsonResult GetInspectAddress(int clientid)
+        {
+            bool result = false;
+            string msg = "获取送样地址失败";
+            string inspectaddress = "";
+            E_tb_ClientManage eClientManage = new T_tb_ClientManage().GetModel(clientid);
+            if (eClientManage != null)
+            {
+                result = true;
+                msg = "送样地址获取成功！";
+                inspectaddress = eClientManage.Address;
+            }
+            return Json(new { result= result,msg=msg, inspectaddress= inspectaddress }, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// 销毁样品
         /// </summary>
