@@ -31,7 +31,7 @@
     <div class="row ng-scope">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <!--标题-->
-            <h1 class="page-header">实验报告列表</h1>
+            <h1 class="page-header">检验报告</h1>
 
             <!--操作-->
             <div class="form" style="padding-bottom:10px;">
@@ -128,7 +128,7 @@
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
                             @if (Convert.ToBoolean(ViewData["e765047d"]))
                             {
-                                <a class="btn btn-primary" href="javascript:Examine()"><i class="fa fa-check"></i> 批量审核 </a>
+                                <a class="btn btn-primary" href="javascript:Examine()"><i class="fa fa-check"></i> 批量批准 </a>
                             }
                         </div>
 
@@ -167,7 +167,7 @@
                                 <th style="width:75px;">签发日期</th>
                                 <th style="width:75px;" class="">主检人</th>
                                 <th style="width:75px;" class="">审批人</th>
-                                <th style="width:75px;" class="">主检人</th>
+                                <th style="width:75px;" class="">批准人</th>
 
                                 <th style="width:75px;" class="displaycol">结论</th>
                                 <th style="width:75px;" class="displaybtn">显示更多</th>
@@ -333,12 +333,25 @@
         });
         ids = ids.substr(0, ids.lastIndexOf(","));
 
+        var d = dialog({
+            title: '批量批准',
+            url: '/TestReport/BatchExamine?ids='+ids,
+            id: 'id-info',
+        });
+        d.showModal();
+
+        /* 需要支持选择签发日期
         $.getJSON("/TestReport/Examine?ids=" + ids,
             function (data) {
                 if (data == "True") {
-                    alert("审核成功！");
+                    alert("批准成功！");
                     window.location.reload();
                 }
+                else
+                {
+                    alert(data);
+                }
             });
+        */
     }
 </script>

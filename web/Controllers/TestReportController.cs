@@ -420,13 +420,19 @@ namespace Web.Controllers
             return Json(str, JsonRequestBehavior.AllowGet);
         }
 
-        /// <summary>
-        /// 批量审核
-        /// </summary>
-        public JsonResult Examine(string ids)
+        [Route("TestReport/BatchExamine")]
+        public ActionResult BatchExamine()
         {
-            bool result = dTestReport.Examine(ids, CurrentUserInfo.PersonnelID);
-            return Json(result ? "True" : "审核失败", JsonRequestBehavior.AllowGet);
+            return View("/views/TestReport/Examine.cshtml");
+        }
+
+        /// <summary>
+        /// 批量批准
+        /// </summary>
+        public JsonResult Examine(string ids,DateTime issuedtime)
+        {
+            bool result = dTestReport.Examine(ids, CurrentUserInfo.PersonnelID, issuedtime);
+            return Json(result ? "True" : "批量批准失败", JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

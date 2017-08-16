@@ -535,15 +535,15 @@ namespace DAL.TestReport
         }
 
         /// <summary>
-        /// 批量审核
+        /// 批量批准
         /// </summary>
         /// <param name="ids">检验报告id集合</param>
         /// <param name="examinePersonnelID">审核人</param>
         /// <returns>返回是否执行成功</returns>
-        public bool Examine (string ids,int examinePersonnelID)
+        public bool Examine (string ids,int ApprovalPersonnelID,DateTime IssuedTime)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append($"update tb_TestReport set examinePersonnelID={examinePersonnelID} where ReportID in ({ids}) and (examinePersonnelID is null or examinePersonnelID=0)");
+            strSql.Append($"update tb_TestReport set ApprovalPersonnelID={ApprovalPersonnelID},IssuedTime=cast('{IssuedTime.ToString()}' as datetime) where ReportID in ({ids}) and (ApprovalPersonnelID is null or ApprovalPersonnelID=0)");
 
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
