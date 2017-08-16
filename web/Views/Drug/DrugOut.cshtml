@@ -31,7 +31,7 @@
                 rownumbers: true,
                 queryParams: { 'pageNumber': 1, 'pageSize': 8, '_cid': '@ViewBag._lid', '_datetext': "", '_type': "", '_text': "" },
                 columns: [[
-                    { field: 'drugCode', title: '编号', width: 100, align: 'center' },
+                    { field: 'drugCode', title: '危规号', width: 100, align: 'center' },
                     {
                         field: 'outDate', title: '出库日期', width: 100, align: 'center',
                         formatter: function (value, row, index) {
@@ -244,7 +244,7 @@
                             </td>
                             <td width="120px">
                                 <select id="ddl_search">
-                                    <option value="编号">编号</option>
+                                    <option value="危规号">危规号</option>
                                     <option value="名称">名称</option>
                                     <option value="存放、使用地点">存放、使用地点</option>
                                     <option value="危险性等级">危险性等级</option>

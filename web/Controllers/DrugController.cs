@@ -64,7 +64,7 @@ namespace Web.Controllers
                         case "ypmc":
                             where = " drugName like '%%" + _search + "%%'";
                             break;
-                        case "药品编码":
+                        case "危规号":
                             where = " drugCode like '%%" + _search + "%%'";
                             break;
                     }
@@ -165,7 +165,7 @@ namespace Web.Controllers
                         case "ypmc":
                             where = " drugName like '%%" + _search + "%%'";
                             break;
-                        case "药品编码":
+                        case "危规号":
                             where = " drugCode like '%%" + _search + "%%'";
                             break;
                     }
@@ -381,7 +381,7 @@ namespace Web.Controllers
             String str = "";
             if (_drugbll.GetModelList(" drugCode = '" + code + "'").Count > 0)
             {
-                str = "药品编号重复！";
+                str = "药品危规号重复！";
             }
             return Json(str, JsonRequestBehavior.AllowGet);
         }
@@ -495,7 +495,7 @@ namespace Web.Controllers
                 }
                 switch (_type)
                 {
-                    case "编号":
+                    case "危规号":
                         where += string.Format(" and DRUGCODE like '%%{0}%%'", _text);
                         break;
                     case "名称":
@@ -516,7 +516,7 @@ namespace Web.Controllers
                 {
                     try
                     {
-                        dt.Rows[i]["admin"] = GetUserName(dt.Rows[i]["CreateUser"].ToString());
+                        dt.Rows[i]["admin"] = GetUserName(dt.Rows[i]["UpdateUser"].ToString());
                         string gps = dt.Rows[i]["GPS"].ToString();
                         if (!string.IsNullOrEmpty(gps))
                         {
@@ -593,7 +593,7 @@ namespace Web.Controllers
                 if (model != null && model.id > 0)
                 {
                     model.UpdateDate = DateTime.Now;
-                    model.UpdateUser = 1;
+                    model.UpdateUser = CurrentUserInfo.PersonnelID; 
                     model.temp2 = model.amount.ToString();
                     var tempinmodel = _druginbll.GetModel(model.id);
                     var drugmodel = _drugbll.GetModel(model.drugId.Value);
@@ -769,7 +769,7 @@ namespace Web.Controllers
                 }
                 switch (_type)
                 {
-                    case "编号":
+                    case "危规号":
                         where += string.Format(" and DRUGCODE like '%%{0}%%'", _text);
                         break;
                     case "名称":
@@ -803,7 +803,7 @@ namespace Web.Controllers
                 {
                     try
                     {
-                        dt.Rows[i]["admin"] = GetUserName(dt.Rows[i]["CreateUser"].ToString());
+                        dt.Rows[i]["admin"] = GetUserName(dt.Rows[i]["UpdateUser"].ToString());
                         string gps = dt.Rows[i]["GPS"].ToString();
                         if (!string.IsNullOrEmpty(gps))
                         {

@@ -58,7 +58,7 @@
                     $.getJSON("/Drug/GetUNIT/" + rowData.id, function (data) { $("#dwsl").html("单位：" + data + "  数量：") });
                 },
                 columns: [[
-                    { field: 'drugCode', title: '编号', width: 100 },
+                    { field: 'drugCode', title: '危规号', width: 100 },
                     { field: 'drugName', title: '名称', width: 250 }
                 ]]
             });
@@ -180,7 +180,7 @@
             @Html.HiddenFor(m => m.GPS)
             <table style="font-family: '宋体'; font-size: 12px" width="800px">
                 <tr>
-                    <td width="100" align="right">编号：</td>
+                    <td width="100" align="right">危规号：</td>
                     <td align="left">@Html.TextBoxFor(m => m.drugCode)</td>
                     <td width="90px" align="right">入库时间：</td>
                     <td align="left">

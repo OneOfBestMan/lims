@@ -65,7 +65,7 @@
                     $.getJSON("/Drug/GetUNIT/" + rowData.id, function (data) { $("#unit").html("单位：" + data) });
                 },
                 columns: [[
-                    { field: 'drugCode', title: '编号', width: 100 },
+                    { field: 'drugCode', title: '危规号', width: 100 },
                     { field: 'drugName', title: '名称', width: 250 }
                 ]]
             });
@@ -250,7 +250,7 @@
 
                         @Html.HiddenFor(m => m.drugId, new { @id = "drugIdN" })
                     </td>
-                    <td width="90px" align="right">编号：</td>
+                    <td width="90px" align="right">危规号：</td>
                     <td align="left">
                         @Html.TextBoxFor(m => m.drugCode)
                     </td>
