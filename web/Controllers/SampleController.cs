@@ -82,6 +82,7 @@ namespace Web.Controllers
             else
             {
                 eSample.sampleNum = GetSampleNum();
+                eSample.sampleAdmin = CurrentUserInfo.PersonnelName;
             }
             ViewBag.Info = eSample;
             ViewBag.ClientList = new BLL.ClientManage.T_tb_ClientManage().GetModelList("");
@@ -109,7 +110,6 @@ namespace Web.Controllers
                 eSample.createDate = DateTime.Now;
                 eSample.handleUser = 0;
                 eSample.AreaID = (int)CurrentUserInfo.AreaID;
-                eSample.sampleAdmin = CurrentUserInfo.PersonnelName;
                 eSample.id = _dSample.Add(eSample);//若不存在数据，直接插入
                 result = eSample.id > 0;
                 msg = (result)?"添加成功": "添加失败";
