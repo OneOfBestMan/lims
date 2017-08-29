@@ -128,7 +128,11 @@
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
                             @if (Convert.ToBoolean(ViewData["e765047d"]))
                             {
-                                <a class="btn btn-primary" href="javascript:Examine()"><i class="fa fa-check"></i> 批量批准 </a>
+                                <a class="btn btn-primary" href="javascript:Approval()"><i class="fa fa-check"></i> 批量批准 </a>
+                            }
+                            @if (Convert.ToBoolean(ViewData["5c89823a"]))
+                            {
+                                <a class="btn btn-success" href="javascript:Examine()"><i class="fa fa-check"></i> 批量审批 </a>
                             }
                         </div>
 
@@ -320,8 +324,32 @@
         $("#Expframe").attr("src", "/TestReport/ExpAllPDF?ids=" + ids);
     }
 
-    //批量审批
+    //批量审核
     function Examine() {
+        if ($(".ckSample:checked").length < 1) {
+            alert("请勾选需要导出的数据！");
+            return;
+        }
+        var ids = "";
+        $(".ckSample:checked").each(function () {
+            ids += $(this).val() + ",";
+        });
+        ids = ids.substr(0, ids.lastIndexOf(","));
+        $.getJSON("/TestReport/Examine?ids=" + ids,
+            function (data) {
+                var jsondata = eval(data);
+                if (jsondata.result) {
+                    alert("审核成功！");
+                    window.location.reload();
+                }
+                else {
+                    alert(jsondata.msg);
+                }
+            });
+    }
+
+    //批量批准
+    function Approval() {
         if ($(".ckSample:checked").length < 1) {
             alert("请勾选需要导出的数据！");
             return;
@@ -335,23 +363,9 @@
 
         var d = dialog({
             title: '批量批准',
-            url: '/TestReport/BatchExamine?ids='+ids,
+            url: '/TestReport/BatchApproval?ids=' + ids,
             id: 'id-info',
         });
         d.showModal();
-
-        /* 需要支持选择签发日期
-        $.getJSON("/TestReport/Examine?ids=" + ids,
-            function (data) {
-                if (data == "True") {
-                    alert("批准成功！");
-                    window.location.reload();
-                }
-                else
-                {
-                    alert(data);
-                }
-            });
-        */
     }
 </script>

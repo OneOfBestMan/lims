@@ -36,7 +36,7 @@
                     <tr>
                         <td>
                             <label>样品名称：</label>
-                            <input type="text" class="form-control" name="name" value="@info.name" />
+                            <input type="text" class="form-control" id="SampleName" name="name" value="@info.name" />
                         </td>
                         <td>
                             <label>生产日期：</label>
@@ -62,7 +62,7 @@
                         </td>
                         <td>
                             <label>规格型号：</label>
-                            <input type="text" class="form-control" name="" value="@info.modelType" />
+                            <input type="text" class="form-control" name="modelType" value="@info.modelType" />
                         </td>
                         <td></td>
                     </tr>
@@ -76,7 +76,7 @@
                         </td>
                         <td>
                             <label>送/抽检日期：</label>
-                            <input type="text" class="form-control inputtime DetectionType_True" name="detectionDate" value="@(info.detectionDate!=null?Convert.ToDateTime(info.detectionDate).ToShortDateString():"")" />
+                            <input type="text" class="form-control inputtime" name="detectionDate" value="@(info.detectionDate!=null?Convert.ToDateTime(info.detectionDate).ToShortDateString():"")" />
                         </td>
                         <td>
                             <label>抽样者：</label>
@@ -144,6 +144,13 @@
                     </tr>
                 </tbody>
             </table>
+
+
+            <!--保存按钮-->
+            <div style="width:100%;text-align:center;padding-bottom:20px;">
+                <button type="button" class="btn btn-primary" onclick="save(1)">保存样品信息</button>
+            </div>
+
             <!--实验计划-->
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -211,9 +218,9 @@
                 <!-- /.panel-body -->
             </div>
 
-            <!--提交按钮-->
+            <!--继续添加按钮-->
             <div style="width:100%;text-align:center;">
-                <button type="button" class="btn btn-primary" onclick="save()">保存</button>
+                <button type="button" class="btn btn-primary" id="ContinueAdd" onclick="save(2)">继续添加样品</button>
             </div>
 
         </div>
@@ -227,10 +234,10 @@
             var isDetection = $(".DetectionType").val();
             if (isDetection == "true") { //判断是否为抽样
                 $(".DetectionType_True").removeAttr("disabled");
-                $(".DetectionType_False").removeAttr("disabled").attr("disabled", "disabled");
+                $(".DetectionType_False").removeAttr("disabled").val("").attr("disabled", "disabled");
             }
             else {
-                $(".DetectionType_True").removeAttr("disabled").attr("disabled", "disabled");
+                $(".DetectionType_True").removeAttr("disabled").val("").attr("disabled", "disabled");
                 $(".DetectionType_False").removeAttr("disabled");
             }
         }
@@ -247,6 +254,12 @@
                 alert("请先保存样品基本信息，再通过编辑菜单相应实验计划！");
                 return;
             }
+            if (InspectTime == "")
+            {
+                alert("请选择检验日期！");
+                return;
+            }
+
             var data = "ProjectID=" + PorjectID + "&SampleID=" + SampleID + "&InspectTime=" + InspectTime;
 
             $.post("/expeplan/addexpeplan", data, function (data) {
@@ -276,7 +289,19 @@
         }
 
         //保存
-        function save() {
+        function save(savetype) {
+
+            var SampleName = $("#SampleName").val();
+            if (SampleName == "") {
+                alert("请输入样品名称！");
+                return false;
+            }
+
+            if (savetype == 2)
+            {
+                $('#ContinueAdd').text('继续添加样品(3)').attr("disabled", "disabled");
+            }
+
             var data = "p=1";
             $("#formdata input").each(function () {
                 data += "&" + $(this).attr("name") + "=" + $(this).val();
@@ -284,21 +309,31 @@
             $("#formdata select").each(function () {
                 data += "&" + $(this).attr("name") + "=" + $(this).val();
             });
-
             $.post("/Sample/Save", data, function (data) {
                 var jsondata = eval(data);
                 if (jsondata.result) {
-                    alert(jsondata.msg);
-                    $("#AreaID").val(jsondata.areaid);
-                    $("#SampleID").val(jsondata.sampleid);
-                    $("#createUser").val(jsondata.createuser);
-                    $("#createDate").val(jsondata.createdate);
-                    $("#btnAddExpePlan").removeAttr("disabled");
+                    if (savetype==1) { //保存样品信息
+                        alert(jsondata.msg);
+                        $("#AreaID").val(jsondata.areaid);
+                        $("#SampleID").val(jsondata.sampleid);
+                        $("#createUser").val(jsondata.createuser);
+                        $("#createDate").val(jsondata.createdate);
+                        $("#btnAddExpePlan").removeAttr("disabled");
+                    }
+                    else if (savetype == 2) //继续添加样品
+                    {
+                        $("#SampleID").val(0);
+                        $("#btnAddExpePlan").attr("disabled", "disabled");
+                        $("#ExpePlantbody").html("");
+                        DisableCountDown(2); //禁用继续添加按钮，并倒计时解除禁用
+                    }
+                    
                 } else {
                     alert(jsondata.msg);
                 }
             });
-            return false;
+
+            return true;
         }
 
         //获取送样地址
@@ -316,6 +351,19 @@
             });
         }
         
+        //禁用倒计时
+        function DisableCountDown(time) {
+            var wait = time;
+            if (wait == 0) {
+                $('#ContinueAdd').text('继续添加样品').removeAttr("disabled");
+            } else {
+                setTimeout(function () {
+                    $('#ContinueAdd').text('继续添加样品(' + wait + ')').attr("disabled", "disabled");
+                    wait--;
+                    DisableCountDown(wait);
+                }, 1000)
+            }
+        }
 
         //页面初始化内容
         $(document).ready(function () {

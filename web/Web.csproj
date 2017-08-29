@@ -2122,6 +2122,7 @@
     <Content Include="Views\Task\Info.cshtml" />
     <Content Include="Views\Task\List.cshtml" />
     <Content Include="Views\TestReport\Examine.cshtml" />
+    <Content Include="Views\TestReport\Approval.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
