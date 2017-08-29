@@ -36,7 +36,7 @@
                     <tr>
                         <td>
                             <label>样品名称：</label>
-                            <input type="text" class="form-control" id="SampleName" name="name" value="@info.name" />
+                            <input type="text" class="form-control" name="name" value="@info.name" />
                         </td>
                         <td>
                             <label>生产日期：</label>
@@ -144,13 +144,6 @@
                     </tr>
                 </tbody>
             </table>
-
-
-            <!--保存按钮-->
-            <div style="width:100%;text-align:center;padding-bottom:20px;">
-                <button type="button" class="btn btn-primary" onclick="save(true)">保存样品信息</button>
-            </div>
-
             <!--实验计划-->
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -218,9 +211,9 @@
                 <!-- /.panel-body -->
             </div>
 
-            <!--继续添加按钮-->
+            <!--提交按钮-->
             <div style="width:100%;text-align:center;">
-                <a href="/sample/edit?id=0" class="btn btn-primary"  onclick="return save(false)">继续添加样品</a>
+                <button type="button" class="btn btn-primary" onclick="save()">保存</button>
             </div>
 
         </div>
@@ -254,12 +247,6 @@
                 alert("请先保存样品基本信息，再通过编辑菜单相应实验计划！");
                 return;
             }
-            if (InspectTime == "")
-            {
-                alert("请选择检验日期！");
-                return;
-            }
-
             var data = "ProjectID=" + PorjectID + "&SampleID=" + SampleID + "&InspectTime=" + InspectTime;
 
             $.post("/expeplan/addexpeplan", data, function (data) {
@@ -289,14 +276,7 @@
         }
 
         //保存
-        function save(isAlert) {
-
-            var SampleName = $("#SampleName").val();
-            if (SampleName == "") {
-                alert("请输入样品名称！");
-                return false;
-            }
-
+        function save() {
             var data = "p=1";
             $("#formdata input").each(function () {
                 data += "&" + $(this).attr("name") + "=" + $(this).val();
@@ -308,9 +288,7 @@
             $.post("/Sample/Save", data, function (data) {
                 var jsondata = eval(data);
                 if (jsondata.result) {
-                    if (isAlert) {
-                        alert(jsondata.msg);
-                    }
+                    alert(jsondata.msg);
                     $("#AreaID").val(jsondata.areaid);
                     $("#SampleID").val(jsondata.sampleid);
                     $("#createUser").val(jsondata.createuser);
@@ -320,8 +298,7 @@
                     alert(jsondata.msg);
                 }
             });
-
-            return true;
+            return false;
         }
 
         //获取送样地址

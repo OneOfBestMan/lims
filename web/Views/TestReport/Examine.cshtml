@@ -70,7 +70,7 @@
                 return;
             }
 
-            $.getJSON("/TestReport/Approval?ids=" + ids + "&issuedtime=" + issuedtime,
+            $.getJSON("/TestReport/Examine?ids=" + ids + "&issuedtime=" + issuedtime,
                 function (data) {
                     if (data == "True") {
                         window.top.location.reload();

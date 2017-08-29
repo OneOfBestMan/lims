@@ -114,7 +114,7 @@ namespace Web.Controllers
                 result = eSample.id > 0;
                 msg = (result)?"添加成功": "添加失败";
             }
-            return Json(new { result = result,msg=msg, sampleid = eSample.id, areaid = eSample.AreaID, createuser = eSample.createUser, createdate = eSample.createDate.ToString() }, JsonRequestBehavior.AllowGet);
+            return Json(new { result = result,msg=msg, sampleid = eSample.id, areaid = eSample.AreaID, createuser = eSample.createUser, createdate = eSample.createDate }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
