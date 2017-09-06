@@ -227,5 +227,6 @@ namespace Model
             get { return _updatedate; }
         }
         #endregion Model
+
     }
 }

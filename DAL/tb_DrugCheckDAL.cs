@@ -384,12 +384,15 @@ namespace DAL
         public DataSet GetList(string strWhere)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select id,drugCode,drugName,drugId,drugInId,drugOutId,outDate,unit,amountIN,amountOUT,amount,riskLevel,checkDate,checkUser,checkUserId,auditstatus,auditUser,auditUserId,remark,isDelete,createUser,createDate,updateUser,updateDate ");
-            strSql.Append(" FROM tb_DrugCheck ");
+            strSql.Append("select a.*,b.dsm  FROM (");
+             strSql.Append("select id,drugCode,drugName,drugId,drugInId,drugOutId,outDate,unit,amountIN,amountOUT,amount,riskLevel,checkDate,checkUser,checkUserId,auditstatus,auditUser,auditUserId,remark,isDelete,createUser,createDate,updateUser,updateDate ");
+             strSql.Append(" FROM tb_DrugCheck ");
+           
             if (strWhere.Trim() != "")
             {
                 strSql.Append(" where " + strWhere);
             }
+            strSql.Append(") a left join tb_Drug b on a.drugId=b.id");
             return DbHelperSQL.Query(strSql.ToString());
         }
 

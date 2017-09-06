@@ -182,6 +182,6 @@ namespace Model
             get { return _recipients; }
         }
         #endregion Model
-
+        public int? officeid { get; set; }
     }
 }

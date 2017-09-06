@@ -212,7 +212,14 @@
                         @Html.TextBoxFor(m => m.outDate, new { @id = "EnterDateE" })
                     </td>
                 </tr>
-                
+                <tr>
+                   
+
+                    <td width="110" align="right" valign="middle">科室名称：</td>
+                    <td align="left">
+                        @Html.DropDownListFor(m => m.officeid, ViewData["office_type"] as SelectList, new { @id = "officeidE" })
+                    </td>
+                </tr>
                 <tr>
                     <td width="110" align="right" valign="top">备注：</td>
                     <td colspan="3" align="left" valign="top">

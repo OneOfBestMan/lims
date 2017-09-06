@@ -192,5 +192,15 @@ namespace Model
         }
         #endregion Model
 
+        /// <summary>
+        /// 危险货物编号
+        /// </summary>
+        public string un { get; set; }
+        /// <summary>
+        /// 药品规格型号
+        /// </summary>
+        public string dsm { get; set; }
+
+        public int? purity { get; set; }
     }
 }

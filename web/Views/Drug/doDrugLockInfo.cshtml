@@ -311,9 +311,13 @@
     @{
         List<SelectListItem> listlocktype = new List<SelectListItem>();
         listlocktype.Add(new SelectListItem() { Text = "请选择", Value = "请选择" });
+        listlocktype.Add(new SelectListItem() { Text = "玻璃柜2*4", Value = "玻璃柜2_4" });
         listlocktype.Add(new SelectListItem() { Text = "玻璃柜3*4", Value = "玻璃柜3_4" });
         listlocktype.Add(new SelectListItem() { Text = "不透明柜2*4", Value = "不透明柜2_4" });
         listlocktype.Add(new SelectListItem() { Text = "不透明柜3*4", Value = "不透明柜3_4" });
+        listlocktype.Add(new SelectListItem() { Text = "不透明柜4*4", Value = "不透明柜4_4" });
+        listlocktype.Add(new SelectListItem() { Text = "不透明柜5*4", Value = "不透明柜5_4" });
+        listlocktype.Add(new SelectListItem() { Text = "不透明柜6*4", Value = "不透明柜6_4" });
         listlocktype.Add(new SelectListItem() { Text = "冷藏柜", Value = "冷藏柜" });
         if (Model.id > 0)
         {
@@ -329,7 +333,7 @@
             {
                 listlocktype[3].Selected = true;
             }
-        }           
+        }
     }
     <div class="divList">
         <table cellpadding="0" cellspacing="0">

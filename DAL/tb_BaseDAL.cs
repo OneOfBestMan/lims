@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using Dapper;
 
 namespace DAL
 {
@@ -216,7 +217,17 @@ namespace DAL
             }
             return DbHelperSQL.Query(strSql.ToString());
         }
-
+        public List<tb_Base> GetBaseList()
+        {
+            List<tb_Base> list = null;
+           StringBuilder strSql = new StringBuilder();
+            strSql.Append("select * from tb_Base  ");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<tb_Base>(strSql.ToString())?.ToList();
+            }
+            return list;
+        }
         /// <summary>
         /// 获得前几行数据
         /// </summary>

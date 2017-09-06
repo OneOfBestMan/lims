@@ -76,7 +76,7 @@ namespace DAL
             parameters[14].Value = model.validDate;
             parameters[15].Value = model.manufacturers;
             parameters[16].Value = model.GPS;
-
+     
             object obj = DbHelperSQL.GetSingle(strSql.ToString(), parameters);
             if (obj == null)
             {
@@ -111,6 +111,7 @@ namespace DAL
             strSql.Append("validDate=@validDate,");
             strSql.Append("manufacturers=@manufacturers,");
             strSql.Append("GPS=@GPS");
+       
             strSql.Append(" where id=@id");
             SqlParameter[] parameters = {
 					new SqlParameter("@drugId", SqlDbType.Int,4),
@@ -130,7 +131,10 @@ namespace DAL
 					new SqlParameter("@validDate", SqlDbType.DateTime),
 					new SqlParameter("@manufacturers", SqlDbType.NVarChar,500),
 					new SqlParameter("@GPS", SqlDbType.NVarChar,-1),
-					new SqlParameter("@id", SqlDbType.Int,4)};
+
+                    new SqlParameter("@id", SqlDbType.Int,4)
+                                   
+            };
             parameters[0].Value = model.drugId;
             parameters[1].Value = model.drugCode;
             parameters[2].Value = model.EnterDate;
@@ -149,7 +153,7 @@ namespace DAL
             parameters[15].Value = model.manufacturers;
             parameters[16].Value = model.GPS;
             parameters[17].Value = model.id;
-
+        
             int rows = DbHelperSQL.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
             {
@@ -319,6 +323,7 @@ namespace DAL
                 {
                     model.GPS = row["GPS"].ToString();
                 }
+               
             }
             return model;
         }

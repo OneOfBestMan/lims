@@ -128,6 +128,7 @@ namespace Web.Controllers
             ViewData["ddl_unit"] = PublicClass.GetDropDownList(4, "请选择");
             ViewData["ddl_riskLevel"] = PublicClass.GetDropDownList(7, "请选择");
             ViewData["ddl_cabinet"] = PublicClass.GetDropDownList(27, "请选择");
+            ViewData["purity_type"] = PublicClass.GetDropDownList(109, "请选择");
             if (id > 0)
             {
                 model = _drugbll.GetModel(id);
@@ -193,13 +194,14 @@ namespace Web.Controllers
                 }
                 dt = _drugbll.GetListByPage(where, "updateDate", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize).Tables[0];
                 total = dt.Rows.Count;
-                total = _drugbll.GetModelList(where).Count;
+                total = _drugbll.GetRecordCount(where);
                 dt.Columns.Add(new DataColumn("dengjiren"));
                 BLL.PersonnelManage.T_tb_InPersonnel _inpersonnelbll = new BLL.PersonnelManage.T_tb_InPersonnel();
                 dt.Columns.Add("dingwei");
                 dt.Columns.Add("chukulv");
                 dt.Columns.Add("rukucount");
                 dt.Columns.Add("chukucount");
+                dt.Columns.Add("purityname");
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     try
@@ -207,7 +209,7 @@ namespace Web.Controllers
                         int registrantid = Utils.GetInt(dt.Rows[i]["registrant"]);
                         var inpersonnel = _inpersonnelbll.GetModel(registrantid);
                         dt.Rows[i]["dengjiren"] = inpersonnel?.PersonnelName;
-
+                        dt.Rows[i]["purityname"] = DataHelper.GetBaseName(Utils.GetInt(dt.Rows[i]["purity"]));
                         String chukulv = "0%";
 
                         int ruku = Utils.GetInt(DbHelperSQL.GetSingle(" select sum(amount) amount from tb_DrugIN  where drugId=" + dt.Rows[i]["id"]));
@@ -721,7 +723,7 @@ namespace Web.Controllers
 
         public ActionResult doDrugOutAdd(int id = 0)
         {
-
+            ViewData["office_type"] = PublicClass.GetDropDownList(117, "请选择");
             tb_Drug drug = _drugbll.GetModel(id);
             tb_DrugOUT model = new tb_DrugOUT();
             if (drug != null)
@@ -735,6 +737,7 @@ namespace Web.Controllers
 
         public ActionResult doDrugOutUpdate(int id)
         {
+            ViewData["office_type"] = PublicClass.GetDropDownList(117, "请选择");
             tb_DrugOUT model = new tb_DrugOUT();
             if (id > 0)
             {
@@ -795,14 +798,16 @@ namespace Web.Controllers
                     int _userid = CurrentUserInfo.PersonnelID;
                     where += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", _cid);
                 }
-                dt = _drugoutbll.GetListByPage(where, "temp1", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize).Tables[0];
+                dt = _drugoutbll.GetListByPage(where, "temp1,T.UpdateDate desc", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize).Tables[0];
                 total = dt.Rows.Count;
                 dt.Columns.Add("admin");
                 dt.Columns.Add("dingwei");
+                dt.Columns.Add("officename");
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     try
                     {
+                        dt.Rows[i]["officename"] =  DataHelper.GetBaseName(Utils.GetInt(dt.Rows[i]["officeid"])); ;
                         dt.Rows[i]["admin"] = GetUserName(dt.Rows[i]["UpdateUser"].ToString());
                         string gps = dt.Rows[i]["GPS"].ToString();
                         if (!string.IsNullOrEmpty(gps))
@@ -1223,7 +1228,7 @@ namespace Web.Controllers
                     dt.Rows[i]["AreaName"] = areamodel.AreaName;
                 }
             }
-            catch
+            catch(Exception e)
             {
 
             }

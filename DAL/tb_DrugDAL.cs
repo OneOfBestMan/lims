@@ -18,9 +18,9 @@ namespace DAL
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("insert into tb_Drug(");
-            strSql.Append("drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2)");
+            strSql.Append("drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2,un,dsm,purity)");
             strSql.Append(" values (");
-            strSql.Append("@drugName,@drugCode,@drugType,@unit,@productDate,@validDate,@amount,@manufacturers,@cabinet,@registrant,@riskLevel,@isMSDS,@remark,@createUser,@createDate,@updateUser,@updateDate,@temp1,@temp2)");
+            strSql.Append("@drugName,@drugCode,@drugType,@unit,@productDate,@validDate,@amount,@manufacturers,@cabinet,@registrant,@riskLevel,@isMSDS,@remark,@createUser,@createDate,@updateUser,@updateDate,@temp1,@temp2,@un,@dsm,@purity)");
             strSql.Append(";select @@IDENTITY");
             SqlParameter[] parameters = {
 					new SqlParameter("@drugName", SqlDbType.NVarChar,200),
@@ -41,7 +41,11 @@ namespace DAL
 					new SqlParameter("@updateUser", SqlDbType.Int,4),
 					new SqlParameter("@updateDate", SqlDbType.DateTime),
 					new SqlParameter("@temp1", SqlDbType.Text),
-					new SqlParameter("@temp2", SqlDbType.Text)};
+					new SqlParameter("@temp2", SqlDbType.Text),
+                      new SqlParameter("@un", SqlDbType.NVarChar,50) ,
+                        new SqlParameter("@dsm", SqlDbType.NVarChar,50),
+                           new SqlParameter("@purity", SqlDbType.Int,4),
+            };
             parameters[0].Value = model.drugName;
             parameters[1].Value = model.drugCode;
             parameters[2].Value = model.drugType;
@@ -61,7 +65,9 @@ namespace DAL
             parameters[16].Value = model.updateDate;
             parameters[17].Value = model.temp1;
             parameters[18].Value = model.temp2;
-
+            parameters[19].Value = model.un;
+            parameters[20].Value = model.dsm;
+            parameters[21].Value = model.purity;
             object obj = DbHelperSQL.GetSingle(strSql.ToString(), parameters);
             if (obj == null)
             {
@@ -97,7 +103,10 @@ namespace DAL
             strSql.Append("updateUser=@updateUser,");
             strSql.Append("updateDate=@updateDate,");
             strSql.Append("temp1=@temp1,");
-            strSql.Append("temp2=@temp2");
+            strSql.Append("temp2=@temp2,");
+            strSql.Append(" un = @un , ");
+            strSql.Append(" dsm = @dsm, ");
+            strSql.Append(" purity = @purity");
             strSql.Append(" where id=@id");
             SqlParameter[] parameters = {
 					new SqlParameter("@drugName", SqlDbType.NVarChar,200),
@@ -119,7 +128,10 @@ namespace DAL
 					new SqlParameter("@updateDate", SqlDbType.DateTime),
 					new SqlParameter("@temp1", SqlDbType.Text),
 					new SqlParameter("@temp2", SqlDbType.Text),
-					new SqlParameter("@id", SqlDbType.Int,4)};
+					new SqlParameter("@id", SqlDbType.Int,4),
+                new SqlParameter("@un", SqlDbType.NVarChar,50) ,
+                        new SqlParameter("@dsm", SqlDbType.NVarChar,50),
+                      new SqlParameter("@purity", SqlDbType.Int,4)};
             parameters[0].Value = model.drugName;
             parameters[1].Value = model.drugCode;
             parameters[2].Value = model.drugType;
@@ -140,7 +152,9 @@ namespace DAL
             parameters[17].Value = model.temp1;
             parameters[18].Value = model.temp2;
             parameters[19].Value = model.id;
-
+            parameters[20].Value = model.un;
+            parameters[21].Value = model.dsm;
+            parameters[22].Value = model.purity;
             int rows = DbHelperSQL.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
             {
@@ -160,7 +174,7 @@ namespace DAL
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select  top 1 id,drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2 from tb_Drug ");
+            strSql.Append("select  top 1 id,drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2, un, dsm,purity from tb_Drug ");
             strSql.Append(" where id=@id");
             SqlParameter[] parameters = {
 					new SqlParameter("@id", SqlDbType.Int,4)
@@ -275,6 +289,16 @@ namespace DAL
                 {
                     model.temp2 = row["temp2"].ToString();
                 }
+                if (row["un"] != null) { 
+                model.un = row["un"].ToString();
+                }
+                if (row["dsm"] != null) { 
+                model.dsm = row["dsm"].ToString();
+                }
+                if (row["purity"] != null && row["purity"].ToString() != "")
+                {
+                    model.purity = int.Parse(row["purity"].ToString());
+                }
             }
             return model;
         }
@@ -285,7 +309,7 @@ namespace DAL
         public DataSet GetList(string strWhere)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select id,drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2 ");
+            strSql.Append("select id,drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2,un,dsm,purity ");
             strSql.Append(" FROM tb_Drug ");
             if (strWhere.Trim() != "")
             {
@@ -305,7 +329,7 @@ namespace DAL
             {
                 strSql.Append(" top " + Top.ToString());
             }
-            strSql.Append(" id,drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2 ");
+            strSql.Append(" id,drugName,drugCode,drugType,unit,productDate,validDate,amount,manufacturers,cabinet,registrant,riskLevel,isMSDS,remark,createUser,createDate,updateUser,updateDate,temp1,temp2,un,dsm,purity ");
             strSql.Append(" FROM tb_Drug ");
             if (strWhere.Trim() != "")
             {

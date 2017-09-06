@@ -195,6 +195,7 @@ namespace BLL
                                 model.createDate = DateTime.Now;
                                 model.updateUser = _user.PersonnelID;
                                 model.updateDate = DateTime.Now;
+                         
                                 Add(model);
                             }
                             catch

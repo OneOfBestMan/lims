@@ -133,7 +133,7 @@ namespace Model
             get { return _temp1; }
         }
         /// <summary>
-        /// 
+        /// 入库的该批次的药品还剩多少
         /// </summary>
         public string temp2
         {
@@ -173,6 +173,7 @@ namespace Model
             get { return _gps; }
         }
         #endregion
+
     }
 }
 

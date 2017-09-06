@@ -33,6 +33,9 @@
                     { field: 'drugName', title: '药品名称', width: 210, align: 'center' },
                     { field: 'drugCode', title: '危规号', width: 130, align: 'center' },
                     { field: 'leibie', title: '药品类别', width: 130, align: 'center' },
+                    { field: 'un', title: '危险货物编号', width: 130, align: 'center' },
+                    { field: 'dsm', title: '药品规格型号', width: 130, align: 'center' },
+                    { field: 'purityname', title: '化学试剂纯度', width: 130, align: 'center' },
                     { field: 'dingwei', title: '定位信息', width: 120, align: 'center' },
                     { field: 'danwei', title: '单位', width: 50, align: 'center' },
                     { field: 'amount', title: '库存', width: 100, align: 'center' },
@@ -49,7 +52,7 @@
                                 return "";
                             }
                             var url = '@Url.Action("doDrugInfo", "Drug")' + "?id=" + row.id;
-                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugInAdd/" + row.id + "','入库')\" >入库</a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugInAdd/" + row.id + "?r=Math.random()','入库')\" >入库</a>";
                         }
                     },
                      {
@@ -59,7 +62,7 @@
                                 return "";
                             }
                             var url = '@Url.Action("doDrugInfo", "Drug")' + "?id=" + row.id;
-                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugOutAdd/" + row.id + "','出库')\" >出库</a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugOutAdd/" + row.id + "?r=Math.random()','出库')\" >出库</a>";
                         }
                     },
                     {
@@ -69,7 +72,7 @@
                                 return "";
                             }
                             var url = '@Url.Action("doDrugInfo", "Drug")' + "?id=" + row.id;
-                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugInfo/" + row.id + "','编辑')\" ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
+                            return "<a href='javascript:void(0)' onclick=\"showwindow('/Drug/doDrugInfo/" + row.id + "?r=Math.random()','编辑')\" ><img width='18px' height='18' alt='修改' src='../../Content/Images/xiugai.png' /></a>";
                         }
                     },
                     {
@@ -237,7 +240,7 @@
                                @if (Convert.ToBoolean(ViewData["9b1e116f"]))
 {
 
-    <a href='javascript:void(0)' onclick="showwindow('/Drug/doDrugInfo/0','添加')">
+    <a href='javascript:void(0)' onclick="showwindow('/Drug/doDrugInfo/0?r=Math.random()','添加')">
         <img src='@Url.Content("~/Content/Images/xinzeng.png")' />
     </a>
 }

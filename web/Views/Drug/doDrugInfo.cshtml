@@ -26,11 +26,11 @@
     <script type="text/javascript">
         $(document).ready(function () {
             /*页面控件验证*/
-            $("#drugCodeE").attr("datatype", "*");
-            $("#drugNameE").attr("datatype", "*");
-            $("#drugTypeE").attr("datatype", "d");
-            $("#unitE").attr("datatype", "d");
-            $("#riskLevelE").attr("datatype", "d");
+            //$("#drugCodeE").attr("datatype", "*");
+            //$("#drugNameE").attr("datatype", "*");
+            //$("#drugTypeE").attr("datatype", "d");
+            //$("#unitE").attr("datatype", "d");
+            //$("#riskLevelE").attr("datatype", "d");
             $("#uploadfrm").Validform({
                 tiptype: 3
             });
@@ -189,11 +189,11 @@
                 <tr>
                     <td align="right">药品编码：</td>
                     <td align="left">
-                        @Html.TextBoxFor(m => m.drugCode, new { @id = "drugCodeE" })
+                        @Html.TextBoxFor(m => m.drugCode)
                     </td>
                     <td align="right">药品名称：</td>
                     <td align="left">
-                        @Html.TextBoxFor(m => m.drugName, new { @id = "drugNameE" })
+                        @Html.TextBoxFor(m => m.drugName)
                     </td>
                 </tr>
                 <tr>
@@ -219,6 +219,23 @@
                         }
                         @Html.DropDownListFor(m => m.temp1, list1)
                     </td>
+                </tr>
+                <tr>
+                    <td align="right">危险货物编号：</td>
+                    <td align="left">
+                        @Html.TextBoxFor(m => m.un, new { @id = "drugCodeE" })
+                    </td>
+                    <td align="right">药品规格型号：</td>
+                    <td align="left">
+                        @Html.TextBoxFor(m => m.dsm, new { @id = "drugNameE" })
+                    </td>
+                </tr>
+                <tr>
+                    <td width="110" align="right" valign="middle">化学试剂纯度：</td>
+                    <td align="left">
+                        @Html.DropDownListFor(m => m.purity, ViewData["purity_type"] as SelectList, new { @id = "purityE" })
+                    </td>
+           
                 </tr>
                 <tr>
                     <td width="130" align="right">是否建立MSDS：</td>
