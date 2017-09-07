@@ -87,7 +87,11 @@ namespace BLL.Laboratory
         public List<E_tb_Project> GetModelList(string strWhere)
         {
             DataSet ds = dal.GetList(strWhere);
-            return DataTableToList(ds.Tables[0]);
+            if (ds.Tables != null && ds.Tables.Count > 0)
+            {
+                return DataTableToList(ds.Tables[0]);
+            }
+            return new List<E_tb_Project>();
         }
         /// <summary>
         /// 获得数据列表
