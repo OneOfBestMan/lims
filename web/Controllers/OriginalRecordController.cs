@@ -192,6 +192,7 @@ namespace Web.Controllers
         /// <returns>返回是否处理成功</returns>
         public JsonResult Save(E_tb_OriginalRecord eOriginalRecord)
         {
+            eOriginalRecord.AreaID = CurrentUserInfo.AreaID;
             eOriginalRecord.EditPersonnelID = CurrentUserInfo.PersonnelID;
             bool result = tOriginalRecord.Update(eOriginalRecord);
 
