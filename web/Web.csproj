@@ -1137,7 +1137,6 @@
     <Content Include="Scripts\Js\jquery-1.8.3.js" />
     <Content Include="Scripts\Js\jquery_nav.js" />
     <Content Include="Scripts\Js\JSDemo.js" />
-    <Content Include="Scripts\kindeditor\asp.net\bin\LitJSON.dll" />
     <Content Include="Scripts\kindeditor\attached\image\20131223\20131223002309_3336.jpg" />
     <Content Include="Scripts\kindeditor\kindeditor-all-min.js" />
     <Content Include="Scripts\kindeditor\kindeditor-all.js" />
@@ -2129,6 +2128,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="FlexPaper\images\" />
+    <Folder Include="Scripts\kindeditor\asp.net\bin\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
