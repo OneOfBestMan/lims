@@ -1,0 +1,170 @@
+﻿@using Model;
+@using Comp;
+@{
+
+    ViewBag.Title = "";
+    Layout = "~/Views/Share/_LayOut.cshtml";
+}
+<script src="~/Skins/artDialog/dist/dialog.js"></script>
+<script src="~/Skins/artDialog/dist/dialog-plus.js"></script>
+<!-- /.row -->
+<div class="row">
+
+    <div class="col-lg-12">
+        <h1 class="page-header">药品盘点</h1>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                药品盘点
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="row form-inline">
+                    <div class="form-group" style="margin:0 0 15px 15px">
+
+                        @*@if ((Session["UserInfo"] as Model.PersonnelManage.E_tb_InPersonnel).DataRange == 1)
+                        {
+                  
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">单位</span>
+                                    <select class="form-control" id="areaid"  style="width:120px;">
+                                        <option value="-1">请选择</option>
+                                        @{
+                                            var areaList = DataHelper.GetAreaList();
+                                            foreach (var item in areaList)
+                                            {
+                                                <option value="@item.AreaID" @((item.AreaID == Utils.GetInt(Request["areaid"])) ? "selected" : "")>@item.AreaName</option>
+                                            }
+                                        }
+
+                                    </select>
+                                </div>
+                            </div>
+                          }*@
+
+                        <div class="form-group input-group">
+                            <span class="input-group-addon">库房名称：</span>
+                            <input type="text" id="putArea" class="form-control" value="@Request["putArea"]">
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon">药品名称：</span>
+                            <input type="text" id="drugName" class="form-control" value="@Request["drugName"]">
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">药品类别</span>
+                                <select class="form-control" id="drugtype" name="projectid" style="width:120px;">
+                                    <option value="-1">请选择</option>
+                                    @{
+                                        var drugTypeList = DataHelper.GetBaseList().FindAll(a => a.pId == 1);
+                                        foreach (var item in drugTypeList)
+                                        {
+                                            <option value="@item.id" @((item.id ==Utils.GetInt( Request["drugtype"])) ? "selected" : "") >@item.baseName</option>
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">危险性类别</span>
+                                <select class="form-control" id="risklevel" name="projectid" style="width:120px;">
+                                    <option value="-1">请选择</option>
+                                    @{
+                                        var dangertypeList = DataHelper.GetBaseList().FindAll(a => a.pId == 7);
+                                        foreach (var item in dangertypeList)
+                                        {
+                                            <option value="@item.id" @((item.id == Utils.GetInt(Request["risklevel"])) ? "selected" : "")>@item.baseName</option>
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="redirect()"><i class="fa fa-search"></i>查询</button>
+               
+
+                    </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>危规号</th>
+                            <th>药品名称</th>
+                            <th>单位</th>
+                            <th>入库数量</th>
+                            <th>出库数量</th>
+                            <th>库存结余</th>
+                            <th>危险性分类</th>
+
+                            <th>药品类别</th>
+                            <th>危险货物编号</th>
+                            <th>药品规格型号</th>
+                            <th>化学试剂纯度</th>
+<th>库房名称</th>
+                            <th>有效期</th>
+                     
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var list = ViewBag.list as List<E_DrugCheck>;
+                            foreach (var item in list)
+                            {
+                                <tr>
+                                    <td>@item.drugCode</td>
+
+                                    <td>@item.drugName</td>
+                                    <td>@DataHelper.GetBaseName(item.unit)</td>
+                                    <td>@item.rukucount</td>
+
+                                    <td>@item.chukucount</td>
+                                    <td>@(item.rukucount-item.chukucount)</td>
+                               
+                                    <td>@DataHelper.GetBaseName(Comp.Utils.GetInt( item.riskLevel))</td>
+
+                                    <td>@DataHelper.GetBaseName(item.drugType)</td>
+                                    <td>@item.un</td>
+                                    <td>@item.dsm</td>
+                                    <td>@DataHelper.GetBaseName(item.purity)</td>
+
+                                    <td>@item.putArea</td>
+                                    <td>@(item.yxq==null?"": item.yxq.Value.ToString("yyyy-MM-dd"))</td>
+                                
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+                <!-- /.table-responsive -->
+                <div class="row">
+                    <div style="text-align: center">
+                        @Html.Raw(ViewBag.page)
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+
+
+
+<script>
+
+
+
+    function redirect() {
+        window.location.href = "/NewDrug/DrugCheckList?putArea=" + $("#putArea").val()
+            + "&areaid=" + $("#areaid").val()
+            + "&drugName=" + $("#drugName").val()
+            + "&drugtype=" + $("#drugtype").val()
+            + "&risklevel=" + $("#risklevel").val();
+    }
+
+</script>

@@ -202,6 +202,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MagazineController.cs" />
     <Compile Include="Controllers\MeasureController.cs" />
+    <Compile Include="Controllers\NewDrugController.cs" />
     <Compile Include="Controllers\OriginalRecordController.cs" />
     <Compile Include="Controllers\OriginalRecordDocController.cs" />
     <Compile Include="Controllers\OutsourcingTestingController.cs" />
@@ -2123,6 +2124,7 @@
     <Content Include="Views\Task\List.cshtml" />
     <Content Include="Views\TestReport\Examine.cshtml" />
     <Content Include="Views\TestReport\Approval.cshtml" />
+    <Content Include="Views\NewDrug\DrugCheckList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

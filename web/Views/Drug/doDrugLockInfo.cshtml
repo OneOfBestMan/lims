@@ -22,6 +22,8 @@
     <script type="text/javascript" src='@Url.Content("~/Scripts/MicrosoftMvcAjax.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/Validform/Validform_v5.3.2_min.js")'></script>
     <script type="text/javascript" src='@Url.Content("~/Scripts/My97DatePicker/WdatePicker.js")'></script>
+    <script src="~/Skins/artDialog/dist/dialog.js"></script>
+    <script src="~/Skins/artDialog/dist/dialog-plus.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#dgtable').datagrid({
@@ -74,7 +76,9 @@
 
         function handle(e) {
             if (e.$2._xmlHttpRequest.response == "1") {
-                alert("保存成功！"); parent.reload();
+                alert("保存成功！"); 
+              
+               
             } else {
                 alert("保存失败！");
             }
@@ -308,33 +312,7 @@
             </tr>
         </table>
     </div>
-    @{
-        List<SelectListItem> listlocktype = new List<SelectListItem>();
-        listlocktype.Add(new SelectListItem() { Text = "请选择", Value = "请选择" });
-        listlocktype.Add(new SelectListItem() { Text = "玻璃柜2*4", Value = "玻璃柜2_4" });
-        listlocktype.Add(new SelectListItem() { Text = "玻璃柜3*4", Value = "玻璃柜3_4" });
-        listlocktype.Add(new SelectListItem() { Text = "不透明柜2*4", Value = "不透明柜2_4" });
-        listlocktype.Add(new SelectListItem() { Text = "不透明柜3*4", Value = "不透明柜3_4" });
-        listlocktype.Add(new SelectListItem() { Text = "不透明柜4*4", Value = "不透明柜4_4" });
-        listlocktype.Add(new SelectListItem() { Text = "不透明柜5*4", Value = "不透明柜5_4" });
-        listlocktype.Add(new SelectListItem() { Text = "不透明柜6*4", Value = "不透明柜6_4" });
-        listlocktype.Add(new SelectListItem() { Text = "冷藏柜", Value = "冷藏柜" });
-        if (Model.id > 0)
-        {
-            if (Model.lockType.Equals("玻璃柜3_4"))
-            {
-                listlocktype[1].Selected = true;
-            }
-            if (Model.lockType.Equals("不透明柜2_4"))
-            {
-                listlocktype[2].Selected = true;
-            }
-            if (Model.lockType.Equals("不透明柜3_4"))
-            {
-                listlocktype[3].Selected = true;
-            }
-        }
-    }
+
     <div class="divList">
         <table cellpadding="0" cellspacing="0">
             <tr>
@@ -343,7 +321,19 @@
                         <tr>
                             <td width="480" style="font-family: '宋体'; font-size: 12px; color: #10607c;">药品柜名称：
                                 <input style="border: 1px solid #3496d6; width: 150px" type="text" id="txt_lockName" value="@Model.lockName" />
-                                @Html.DropDownList("ddl_locktype", listlocktype)
+                           
+
+                                <select class="form-control" id="ddl_locktype" name="ddl_locktype" style="width:120px;">
+                                    <option value="请选择">请选择</option>
+                                    @{
+                                        var lockList = DataHelper.GetLockList();
+                                        foreach (var item in lockList)
+                                        {
+                                            <option value="@item" @((item==Model.lockType) ? "selected" : "")>@item</option>
+                                        }
+                                    }
+
+                                </select>
                                 @{
                                     string wxp = "危险品";
                                     string hxp = "化学品";

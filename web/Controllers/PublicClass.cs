@@ -344,7 +344,7 @@ namespace Web.Controllers
 
                 ICell icell2top = row0.CreateCell(1);
                 icell2top.CellStyle = cellStyle;
-                icell2top.SetCellValue("药品编码");
+                icell2top.SetCellValue("危规号");
 
 
                 ICell icell3top = row0.CreateCell(2);
