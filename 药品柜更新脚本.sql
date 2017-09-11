@@ -23,3 +23,6 @@ from
 dbo.tb_DrugLock a
 
 
+update tb_DrugLock set isdanger=1 where mark='危险品'
+update tb_DrugLock set ischem=1 where mark='化学品'
+update tb_DrugLock set ischem=1,isdanger=1 where mark='都是'
