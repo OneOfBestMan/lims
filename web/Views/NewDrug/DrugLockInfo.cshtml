@@ -1,0 +1,176 @@
+﻿@using Model;
+@{
+    Layout = null;
+    var info = ViewBag.Info == null ? new E_DrugLock() : (E_DrugLock)ViewBag.Info;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DrugLockInfo</title>
+    <link href="/Skins/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://aui.github.io/artDialog/lib/jquery-1.10.2.js"></script>
+    <script src="~/Skins/artDialog/dist/dialog.js"></script>
+    <script src="~/Skins/artDialog/dist/dialog-plus.js"></script>
+
+    <link href="~/Skins/UploadFile/css/jquery.fileupload-ui.css" rel="stylesheet" />
+    <script src="~/Skins/UploadFile/js/vendor/jquery.ui.widget.js"></script>
+    <script src="~/Skins/UploadFile/js/jquery.iframe-transport.js"></script>
+    <script src="~/Skins/UploadFile/js/jquery.fileupload.js"></script>
+    <script type="text/javascript">
+
+
+
+        $(function () {
+
+            $(function () {
+
+                $('#fileupload').fileupload({
+
+                    done: function (e, data) {
+
+                        $("#img").attr("src", "/Content/Images/Lock/" + data.result);
+                        $("#pic").val(data.result);
+                      //  $("#showImg").show();
+                    }
+
+                });
+            });
+        });
+
+    </script>
+</head>
+<body>
+    <div>
+        <div role="form">
+            <div class="form-group">
+                <div class="form-group input-group">
+                    <span class="input-group-addon">药品柜名称：</span>
+                    <input type="text" class="form-control" id="lockName" value="@info.lockName">
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="isdanger"     @((info.isdanger ==1) ? "checked" : "") >危险品
+                        </label>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="ischem"  @((info.ischem == 1) ? "checked" : "") >化学品
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+
+                        <span class="input-group-addon">药品类别</span>
+                        <select class="form-control" id="locktypeid" name="locktypeid" style="width:120px;">
+                            <option value="-1">请选择</option>
+                            @{
+                                var lockList = DataHelper.GetLockList();
+                                foreach (var item in lockList)
+                                {
+                                    <option value="@item.Key" @((item.Key ==info.locktypeid) ? "selected" : "")  >@item.Value</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <label>上传图片：</label>
+
+                <div>
+                    <span class="btn btn-success fileinput-button">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span>选择文件...</span>
+                        <input id="fileupload" type="file" name="files" data-url="/Handler/UploadHandler.ashx" multiple="">
+                    </span>
+                    <div>
+                        <img id="img" width="300px" height="200px" src="/Content/Images/Lock/@info.pic" />
+                    </div>
+                </div>
+                <input type="hidden" id="hid" value="@info.id" />
+
+                <input type="hidden" id="pic" value="@info.pic" />
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="save()">保存</button>
+            </div>
+    </div>
+    <script>
+
+        function ok() {
+
+            top.dialog.get('id-info').close()
+        }
+
+    </script>
+
+    <script>
+
+        function save() {
+
+            var lockName = $("#lockName").val();
+            var hid = $("#hid").val();
+            var areaid = $("#area").val();
+            var classinfoid = $("#classinfo").val();
+            var ischem = $("#ischem").is(':checked');
+            var isdanger = $("#isdanger").is(':checked');
+            if (isdanger) { isdanger = 1; } else { isdanger = 0 }
+            if (ischem) { ischem = 1; } else { ischem = 0 }
+
+            var data = "lockName=" + lockName + "&id=" + hid + "&isdanger=" + isdanger + "&ischem=" + ischem + "&locktypeid=" + $("#locktypeid").val() + "&pic=" + $("#pic").val()
+            //ajax
+            $.post("/NewDrug/DrugLockSave", data, function (data) {
+                if (data == "True") {
+                    top.window.location.reload();
+
+                } else {
+                    //消息
+                    dialog({
+                        title: "失败",
+                        content: '保存失败！'
+                    }).show();
+                }
+            });
+
+            return false;
+
+        }
+        //加载班组
+        function loadclassinfolist(isload) {
+            var areaid = $("#area").val();
+            var data = "areaid=" + areaid;
+            $.post("/WebApi/GetClassInfoList", data, function (data) {
+                if (data) {
+                    var classinfohtml = "";
+                    var jsondata = eval(data);
+                    for (var i = 0; i < jsondata.length; i++) {
+                        classinfohtml += "<option value=" + jsondata[i]["id"] + ">" + jsondata[i]["cname"] + "</option>";
+                    }
+                    $("#classinfo").html(classinfohtml);
+                    if (isload == 1) { //判断是否为首次加载
+                        $("#classinfo").val($("#classinfoid").val());
+                    }
+                }
+            });
+        }
+        //页面初始化内容
+        $(document).ready(function () {
+            loadclassinfolist(1);//初始化选择班组
+        });
+    </script>
+
+</body>
+</html>

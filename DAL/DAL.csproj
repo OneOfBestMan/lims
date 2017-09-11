@@ -58,6 +58,7 @@
     <Compile Include="DbHelperSQL.cs" />
     <Compile Include="DictManage\D_tb_TypeDict.cs" />
     <Compile Include="D_Drug.cs" />
+    <Compile Include="D_DrugLock.cs" />
     <Compile Include="D_Task.cs" />
     <Compile Include="EntrustManage\D_tb_EntrustMeterage.cs" />
     <Compile Include="EntrustManage\D_tb_EntrustTesting.cs" />

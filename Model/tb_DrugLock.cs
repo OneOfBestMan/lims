@@ -105,5 +105,6 @@ namespace Model
             get { return _temp2; }
         }
         #endregion Model
+        public String pic { get; set; }
     }
 }

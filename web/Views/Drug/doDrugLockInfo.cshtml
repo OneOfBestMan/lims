@@ -238,7 +238,7 @@
     <style type="text/css">
         .divList {
             position: absolute;
-            top: 40px;
+    
             left: 1px;
             z-index: 99;
             width: 1048px;
@@ -305,80 +305,11 @@
 </head>
 <body>
 
-    <div style="background: #faf1e8; height: 30px; width: 100%; top: 1px; position: absolute; z-index: 99; left: 1px;">
-        <table align="left" width="100%" height="27px">
-            <tr>
-                <td width="1029" style="font-family: '宋体'; font-size: 12px; color: #10607c;">当前位置：药品管理<img style="text-align:center;vertical-align:middle" src='@Url.Content("~/Content/Images/位置.png")' />药品柜<img style="text-align:center;vertical-align:middle" src='@Url.Content("~/Content/Images/位置.png")' />药品柜详情</td>
-            </tr>
-        </table>
-    </div>
+
 
     <div class="divList">
         <table cellpadding="0" cellspacing="0">
-            <tr>
-                <td>
-                    <table cellpadding="0" cellspacing="0" width="1040px">
-                        <tr>
-                            <td width="480" style="font-family: '宋体'; font-size: 12px; color: #10607c;">药品柜名称：
-                                <input style="border: 1px solid #3496d6; width: 150px" type="text" id="txt_lockName" value="@Model.lockName" />
-                           
 
-                                <select class="form-control" id="ddl_locktype" name="ddl_locktype" style="width:120px;">
-                                    <option value="请选择">请选择</option>
-                                    @{
-                                        var lockList = DataHelper.GetLockList();
-                                        foreach (var item in lockList)
-                                        {
-                                            <option value="@item" @((item==Model.lockType) ? "selected" : "")>@item</option>
-                                        }
-                                    }
-
-                                </select>
-                                @{
-                                    string wxp = "危险品";
-                                    string hxp = "化学品";
-                                    bool b_wxp = false;
-                                    bool b_hxp = false;
-                                    if (Model != null && Model.id > 0)
-                                    {
-                                        if (Model.mark.Equals("都是"))
-                                        {
-                                            b_wxp = true;
-                                            b_hxp = true;
-                                        }
-                                        else if (Model.mark.Equals("都不是"))
-                                        {
-                                            b_wxp = false;
-                                            b_hxp = false;
-                                        }
-                                        else if (Model.mark.Equals("危险品"))
-                                        {
-                                            b_wxp = true;
-                                        }
-                                        else if (Model.mark.Equals("化学品"))
-                                        {
-                                            b_hxp = true;
-                                        }
-                                    }
-                                    
-                                    @Html.CheckBox("cbo_wxp", b_wxp)
-                                    @wxp
-                                    @Html.CheckBox("cbo_hxp", b_hxp)
-                                    @hxp
-                                }
-                            </td>
-                            <td align="right">
-                                <a href='javascript:void(0)' onclick="onclick_druglock()">
-                                    <img src='@Url.Content("~/Content/Images/baocun.png")' />
-                                </a>
-                                <a href='@Url.Action("DrugLock", "Drug")' target="mainFrame">
-                                    <img src="~/Content/Images/fanhui.png" />
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
             <tr>
                 <td>
                     <table>

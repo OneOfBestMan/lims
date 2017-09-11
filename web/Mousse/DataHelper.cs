@@ -25,19 +25,19 @@ namespace System.Web.Mvc
             dic.Add(4, "延期完成");
             return dic;
         }
-        public static List<String> GetLockList()
+        public static Dictionary<int, String> GetLockList()
         {
             //待完成、完成、延期、延期完成
-            List<String> list = new List<string>();
-            list.Add("玻璃柜2*4");
-            list.Add("玻璃柜3*4");
-            list.Add("不透明柜2*4");
-            list.Add("不透明柜3*4");
-            list.Add("不透明柜4*4");
-            list.Add("不透明柜5*4");
-            list.Add("不透明柜6*4");
-            list.Add("冷藏柜");
-            return list;
+            Dictionary<int, String> dic = new Dictionary<int, string>();
+            dic.Add(1,"玻璃柜2*4");
+            dic.Add(2,"玻璃柜3*4");
+            dic.Add(3,"不透明柜2*4");
+            dic.Add(4,"不透明柜3*4");
+            dic.Add(5,"不透明柜4*4");
+            dic.Add(6,"不透明柜5*4");
+            dic.Add(7,"不透明柜6*4");
+            dic.Add(8,"冷藏柜");
+            return dic;
         }
         public static String GetStatusName(int id) {
             if (GetStatusTypeList().ContainsKey(id)) {

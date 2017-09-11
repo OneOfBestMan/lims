@@ -40,29 +40,35 @@ namespace DAL
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("insert into tb_DrugLock(");
-            strSql.Append("lockName,mark,createUser,createDate,updateUser,updateDate,lockType,temp1,temp2)");
-            strSql.Append(" values (");
-            strSql.Append("@lockName,@mark,@createUser,@createDate,@updateUser,@updateDate,@lockType,@temp1,@temp2)");
+            strSql.Append("temp2,pic,lockName,mark,createUser,createDate,updateUser,updateDate,lockType,temp1");
+            strSql.Append(") values (");
+            strSql.Append("@temp2,@pic,@lockName,@mark,@createUser,@createDate,@updateUser,@updateDate,@lockType,@temp1");
+            strSql.Append(") ");
             strSql.Append(";select @@IDENTITY");
             SqlParameter[] parameters = {
-					new SqlParameter("@lockName", SqlDbType.NVarChar,-1),
-					new SqlParameter("@mark", SqlDbType.NVarChar,50),
-					new SqlParameter("@createUser", SqlDbType.Int,4),
-					new SqlParameter("@createDate", SqlDbType.DateTime),
-					new SqlParameter("@updateUser", SqlDbType.Int,4),
-					new SqlParameter("@updateDate", SqlDbType.DateTime),
-					new SqlParameter("@lockType", SqlDbType.NVarChar,100),
-					new SqlParameter("@temp1", SqlDbType.NVarChar,-1),
-					new SqlParameter("@temp2", SqlDbType.NVarChar,-1)};
-            parameters[0].Value = model.lockName;
-            parameters[1].Value = model.mark;
-            parameters[2].Value = model.createUser;
-            parameters[3].Value = model.createDate;
-            parameters[4].Value = model.updateUser;
-            parameters[5].Value = model.updateDate;
-            parameters[6].Value = model.lockType;
-            parameters[7].Value = model.temp1;
-            parameters[8].Value = model.temp2;
+                        new SqlParameter("@temp2", SqlDbType.NVarChar,-1) ,
+                        new SqlParameter("@pic", SqlDbType.NVarChar,256) ,
+                        new SqlParameter("@lockName", SqlDbType.NVarChar,-1) ,
+                        new SqlParameter("@mark", SqlDbType.NVarChar,50) ,
+                        new SqlParameter("@createUser", SqlDbType.Int,4) ,
+                        new SqlParameter("@createDate", SqlDbType.DateTime) ,
+                        new SqlParameter("@updateUser", SqlDbType.Int,4) ,
+                        new SqlParameter("@updateDate", SqlDbType.DateTime) ,
+                        new SqlParameter("@lockType", SqlDbType.NVarChar,100) ,
+                        new SqlParameter("@temp1", SqlDbType.NVarChar,-1)
+
+            };
+
+            parameters[0].Value = model.temp2;
+            parameters[1].Value = model.pic;
+            parameters[2].Value = model.lockName;
+            parameters[3].Value = model.mark;
+            parameters[4].Value = model.createUser;
+            parameters[5].Value = model.createDate;
+            parameters[6].Value = model.updateUser;
+            parameters[7].Value = model.updateDate;
+            parameters[8].Value = model.lockType;
+            parameters[9].Value = model.temp1;
 
             object obj = DbHelperSQL.GetSingle(strSql.ToString(), parameters);
             if (obj == null)
@@ -81,37 +87,45 @@ namespace DAL
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("update tb_DrugLock set ");
-            strSql.Append("lockName=@lockName,");
-            strSql.Append("mark=@mark,");
-            strSql.Append("createUser=@createUser,");
-            strSql.Append("createDate=@createDate,");
-            strSql.Append("updateUser=@updateUser,");
-            strSql.Append("updateDate=@updateDate,");
-            strSql.Append("lockType=@lockType,");
-            strSql.Append("temp1=@temp1,");
-            strSql.Append("temp2=@temp2");
-            strSql.Append(" where id=@id");
+
+            strSql.Append(" temp2 = @temp2 , ");
+            strSql.Append(" pic = @pic , ");
+            strSql.Append(" lockName = @lockName , ");
+            strSql.Append(" mark = @mark , ");
+            strSql.Append(" createUser = @createUser , ");
+            strSql.Append(" createDate = @createDate , ");
+            strSql.Append(" updateUser = @updateUser , ");
+            strSql.Append(" updateDate = @updateDate , ");
+            strSql.Append(" lockType = @lockType , ");
+            strSql.Append(" temp1 = @temp1  ");
+            strSql.Append(" where id=@id ");
+
             SqlParameter[] parameters = {
-					new SqlParameter("@lockName", SqlDbType.NVarChar,-1),
-					new SqlParameter("@mark", SqlDbType.NVarChar,50),
-					new SqlParameter("@createUser", SqlDbType.Int,4),
-					new SqlParameter("@createDate", SqlDbType.DateTime),
-					new SqlParameter("@updateUser", SqlDbType.Int,4),
-					new SqlParameter("@updateDate", SqlDbType.DateTime),
-					new SqlParameter("@lockType", SqlDbType.NVarChar,100),
-					new SqlParameter("@temp1", SqlDbType.NVarChar,-1),
-					new SqlParameter("@temp2", SqlDbType.NVarChar,-1),
-					new SqlParameter("@id", SqlDbType.Int,4)};
-            parameters[0].Value = model.lockName;
-            parameters[1].Value = model.mark;
-            parameters[2].Value = model.createUser;
-            parameters[3].Value = model.createDate;
-            parameters[4].Value = model.updateUser;
-            parameters[5].Value = model.updateDate;
-            parameters[6].Value = model.lockType;
-            parameters[7].Value = model.temp1;
-            parameters[8].Value = model.temp2;
-            parameters[9].Value = model.id;
+                        new SqlParameter("@id", SqlDbType.Int,4) ,
+                        new SqlParameter("@temp2", SqlDbType.NVarChar,-1) ,
+                        new SqlParameter("@pic", SqlDbType.NVarChar,256) ,
+                        new SqlParameter("@lockName", SqlDbType.NVarChar,-1) ,
+                        new SqlParameter("@mark", SqlDbType.NVarChar,50) ,
+                        new SqlParameter("@createUser", SqlDbType.Int,4) ,
+                        new SqlParameter("@createDate", SqlDbType.DateTime) ,
+                        new SqlParameter("@updateUser", SqlDbType.Int,4) ,
+                        new SqlParameter("@updateDate", SqlDbType.DateTime) ,
+                        new SqlParameter("@lockType", SqlDbType.NVarChar,100) ,
+                        new SqlParameter("@temp1", SqlDbType.NVarChar,-1)
+
+            };
+
+            parameters[0].Value = model.id;
+            parameters[1].Value = model.temp2;
+            parameters[2].Value = model.pic;
+            parameters[3].Value = model.lockName;
+            parameters[4].Value = model.mark;
+            parameters[5].Value = model.createUser;
+            parameters[6].Value = model.createDate;
+            parameters[7].Value = model.updateUser;
+            parameters[8].Value = model.updateDate;
+            parameters[9].Value = model.lockType;
+            parameters[10].Value = model.temp1;
             int rows = DbHelperSQL.ExecuteSql(strSql.ToString(), parameters);
             if (rows > 0)
             {
@@ -241,6 +255,10 @@ namespace DAL
                 if (row["temp2"] != null)
                 {
                     model.temp2 = row["temp2"].ToString();
+                }
+                if (row["pic"] != null)
+                {
+                    model.pic = row["pic"].ToString();
                 }
             }
             return model;

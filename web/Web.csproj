@@ -227,6 +227,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handler\UploadHandler.ashx.cs">
+      <DependentUpon>UploadHandler.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Models\DataJQGrid.cs" />
     <Compile Include="Models\TreeModel.cs" />
     <Compile Include="Mousse\DataHelper.cs" />
@@ -577,6 +580,7 @@
     <Content Include="pageoffice\template\file004.docx" />
     <Content Include="pageoffice\template\file005.xlsx" />
     <Content Include="pageoffice\template\file006.pptx" />
+    <Content Include="Handler\UploadHandler.ashx" />
     <None Include="Properties\PublishProfiles\LILMS.pubxml" />
     <Content Include="HtmlToPDF\wkhtmltopdf.exe" />
     <Content Include="pageoffice\server.aspx" />
@@ -1887,6 +1891,44 @@
     <Content Include="Skins\js\jquery-1.8.3.min.js" />
     <Content Include="Skins\js\jquery.SuperSlide.js" />
     <Content Include="Skins\js\pagejscommon.js" />
+    <Content Include="Skins\UploadFile\angularjs.html" />
+    <Content Include="Skins\UploadFile\basic-plus.html" />
+    <Content Include="Skins\UploadFile\basic.html" />
+    <Content Include="Skins\UploadFile\cors\postmessage.html" />
+    <Content Include="Skins\UploadFile\cors\result.html" />
+    <Content Include="Skins\UploadFile\css\demo-ie8.css" />
+    <Content Include="Skins\UploadFile\css\demo.css" />
+    <Content Include="Skins\UploadFile\css\jquery.fileupload-ui-noscript.css" />
+    <Content Include="Skins\UploadFile\css\jquery.fileupload-ui.css" />
+    <Content Include="Skins\UploadFile\css\style.css" />
+    <Content Include="Skins\UploadFile\img\loading.gif" />
+    <Content Include="Skins\UploadFile\img\progressbar.gif" />
+    <Content Include="Skins\UploadFile\index.html" />
+    <Content Include="Skins\UploadFile\jquery-ui.html" />
+    <Content Include="Skins\UploadFile\js\app.js" />
+    <Content Include="Skins\UploadFile\js\cors\jquery.postmessage-transport.js" />
+    <Content Include="Skins\UploadFile\js\cors\jquery.xdr-transport.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-angular.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-audio.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-image.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-jquery-ui.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-process.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-ui.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-validate.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload-video.js" />
+    <Content Include="Skins\UploadFile\js\jquery.fileupload.js" />
+    <Content Include="Skins\UploadFile\js\jquery.iframe-transport.js" />
+    <Content Include="Skins\UploadFile\js\main.js" />
+    <Content Include="Skins\UploadFile\js\vendor\jquery.ui.widget.js" />
+    <Content Include="Skins\UploadFile\server\gae-go\static\favicon.ico" />
+    <Content Include="Skins\UploadFile\server\gae-go\static\robots.txt" />
+    <Content Include="Skins\UploadFile\server\gae-python\static\favicon.ico" />
+    <Content Include="Skins\UploadFile\server\gae-python\static\robots.txt" />
+    <Content Include="Skins\UploadFile\server\node\server.js" />
+    <Content Include="Skins\UploadFile\server\php\index.php" />
+    <Content Include="Skins\UploadFile\server\php\UploadHandler.php" />
+    <Content Include="Skins\UploadFile\test\index.html" />
+    <Content Include="Skins\UploadFile\test\test.js" />
     <Content Include="SWFTools\pdf2swf.exe" />
     <Content Include="Views\UploadFile\UploadImg.aspx" />
     <Content Include="Web.config" />
@@ -2124,6 +2166,23 @@
     <Content Include="Views\TestReport\Examine.cshtml" />
     <Content Include="Views\TestReport\Approval.cshtml" />
     <Content Include="Views\NewDrug\DrugCheckList.cshtml" />
+    <Content Include="Skins\UploadFile\.gitignore" />
+    <Content Include="Skins\UploadFile\blueimp-file-upload.jquery.json" />
+    <Content Include="Skins\UploadFile\bower.json" />
+    <Content Include="Skins\UploadFile\CONTRIBUTING.md" />
+    <Content Include="Skins\UploadFile\package.json" />
+    <Content Include="Skins\UploadFile\README.md" />
+    <Content Include="Skins\UploadFile\server\gae-go\app.yaml" />
+    <Content Include="Skins\UploadFile\server\gae-go\app\main.go" />
+    <Content Include="Skins\UploadFile\server\gae-python\app.yaml" />
+    <Content Include="Skins\UploadFile\server\gae-python\main.py" />
+    <Content Include="Skins\UploadFile\server\node\.gitignore" />
+    <Content Include="Skins\UploadFile\server\node\package.json" />
+    <Content Include="Skins\UploadFile\server\node\public\files\.gitignore" />
+    <Content Include="Skins\UploadFile\server\node\tmp\.gitignore" />
+    <Content Include="Skins\UploadFile\server\php\files\.gitignore" />
+    <Content Include="Skins\UploadFile\server\php\files\.htaccess" />
+    <Content Include="Views\NewDrug\DrugLockInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

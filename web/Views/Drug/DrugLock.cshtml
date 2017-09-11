@@ -41,6 +41,15 @@
                     }
                 }
         }
+        function update(id) {
+            var d = dialog({
+                title: '编辑',
+                url: '/NewDrug/DrugLockInfo?id=' + id,
+                id: 'id-info',
+
+            });
+            d.showModal();
+        }
         function add() {
             var d = dialog({
                 title: '添加药品柜',
@@ -117,7 +126,7 @@
 
                         @if (Convert.ToBoolean(ViewData["2d3fc650"]))
                         {
-                            <button type="button" class="btn btn-primary" onclick="add()"><i class="fa fa-search"></i>新增</button>
+                            <button type="button" class="btn btn-primary" onclick="update(0)">新增</button>
                             <button type="button" class="btn btn-danger" onclick="onclick_deleteLock()"><i class="fa fa-search"></i>删除</button>
                         }
                     </div>
@@ -146,12 +155,12 @@
                                                     {
                                                         <td align="center">
 
-                                                            <table>
+                                                            <table style="    margin: 0 0 25px 0px;">
                                                                 <tr>
                                                                     <td align="center">
 
                                                                         <a href='javascript:void(0)' onclick="showwindow('/Drug/doDrugLockInfo/@druglock.id', '详情')">
-                                                                            <img src='@Url.Content("~/Content/Images/Lock/" + druglock.lockType + druglock.mark + ".png")' height="136" width="100" alt="@druglock.mark" />
+                                                                            <img src='@Url.Content("~/Content/Images/Lock/" + druglock.pic)' height="136" width="100" alt="@druglock.mark" />
                                                                         </a>
 
                                                                     </td>
@@ -160,6 +169,7 @@
                                                                     <td align="center">
                                                                         <input type="checkbox" onchange="onchange_cbo(this)" value="@druglock.id" />
                                                                         @druglock.lockName
+                                                                        <button type="button" class="btn btn-xs btn-primary" onclick="update(@druglock.id)">修改</button>
                                                                     </td>
                                                                 </tr>
                                                             </table>

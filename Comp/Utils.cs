@@ -9,7 +9,7 @@ using System.Xml;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Data.SqlClient;
- 
+using System.Collections;
 
 namespace Comp
 {
@@ -1913,6 +1913,42 @@ namespace Comp
             {
                 strwhere.Append($" and {newwhere}");
             }
+        }
+        public static string SetUpdateSql(Object model, string[] ziduan)
+        {
+            StringBuilder strSql = new StringBuilder();
+            if (model != null)
+            {
+                Type modelType = model.GetType();
+                var properties = model.GetType().GetProperties();
+                foreach (var item in properties)
+                {
+                    if (ziduan != null && ((IList)ziduan).Contains(item.Name))
+                    {
+
+                        continue;
+
+                    }
+                    if (item.Name == "PageSize" || item.Name == "PageIndex") { continue; }
+
+                    if (item.GetValue(model) != null)
+                    {
+                        if (item.PropertyType.Name == "String")
+                        {
+
+                            var val = item.GetValue(model);
+                            if (val == null)
+                            {
+                                continue;
+                            }
+
+                        }
+                        strSql.AppendFormat(" {0} = @{0},", item.Name);
+                    }
+
+                }
+            }
+            return strSql.ToString().TrimEnd(',');
         }
     }
 }
