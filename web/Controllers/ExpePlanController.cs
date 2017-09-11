@@ -146,7 +146,7 @@ namespace Web.Controllers
             }
 
             //默认获取前200条数据，避免因option过多导致加载过慢
-            List<tb_Sample> SampleList = _dSample.GetModelList(200, "id,name", " where handleUser=0", eExpePlan.SampleID != null ? Convert.ToInt32(eExpePlan.SampleID) : 0);
+            List<tb_Sample> SampleList = _dSample.GetModelList(400, "id,name", " where handleUser=0", eExpePlan.SampleID != null ? Convert.ToInt32(eExpePlan.SampleID) : 0);
 
             ViewData["SampleList"] = SampleList;
 
@@ -275,12 +275,12 @@ namespace Web.Controllers
             if (PlanTypeID == "2")
             {
                 //读取计划外的 委托检验 未销毁 未完成的委托检验对应的样品
-                list = _dSample.GetModelList(200, "id,name", "where handleUser=0 and id in (select SampleID from tb_EntrustTesting where IsComplete=0)", SampleID);
+                list = _dSample.GetModelList(400, "id,name", "where handleUser=0 and id in (select SampleID from tb_EntrustTesting where IsComplete=0)", SampleID);
             }
             else
             {
                 //获取全部未销毁样品
-                list = _dSample.GetModelList(200, "id,name", "where handleUser=0", SampleID);
+                list = _dSample.GetModelList(400, "id,name", "where handleUser=0", SampleID);
             }
             return Json(list, JsonRequestBehavior.AllowGet);
         }
