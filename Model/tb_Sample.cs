@@ -94,7 +94,7 @@ namespace Model
         private string _temp2;
         private string _putarea;
         private string _samplehandle;
-        private int? _handleuser;
+        private int _handleuser;
         private DateTime? _handledate;
         private string _sampleadmin;
         private string _detectiongist;
@@ -278,7 +278,7 @@ namespace Model
         /// 处理人
         /// </summary>
         [DisplayName("处理人")]
-        public int? handleUser
+        public int handleUser
         {
             set { _handleuser = value; }
             get { return _handleuser; }
