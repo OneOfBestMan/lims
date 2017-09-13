@@ -93,11 +93,11 @@
                 <div>
                     <span class="btn btn-success fileinput-button">
                         <i class="glyphicon glyphicon-plus"></i>
-                        <span>选择文件...</span>
+                        <span>选择图片...</span>
                         <input id="fileupload" type="file" name="files" data-url="/Handler/UploadHandler.ashx" multiple="">
                     </span>
-                    <div>
-                        <img id="img" width="300px" height="200px" src="/Content/Images/Lock/@info.pic" />
+                    <div style="margin-top:10px">
+                        <img id="img" width="100px" height="136px" src="/Content/Images/Lock/@(string.IsNullOrEmpty( info.pic)?"ftp-img.jpg":info.pic)" />
                     </div>
                 </div>
                 <input type="hidden" id="hid" value="@info.id" />
@@ -129,8 +129,17 @@
             var isdanger = $("#isdanger").is(':checked');
             if (isdanger) { isdanger = 1; } else { isdanger = 0 }
             if (ischem) { ischem = 1; } else { ischem = 0 }
+            var pic = $("#pic").val();
+            if (lockName.replace(/[ ]/g, "") == "") {
+                alert("请输入药品柜名称");
+                return false;
+            }
+            if (pic == "") {
+                alert("请上传药品柜图片");
+                return false;
+            }
 
-            var data = "lockName=" + lockName + "&id=" + hid + "&isdanger=" + isdanger + "&ischem=" + ischem + "&locktypeid=" + $("#locktypeid").val() + "&pic=" + $("#pic").val()
+            var data = "lockName=" + lockName + "&id=" + hid + "&isdanger=" + isdanger + "&ischem=" + ischem + "&locktypeid=" + $("#locktypeid").val() + "&pic=" + pic
             //ajax
             $.post("/NewDrug/DrugLockSave", data, function (data) {
                 if (data == "True") {

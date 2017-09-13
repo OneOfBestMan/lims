@@ -290,6 +290,7 @@
     <Content Include="Content\Images\Lock\Chover.png" />
     <Content Include="Content\Images\Lock\Dhover.png" />
     <Content Include="Content\Images\Lock\Ehover.png" />
+    <Content Include="Content\Images\Lock\ftp-img.jpg" />
     <Content Include="Dll\ICSharpCode.SharpZipLib.dll" />
     <Content Include="Dll\NPOI.dll" />
     <Content Include="Dll\NPOI.OOXML.dll" />
