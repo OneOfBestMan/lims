@@ -422,13 +422,25 @@ FROM         dbo.tb_Sample INNER JOIN
 	                            count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel,
                                 sum(case when dbo.tb_TestReportData.QualifiedLevel='合格' then 1 else 0 end) as QualifiedLevelA,
 	                            sum(case when dbo.tb_TestReportData.QualifiedLevel <>'合格' then 1 else 0 end) as QualifiedLevelB,
-	                            dbo.tb_Sample.name, dbo.tb_Project.ProjectName, dbo.tb_TestReportData.TestPersonnelName, dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department
+	                            dbo.tb_Sample.name, 
+	                            dbo.tb_Project.ProjectName, 
+	                            dbo.tb_TestReportData.TestPersonnelName, 
+	                            dbo.tb_OriginalRecord.DetectTime,
+	                            dbo.tb_TestReport.Department,
+	                            dbo.tb_Area.TestReportName as GHS
 	                            FROM dbo.tb_Sample 
 	                            INNER JOIN dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID 
 	                            INNER JOIN dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID 
 	                            INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
 	                            INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
-	                            group by dbo.tb_Sample.name, dbo.tb_Project.ProjectName, dbo.tb_TestReportData.TestPersonnelName, dbo.tb_OriginalRecord.DetectTime,dbo.tb_TestReport.Department
+	                            INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId   --区域
+	                            group by 
+	                            dbo.tb_Sample.name, 
+	                            dbo.tb_Project.ProjectName, 
+	                            dbo.tb_TestReportData.TestPersonnelName, 
+	                            dbo.tb_OriginalRecord.DetectTime,
+	                            dbo.tb_TestReport.Department,
+	                            dbo.tb_Area.TestReportName
                             ) as T {strWhere.ToString()}");
             
             DataSet ds = DbHelperSQL.Query(strSql.ToString());

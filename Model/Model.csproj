@@ -55,6 +55,7 @@
     <Compile Include="EntrustManage\E_tb_OutsourcingTesting.cs" />
     <Compile Include="EntrustManage\E_tb_TestingPlan.cs" />
     <Compile Include="ExpePlan\E_tb_ExpePlan.cs" />
+    <Compile Include="ExpeStatistics\E_ExpeStatisticsSearchParameter.cs" />
     <Compile Include="E_DrugCheck.cs" />
     <Compile Include="E_DrugLock.cs" />
     <Compile Include="E_PageParameter.cs" />

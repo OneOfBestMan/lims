@@ -11,6 +11,9 @@ using System.IO;
 using System.Text;
 using Comp;
 using DAL.Laboratory;
+using Model.ExpeStatistics;
+using DAL.RoleManage;
+using DAL.ClientManage;
 
 namespace Web.Controllers
 {
@@ -39,6 +42,8 @@ namespace Web.Controllers
             }
             ViewData["LaboratoryList"] = new SelectList(list, "Value", "Text");
 
+            ViewBag.AreaList = new D_tb_Area().GetlList();
+            ViewBag.ClientManageList = new D_tb_ClientManage().GetList();
             return View();
         }
 
@@ -71,11 +76,8 @@ namespace Web.Controllers
                 strWhere += " and T.LaboratoryID in (select LaboratoryID from tb_Laboratory where AreaID =" + CurrentUserInfo.AreaID + ")";
             }
 
-            try
-            {
-                dt = tDetectProject.GetListByPage(strWhere, "", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
-            }
-            catch { }
+            dt = tDetectProject.GetListByPage(strWhere, "", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
+
             string strJson = PublicClass.ToJson(dt, total);
             if (strJson.Trim() == "")
             {
@@ -83,51 +85,52 @@ namespace Web.Controllers
             }
             return strJson;
         }
-
-
-        public string GetListByReport(int pageNumber, int pageSize, string ddl_selecttype, string txt_dept, string ddl_type, string txt_search, string txt_StartTime, string txt_EndTime)
+        
+        public string GetListByReport(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
             DataTable dt = new DataTable();
             int total = 0;
 
             StringBuilder strWhere = new StringBuilder();
-            if (!string.IsNullOrEmpty(txt_dept))
+
+
+            if (!string.IsNullOrEmpty(eSearchParameter.GHS))  //检验单位
             {
-                switch (ddl_selecttype)
-                {
-                    case "mhcx":
-                        strWhere.AddWhere("Department like '%" + txt_dept + "%'");
-                        break;
-                    case "qzpp":
-                        strWhere.AddWhere("Department = '" + txt_dept + "'");
-                        break;
-                }
+                strWhere.AddWhere("T.GHS like '%" + eSearchParameter.GHS + "%'");
             }
-            if (!string.IsNullOrEmpty(txt_search))
+            if (!string.IsNullOrEmpty(eSearchParameter.Department)) //抽送检单位
             {
-                switch (ddl_type)
-                {
-                    case "ypmc":
-                        strWhere.AddWhere("name like '%" + txt_search + "%'");
-                        break;
-                    case "jyxm":
-                        strWhere.AddWhere("ProjectName like '%" + txt_search + "%'");
-                        break;
-                    case "jyr":
-                        strWhere.AddWhere("TestPersonnelName like '%" + txt_search + "%'");
-                        break;
-                }
-            }
-            if (!string.IsNullOrEmpty(txt_StartTime))
-            {
-                strWhere.AddWhere("DetectTime >= '" + txt_StartTime + "'");
-            }
-            if (!string.IsNullOrEmpty(txt_EndTime))
-            {
-                strWhere.AddWhere("DetectTime <= '" + txt_EndTime + "'");
+                strWhere.AddWhere("T.Department like '%" + eSearchParameter.Department + "%'");
             }
 
-            dt = tDetectProject.GetListByReport(strWhere.ToString(), "", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_search))
+            {
+                switch (eSearchParameter.ddl_type)
+                {
+                    case "ypmc":
+                        strWhere.AddWhere("name like '%" + eSearchParameter.txt_search + "%'");
+                        break;
+                    case "jyxm":
+                        strWhere.AddWhere("ProjectName like '%" + eSearchParameter.txt_search + "%'");
+                        break;
+                    case "jyr":
+                        strWhere.AddWhere("TestPersonnelName like '%" + eSearchParameter.txt_search + "%'");
+                        break;
+                }
+            }
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_StartTime))
+            {
+                strWhere.AddWhere("DetectTime >= '" + eSearchParameter.txt_StartTime + "'");
+            }
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_EndTime))
+            {
+                strWhere.AddWhere("DetectTime <= '" + eSearchParameter.txt_EndTime + "'");
+            }
+
+
+            int startindex = eSearchParameter.pageNumber * eSearchParameter.pageSize - (eSearchParameter.pageSize - 1);
+            int endindex = eSearchParameter.pageNumber * eSearchParameter.pageSize;
+            dt = tDetectProject.GetListByReport(strWhere.ToString(), "", startindex, endindex, ref total).Tables[0];
 
             //张伟修改，增加合计
             DataTable dt2 = dt.Clone();
@@ -143,66 +146,53 @@ namespace Web.Controllers
             dr2["name"] = "总合计";
 
             DataRow row = dDetectProject.GetAllListCountForReport(strWhere.ToString());
-            dr2["QualifiedLevel"] = row["QualifiedLevel"].ToString();
-            dr2["QualifiedLevelA"] = row["QualifiedLevelA"].ToString();
-            dr2["QualifiedLevelB"] = row["QualifiedLevelB"].ToString();
+            dr2["QualifiedLevel"] = row["QualifiedLevel"].ToString() == "" ? "0": row["QualifiedLevel"].ToString();
+            dr2["QualifiedLevelA"] = row["QualifiedLevelA"].ToString()==""?"0": row["QualifiedLevelA"].ToString();
+            dr2["QualifiedLevelB"] = row["QualifiedLevelB"].ToString()==""?"0": row["QualifiedLevelB"].ToString();
             dt2.Rows.InsertAt(dr2, 1);
 
             return "{\"total\":" + total + ",\"rows\":" + JsonConvert.SerializeObject(dt) + ",\"footer\":" + JsonConvert.SerializeObject(dt2) + "}";
         }
-
-
-
-        public FileResult ExportReport(string ddl_selecttype, string txt_dept, string ddl_type, string txt_search, string txt_StartTime, string txt_EndTime)
+        
+        public FileResult ExportReport(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
             //拼接查询条件
             StringBuilder strWhere = new StringBuilder();
-            if (!string.IsNullOrEmpty(txt_dept))
+            if (!string.IsNullOrEmpty(eSearchParameter.GHS))  //检验单位
             {
-                switch (ddl_selecttype)
-                {
-                    case "mhcx":
-                        strWhere.AddWhere("Department like '%" + txt_dept + "%'");
-                        break;
-                    case "qzpp":
-                        strWhere.AddWhere("Department = '" + txt_dept + "'");
-                        break;
-                }
+                strWhere.AddWhere("T.GHS like '%" + eSearchParameter.GHS + "%'");
             }
-            if (!string.IsNullOrEmpty(txt_search))
+            if (!string.IsNullOrEmpty(eSearchParameter.Department)) //抽送检单位
             {
-                switch (ddl_type)
+                strWhere.AddWhere("T.Department like '%" + eSearchParameter.Department + "%'");
+            }
+
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_search))
+            {
+                switch (eSearchParameter.ddl_type)
                 {
                     case "ypmc":
-                        strWhere.AddWhere("name like '%" + txt_search + "%'");
+                        strWhere.AddWhere("name like '%" + eSearchParameter.txt_search + "%'");
                         break;
                     case "jyxm":
-                        strWhere.AddWhere("ProjectName like '%" + txt_search + "%'");
+                        strWhere.AddWhere("ProjectName like '%" + eSearchParameter.txt_search + "%'");
                         break;
                     case "jyr":
-                        strWhere.AddWhere("TestPersonnelName like '%" + txt_search + "%'");
+                        strWhere.AddWhere("TestPersonnelName like '%" + eSearchParameter.txt_search + "%'");
                         break;
                 }
             }
-            if (!string.IsNullOrEmpty(txt_StartTime))
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_StartTime))
             {
-                strWhere.AddWhere("DetectTime >= '" + txt_StartTime + "'");
+                strWhere.AddWhere("DetectTime >= '" + eSearchParameter.txt_StartTime + "'");
             }
-            if (!string.IsNullOrEmpty(txt_EndTime))
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_EndTime))
             {
-                strWhere.AddWhere("DetectTime <= '" + txt_EndTime + "'");
+                strWhere.AddWhere("DetectTime <= '" + eSearchParameter.txt_EndTime + "'");
             }
 
             DataTable dt = new DataTable();
             dt = tDetectProject.GetExportListByReport(strWhere.ToString(), "").Tables[0];
-            
-            //DataRow dr2 = dt.NewRow();
-            //dr2["name"] = "总合计";
-            //DataRow row = dDetectProject.GetAllListCountForReport(strWhere.ToString());
-            //dr2["QualifiedLevel"] = row["QualifiedLevel"].ToString();
-            //dr2["QualifiedLevelA"] = row["QualifiedLevelA"].ToString();
-            //dr2["QualifiedLevelB"] = row["QualifiedLevelB"].ToString();
-            //dt.Rows.InsertAt(dr2, dt.Rows.Count);
             
             MemoryStream stream = new MemoryStream();
             stream = PublicClass.ExportReportToExcel(dt);
