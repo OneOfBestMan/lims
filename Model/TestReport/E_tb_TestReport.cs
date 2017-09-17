@@ -13,6 +13,22 @@ namespace Model.TestReport
     {
         public E_tb_TestReport()
         { }
+        
+        /// <summary>
+        /// 是否保密
+        /// </summary>
+        public int issecrecy { get; set; }
+
+        /// <summary>
+        /// 保密审批人（只有被设置为该检验报告的 保密审批人才能看到该检验报告。）
+        /// </summary>
+        public int secrecyexaminepid { get; set; }
+
+        /// <summary>
+        /// 设置保密人
+        /// </summary>
+        public int setsecrecypid { get; set; }
+
         #region Model
         private int _reportid;
         private string _recordids;

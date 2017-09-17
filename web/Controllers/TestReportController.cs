@@ -19,6 +19,8 @@ using System.Text.RegularExpressions;
 using Model;
 using Comp;
 using DAL.TestReport;
+using DAL.PersonnelManage;
+using Model.PersonnelManage;
 
 namespace Web.Controllers
 {
@@ -50,15 +52,10 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 获取所有数据列表
-        /// 作者：小朱
+        /// 获取列表查询条件
         /// </summary>
-        /// <returns>将DataTable转换为Json数据格式通过string类型返回</returns>
-        //public DataTable GetList(int pageNumber, int pageSize, string AreaID, string StartTime, string EndTime, string SampleNum, string SampleName, string Department, string MainTestPersonne, string ReportID, string SamplingTimes, string SamplingTimee)
-        public DataTable GetList(E_PageParameter ePageParameter)
+        public string GetWhere(E_PageParameter ePageParameter)
         {
-            DataTable dt = new DataTable();
-            int total = 0;
             string strWhere = "";
             if (ePageParameter.reportid > 0)
             {
@@ -113,6 +110,22 @@ namespace Web.Controllers
                     break;
             }
 
+            //保密数据获取,只有设置保密的自己或者指定的审批人能看到对应的保密数据
+            strWhere = PageTools.AddWhere(strWhere, $"(issecrecy=0 or secrecyexaminepid={CurrentUserInfo.PersonnelID} or setsecrecypid={CurrentUserInfo.PersonnelID})");
+
+            return strWhere;
+        }
+
+        /// <summary>
+        /// 获取所有数据列表
+        /// 作者：小朱
+        /// </summary>
+        /// <returns>将DataTable转换为Json数据格式通过string类型返回</returns>
+        public DataTable GetList(E_PageParameter ePageParameter)
+        {
+            DataTable dt = new DataTable();
+            int total = 0;
+            string strWhere = GetWhere(ePageParameter);
             try
             {
                 //dt = tTestReport.GetListByPage(strWhere, "UpdateTime DESC,T.SampleName ASC", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
@@ -447,6 +460,43 @@ namespace Web.Controllers
             string msg = (result)?"审核成功！":"审核失败！";
             return Json(new { result= result, msg = msg }, JsonRequestBehavior.AllowGet);
         }
+
+
+        /// <summary>
+        /// 保密
+        /// </summary>
+        [Route("TestReport/Secrecy")]
+        public ActionResult Secrecy(int ReportID)
+        {
+            D_tb_InPersonnel dInPersonnel = new D_tb_InPersonnel();
+            ViewBag.Personnellist = dInPersonnel.GetList(new E_tb_InPersonnel() { AreaID = CurrentUserInfo.AreaID });
+            return View("/views/TestReport/Secrecy.cshtml");
+        }
+
+        /// <summary>
+        /// 设置保密
+        /// </summary>
+        [Route("TestReport/SetSecrecy")]
+        public JsonResult SetSecrecy(E_tb_TestReport model)
+        {
+            model.setsecrecypid = CurrentUserInfo.PersonnelID; //设置保密人为当前用户
+            bool result = dTestReport.SetSecrecy(model);
+            string msg = (result) ? "设置保密成功！" : "设置保密失败！";
+            return Json(new { result = result, msg = msg }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 取消保密
+        /// </summary>
+        [Route("TestReport/CancelSecrecy")]
+        public JsonResult CancelSecrecy(int ReportID)
+        {
+            bool result = dTestReport.CancelSecrecy(ReportID);
+            string msg = (result) ? "取消保密成功！" : "取消保密失败！";
+            return Json(new { result = result, msg = msg }, JsonRequestBehavior.AllowGet);
+        }
+
+
 
         /// <summary>
         /// 阅览文件

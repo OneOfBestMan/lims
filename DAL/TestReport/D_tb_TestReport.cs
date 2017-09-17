@@ -571,5 +571,37 @@ namespace DAL.TestReport
             }
         }
 
+        /// <summary>
+        /// 设置保密
+        /// </summary>
+        /// <param name="model">参数实体</param>
+        /// <returns>返回是否执行成功</returns>
+        public bool SetSecrecy(E_tb_TestReport model)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($"update tb_TestReport set issecrecy=1,secrecyexaminepid=@secrecyexaminepid,setsecrecypid=@setsecrecypid where ReportID=@ReportID");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                int count = conn.Execute(strSql.ToString(), model);
+                return (count > 0);
+            }
+        }
+
+        /// <summary>
+        /// 取消保密
+        /// </summary>
+        /// <param name="ReportID">检验报告ID</param>
+        /// <returns>返回是否执行成功</returns>
+        public bool CancelSecrecy(int ReportID)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($"update tb_TestReport set issecrecy=0,secrecyexaminepid=0,setsecrecypid=0 where ReportID={ReportID}");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                int count = conn.Execute(strSql.ToString());
+                return (count > 0);
+            }
+        }
+
     }
 }
