@@ -2184,6 +2184,7 @@
     <Content Include="Skins\UploadFile\server\php\files\.gitignore" />
     <Content Include="Skins\UploadFile\server\php\files\.htaccess" />
     <Content Include="Views\NewDrug\DrugLockInfo.cshtml" />
+    <Content Include="Views\TestReport\Secrecy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

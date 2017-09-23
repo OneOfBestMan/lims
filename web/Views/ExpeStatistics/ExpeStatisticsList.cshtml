@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Model.RoleManage;
+@using Model.ClientManage;
+@{
     ViewBag.Title = "ExpeStatisticsList";
     Layout = "~/Views/Share/_LayOut.cshtml";
 }
@@ -27,7 +29,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#dgtable').datagrid({
-                url: "/ExpeStatistics/GetListByReport?pageNumber=1&pageSize=20&ddl_selecttype=&txt_dept=&ddl_type=&txt_search=&txt_StartTime=&txt_EndTime=",
+                url: "/ExpeStatistics/GetListByReport?pageNumber=1&pageSize=20&ddl_type=&txt_search=&txt_StartTime=&txt_EndTime=",
                 pagination: true, //分页控件  
                 singleSelect: true, //是否单选
                 rownumbers: true,
@@ -60,14 +62,15 @@
                     { field: 'QualifiedLevelB', title: '不合格', align: 'center' }
                 ]],
                 onLoadSuccess: function (data) {
-                    var ddl_selecttype = $("#ddl_selecttype").val();
-                    var txt_dept = $("#txt_dept").val();
                     var ddl_type = $("#ddl_type").val();
                     var txt_search = $("#txt_search").val();
                     var txt_StartTime = $("#txt_StartTime").val();
                     var txt_EndTime = $("#txt_EndTime").val();
+                    var GHS = $("#dropGHS").val();
+                    var Department = $("#dropDepartment").val();
+
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
-                    var url = '@Url.Action("ExportReport", "ExpeStatistics")' + "?ddl_selecttype=" + ddl_selecttype + "&txt_dept=" + txt_dept + "&ddl_type=" + ddl_type + "&txt_search=" + txt_search + "&txt_StartTime=" + txt_StartTime + "&txt_EndTime=" + txt_EndTime;
+                    var url = '@Url.Action("ExportReport", "ExpeStatistics")' + "?ddl_type=" + ddl_type + "&txt_search=" + txt_search + "&txt_StartTime=" + txt_StartTime + "&txt_EndTime=" + txt_EndTime + "&GHS=" + GHS + "&Department=" + Department;
                     $("#exportExcel").attr("href", url);
                 }
             });
@@ -87,20 +90,21 @@
 
         //查询
         function click_Search() {
-            var ddl_selecttype = $("#ddl_selecttype").val();
-            var txt_dept = $("#txt_dept").val();
             var ddl_type = $("#ddl_type").val();
             var txt_search = $("#txt_search").val();
             var txt_StartTime = $("#txt_StartTime").val();
             var txt_EndTime = $("#txt_EndTime").val();
+            var GHS = $("#dropGHS").val();
+            var Department = $("#dropDepartment").val();
             var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
-            tablequeryParams.ddl_selecttype = ddl_selecttype;
-            tablequeryParams.txt_dept = txt_dept;
             tablequeryParams.ddl_type = ddl_type;
             tablequeryParams.txt_search = txt_search;
             tablequeryParams.txt_StartTime = txt_StartTime;
             tablequeryParams.txt_EndTime = txt_EndTime;
             tablequeryParams.pageNumber = 1;
+            tablequeryParams.GHS = GHS;
+            tablequeryParams.Department = Department;
+
             $('#dgtable').datagrid('options').queryParams = tablequeryParams;
             $("#dgtable").datagrid("reload");
         }
@@ -118,14 +122,34 @@
     <div class="divList">
         <table cellpadding="0" cellspacing="0" width="100%" class="WhereTable">
             <tr>
+                <td align="right" style="width:80px;">检验单位：</td>
+                <td align="left" style="width:60px;">
+                    <select id="dropGHS" style="width:120px;">
+                        <option value="">请选择</option>
+                        @{
+                            var AreaList = ViewBag.AreaList as List<E_tb_Area>;
+                            foreach (var item in AreaList)
+                            {
+                                <option value="@item.TestReportName">@item.TestReportName</option>
+                            }
+                        }
+                    </select>
+                </td>
+
                 <td align="right"style="width:80px;">送/抽检单位：</td>
                 <td align="left" style="width:60px;">
-                   <select id="ddl_selecttype">
-                       <option value="mhcx" selected="selected">模糊查询</option>
-                       <option value="qzpp">全字匹配</option>
+                   <select id="dropDepartment" style="width:120px;">
+                       <option value="">请选择</option>
+                       @{
+                           var ClientManageList = ViewBag.ClientManageList as List<E_tb_ClientManage>;
+                           foreach (var item in ClientManageList)
+                           {
+                               <option value="@item.ClientName">@item.ClientName</option>
+                           }
+                       }
                    </select> 
                 </td>
-                <td align="left" style="width:130px;" ><input style="border: 1px solid #3496d6;" width="150px" type="text" id="txt_dept"/></td>
+
                 <td align="right"style="width:40px;">按：</td>
                 <td align="left" style="width:60px;">
                    <select id="ddl_type">

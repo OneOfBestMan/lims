@@ -175,7 +175,7 @@
 
                                 <th style="width:75px;" class="displaycol">结论</th>
                                 <th style="width:75px;" class="displaybtn">显示更多</th>
-                                <th style="width:160px;">操作</th>
+                                <th style="width:220px;">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -208,6 +208,10 @@
                                             @if (Convert.ToBoolean(ViewData["76707d20"]))
                                             {
                                                 <a href="/TestReport/DownById?id=@item["ReportID"].ToString()" target="_blank" class="btn btn-info btn-xs">下载</a>
+                                            }
+                                            @if (Convert.ToBoolean(ViewData["75669d99"]))
+                                            {
+                                                <a href="javascript:void(0)" class="btn @(@item["issecrecy"].ToString()=="0"?"btn-info":"btn-warning") btn-xs" onclick="Secrecy(@item["ReportID"].ToString(),@item["issecrecy"].ToString())">@(item["issecrecy"].ToString() == "0" ? "设置保密" : "取消保密")</a>
                                             }
                                             @if (Convert.ToBoolean(ViewData["b988fb96"]))
                                             {
@@ -367,5 +371,33 @@
             id: 'id-info',
         });
         d.showModal();
+    }
+
+    //设置保密/取消保密
+    function Secrecy(ReportID,IsSecrecy)
+    {
+        if(IsSecrecy=="0") //设置保密
+        {
+            var d = dialog({
+                title: '批量批准',
+                url: '/TestReport/Secrecy?ReportID=' + ReportID,
+                id: 'id-info',
+            });
+            d.showModal();
+        }
+        else
+        {
+            $.getJSON("/TestReport/CancelSecrecy?ReportID=" + ReportID,
+                function (data) {
+                    var jsondata = eval(data);
+                    if (jsondata.result) {
+                        alert("取消保密成功！");
+                        window.location.reload();
+                    }
+                    else {
+                        alert(jsondata.msg);
+                    }
+                });
+        }
     }
 </script>

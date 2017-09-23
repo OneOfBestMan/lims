@@ -5,6 +5,7 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using Model.RoleManage;
+using Dapper;
 
 namespace DAL.RoleManage
 {
@@ -15,7 +16,6 @@ namespace DAL.RoleManage
     {
         public D_tb_Area()
         { }
-        #region  Method
         /// <summary>
         /// 是否存在该记录
         /// </summary>
@@ -31,8 +31,7 @@ namespace DAL.RoleManage
 
             return DbHelperSQL.Exists(strSql.ToString(), parameters);
         }
-
-
+        
         /// <summary>
         /// 增加一条数据
         /// </summary>
@@ -62,6 +61,7 @@ namespace DAL.RoleManage
                 return Convert.ToInt32(obj);
             }
         }
+
         /// <summary>
         /// 更新一条数据
         /// </summary>
@@ -115,6 +115,7 @@ namespace DAL.RoleManage
                 return false;
             }
         }
+
         /// <summary>
         /// 删除一条数据
         /// </summary>
@@ -133,8 +134,7 @@ namespace DAL.RoleManage
                 return false;
             }
         }
-
-
+        
         /// <summary>
         /// 得到一个对象实体
         /// </summary>
@@ -208,36 +208,7 @@ namespace DAL.RoleManage
             strSql.Append(" order by " + filedOrder);
             return DbHelperSQL.Query(strSql.ToString());
         }
-
-        /*
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        public DataSet GetList(int PageSize,int PageIndex,string strWhere)
-        {
-            SqlParameter[] parameters = {
-                    new SqlParameter("@tblName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@fldName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@PageSize", SqlDbType.Int),
-                    new SqlParameter("@PageIndex", SqlDbType.Int),
-                    new SqlParameter("@IsReCount", SqlDbType.Bit),
-                    new SqlParameter("@OrderType", SqlDbType.Bit),
-                    new SqlParameter("@strWhere", SqlDbType.VarChar,1000),
-                    };
-            parameters[0].Value = "tb_Area";
-            parameters[1].Value = "AreaID";
-            parameters[2].Value = PageSize;
-            parameters[3].Value = PageIndex;
-            parameters[4].Value = 0;
-            parameters[5].Value = 0;
-            parameters[6].Value = strWhere;	
-            return DbHelperSQL.RunProcedure("UP_GetRecordByPage",parameters,"ds");
-        }*/
-
-        #endregion  Method
-
-
-        #region 数据接口
+        
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -264,7 +235,26 @@ namespace DAL.RoleManage
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
             return DbHelperSQL.Query(strSql.ToString());
         }
-        #endregion
+
+        /// <summary>
+        /// 获取实体集合
+        /// </summary>
+        /// <returns>返回实体集合</returns>
+        public List<E_tb_Area> GetlList()
+        {
+            List<E_tb_Area> list = new List<E_tb_Area>();
+            
+            //主查询Sql
+            StringBuilder search = new StringBuilder();
+            search.AppendFormat(@"select * from tb_Area");
+
+            //执行查询语句
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<E_tb_Area>(search.ToString())?.ToList();
+            }
+            return list;
+        }
 
     }
 }
