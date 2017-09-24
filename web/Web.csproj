@@ -1853,6 +1853,7 @@
     <Content Include="Skins\css\layout.css" />
     <Content Include="Skins\css\login.css" />
     <Content Include="Skins\css\style.css" />
+    <Content Include="Skins\echarts\echarts.min.js" />
     <Content Include="Skins\images\a1.jpg" />
     <Content Include="Skins\images\a2.jpg" />
     <Content Include="Skins\images\a3.jpg" />
@@ -2185,6 +2186,7 @@
     <Content Include="Skins\UploadFile\server\php\files\.htaccess" />
     <Content Include="Views\NewDrug\DrugLockInfo.cshtml" />
     <Content Include="Views\TestReport\Secrecy.cshtml" />
+    <Content Include="Views\ExpeStatistics\UnfinishedWorkList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

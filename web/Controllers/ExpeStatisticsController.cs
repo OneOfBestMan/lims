@@ -96,11 +96,11 @@ namespace Web.Controllers
 
             if (!string.IsNullOrEmpty(eSearchParameter.GHS))  //检验单位
             {
-                strWhere.AddWhere("T.GHS like '%" + eSearchParameter.GHS + "%'");
+                strWhere.AddWhere("T.GHS like '" + eSearchParameter.GHS + "'");
             }
             if (!string.IsNullOrEmpty(eSearchParameter.Department)) //抽送检单位
             {
-                strWhere.AddWhere("T.Department like '%" + eSearchParameter.Department + "%'");
+                strWhere.AddWhere("T.Department like '" + eSearchParameter.Department + "'");
             }
 
             if (!string.IsNullOrEmpty(eSearchParameter.txt_search))
@@ -198,6 +198,15 @@ namespace Web.Controllers
             stream = PublicClass.ExportReportToExcel(dt);
             string filename = "实验统计列表" + DateTime.Now.ToFileTime() + ".xls";
             return File(stream, "application/vnd.ms-excel", filename);
+        }
+
+
+        /// <summary>
+        /// 未完成工作统计
+        /// </summary>
+        public ActionResult UnfinishedWorkList()
+        {
+            return View("~/views/ExpeStatistics/UnfinishedWorkList.cshtml");
         }
     }
 }
