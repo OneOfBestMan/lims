@@ -14,6 +14,8 @@ using DAL.Laboratory;
 using Model.ExpeStatistics;
 using DAL.RoleManage;
 using DAL.ClientManage;
+using DAL.Statistics;
+using Model.Statistics;
 
 namespace Web.Controllers
 {
@@ -206,7 +208,22 @@ namespace Web.Controllers
         /// </summary>
         public ActionResult UnfinishedWorkList()
         {
+            D_Statistics dStatistics = new D_Statistics();
+            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
+            ViewBag.ExpePlanStatisticslist = ExpePlanStatisticslist;
+
             return View("~/views/ExpeStatistics/UnfinishedWorkList.cshtml");
         }
+
+        /// <summary>
+        /// 获取未完成工作汇总
+        /// </summary>
+        public JsonResult SummaryWork()
+        {
+            D_Statistics dStatistics = new D_Statistics();
+            List<int> result = dStatistics.SummaryWork();
+            return Json(new { result = result }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

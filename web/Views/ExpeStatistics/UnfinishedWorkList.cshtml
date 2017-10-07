@@ -1,4 +1,4 @@
-﻿
+﻿@using Model.Statistics;
 @{
     ViewBag.Title = "未完成工作汇总";
     Layout = "~/Views/Share/_LayOut.cshtml";
@@ -19,40 +19,32 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <table id="tab_1" class="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>序号</th>
-                            <th>检验负责人</th>
-                            <th>已完成实验计划</th>
-                            <th>未完成计划数量</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>张三</td>
-                            <td>100</td>
-                            <td>23</td>
-                            <td><a>查看明细</a></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>李四</td>
-                            <td>100</td>
-                            <td>5</td>
-                            <td><a>查看明细</a></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>王五</td>
-                            <td>100</td>
-                            <td>3</td>
-                            <td><a>查看明细</a></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="width:100%; height:305px; overflow-x:hidden; overflow-y:auto;">
+                    <table id="tab_1" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>检验负责人</th>
+                                <th>已完成实验计划</th>
+                                <th>未完成计划数量</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var ExpePlanStatisticslist = ViewBag.ExpePlanStatisticslist as List<E_ExpePlanStatistics>;
+                                foreach (var item in ExpePlanStatisticslist)
+                                {
+                                    <tr>
+                                        <td>@item.headpersonnename</td>
+                                        <td>@item.completed</td>
+                                        <td>@item.notcompleted</td>
+                                    <td><a>查看明细</a></td>
+                                </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.panel - body-->
         </div>
@@ -115,36 +107,42 @@
     var colorList = ['#C23531', '#2F4554', '#61A0A8', '#D48265', '#91C7AE', '#749F83', '#CA8622', '#BDA29A', '#6E7074', '#546570', '#C4CCD3', '#996e55', '#02716d'];
 
     //总体未完成情况统计
-    var myChart = echarts.init(document.getElementById('main'));
-    var option = {
-        title: {
-            text: '未完成工作',
-            subtext: '数据来自系统实时统计'
-        },
-        tooltip: {},
-        //legend: {
-        //    data:['数量']
-        //},
-        xAxis: {
-            data: ["未完成实验计划", "未审批检验报告", "未批准检验报告"]
-        },
-        yAxis: {},
-        series: [{
-            name: '数量',
-            type: 'bar',
-            data: [5, 20, 36],
-            itemStyle: {
-                normal: {
-                    color: function (params) {
-                        return colorList[params.dataIndex]
+    function GetSummaryWork()
+    {
+        $.getJSON("/ExpeStatistics/SummaryWork", function (result) {
+            var myChart = echarts.init(document.getElementById('main'));
+            var option = {
+                title: {
+                    text: '未完成工作',
+                    subtext: '数据来自系统实时统计'
+                },
+                tooltip: {},
+                xAxis: {
+                    data: ["未完成实验计划", "未审批检验报告", "未批准检验报告"]
+                },
+                yAxis: {},
+                series: [{
+                    name: '数量',
+                    type: 'bar',
+                    data: eval(result).result,
+                    itemStyle: {
+                        normal: {
+                            color: function (params) {
+                                return colorList[params.dataIndex]
+                            }
+                        }
+
                     }
-                }
+                }]
+            };
+            myChart.setOption(option);
+        });
+    }
 
-            }
-        }]
-    };
-    myChart.setOption(option);
-
+    $(document).ready(function () {
+        GetSummaryWork();
+    });
+    
 
     //未完成实验计划统计
     var myChart2 = echarts.init(document.getElementById('plan'));

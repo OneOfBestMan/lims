@@ -85,6 +85,7 @@
     <Compile Include="RoleManage\D_tb_UserRole.cs" />
     <Compile Include="Sample\D_Sample.cs" />
     <Compile Include="ShowImage\D_tb_ShowImages.cs" />
+    <Compile Include="Statistics\D_Statistics.cs" />
     <Compile Include="tb_attachmentDAL.cs" />
     <Compile Include="tb_BaseDAL.cs" />
     <Compile Include="tb_BookBorrowDAL.cs" />
