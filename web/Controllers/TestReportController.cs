@@ -89,7 +89,6 @@ namespace Web.Controllers
             {
                 strWhere = PageTools.AddWhere(strWhere, "D.PersonnelName like '%" + ePageParameter.maintestpersonne + "%'");
             }
-
             if (ePageParameter.samplingtimestart != null)
             {
                 strWhere = PageTools.AddWhere(strWhere, "SamplingTime>=cast('" + ePageParameter.samplingtimestart.ToString() + "' as datetime)");
@@ -97,6 +96,22 @@ namespace Web.Controllers
             if (ePageParameter.samplingtimeend != null)
             {
                 strWhere = PageTools.AddWhere(strWhere, "SamplingTime<=cast('" + ePageParameter.samplingtimeend.ToString() + "' as datetime)");
+            }
+            if (ePageParameter.isexamine == 1) //已审批
+            {
+                strWhere = PageTools.AddWhere(strWhere, "T.examinePersonnelID>0");
+            }
+            else if (ePageParameter.isexamine == 2) //未审批
+            {
+                strWhere = PageTools.AddWhere(strWhere, "(T.examinePersonnelID is null or T.examinePersonnelID=0)");
+            }
+            if (ePageParameter.isapproval == 1) //已批准
+            {
+                strWhere = PageTools.AddWhere(strWhere, "T.ApprovalPersonnelID>0");
+            }
+            else if (ePageParameter.isapproval == 2) //未批准
+            {
+                strWhere = PageTools.AddWhere(strWhere, "(T.ApprovalPersonnelID is null or T.ApprovalPersonnelID=0)");
             }
 
             //添加数据权限判断

@@ -54,5 +54,53 @@ namespace DAL.Statistics
                 return conn.Query<E_ExpePlanStatistics>(strSql.ToString()).ToList();
             }
         }
+
+        /// <summary>
+        /// 获取检验报告按月统计
+        /// </summary>
+        public List<E_TestReportDataStatistics> GetTestReportMonthDataStatistics()
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                 select updatetime,sum(examine) as examinecount, sum(Approval) as approvalcount
+                 from (
+                     select 
+                         substring(CONVERT(nvarchar(50),SamplingTime,23),0,8) as updatetime, --日期时间格式
+                         case when examinePersonnelID is not null and examinePersonnelID>0 then 0 else 1 end as examine, --未审批个数
+                         case when ApprovalPersonnelID is not null and ApprovalPersonnelID>0 then 0 else 1 end as Approval --未批准个数
+                     from [tb_TestReport] where SamplingTime is not null
+                 ) T group by updatetime order by updatetime desc
+            ");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                return conn.Query<E_TestReportDataStatistics>(strSql.ToString()).ToList();
+            }
+        }
+
+        /// <summary>
+        /// 获取未批准、未审批检验报告按天统计
+        /// </summary>
+        /// <returns></returns>
+        public List<E_TestReportDataStatistics> GetTestReportDayDataStatistics(DateTime starttime,DateTime endtime)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                 select updatetime,sum(examine) as examinecount, sum(Approval) as approvalcount 
+                 from (
+	                 select 
+		                 CONVERT(nvarchar(50),SamplingTime,23) as updatetime, --日期时间格式
+		                 case when examinePersonnelID is not null and examinePersonnelID>0 then 0 else 1 end as examine, --未审批个数
+		                 case when ApprovalPersonnelID is not null and ApprovalPersonnelID>0 then 0 else 1 end as Approval --未批准个数
+	                 from [tb_TestReport] 
+                     where SamplingTime is not null and SamplingTime>=cast('{starttime.ToString("yyyy-MM-dd")}' as datetime) and SamplingTime<cast('{endtime.ToString("yyyy-MM-dd")}' as datetime)
+                 ) T group by updatetime order by updatetime desc
+            ");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                return conn.Query<E_TestReportDataStatistics>(strSql.ToString()).ToList();
+            }
+        }
     }
 }

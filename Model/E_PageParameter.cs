@@ -140,5 +140,20 @@ namespace Model
         /// 检验报告ID
         /// </summary>
         public int reportid { get; set; }
+
+        /// <summary>
+        /// 实验计划主要负责人ID
+        /// </summary>
+        public int headpersonnelid { get; set; }
+
+        /// <summary>
+        /// 是否审批
+        /// </summary>
+        public int isexamine { get; set; }
+
+        /// <summary>
+        /// 是否批准
+        /// </summary>
+        public int isapproval { get; set; }
     }
 }

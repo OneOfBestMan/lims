@@ -10,7 +10,7 @@
 <div id="main" style="width: 98%;height:400px;"></div>
 
 <!--未完成实验计划统计-->
-<div style="height:400px;">
+<div style="height:600px;">
     <div style="float:left; width:48%;">
         <!--内容-->
         <div class="panel panel-default">
@@ -19,7 +19,7 @@
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <div style="width:100%; height:305px; overflow-x:hidden; overflow-y:auto;">
+                <div style="width:100%; height:505px; overflow-x:hidden; overflow-y:auto;">
                     <table id="tab_1" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -38,8 +38,8 @@
                                         <td>@item.headpersonnename</td>
                                         <td>@item.completed</td>
                                         <td>@item.notcompleted</td>
-                                    <td><a>查看明细</a></td>
-                                </tr>
+                                        <td><a href="/ExpePlan/ExpePlanList?headpersonnelid=@item.headpersonnelid">查看明细</a></td>
+                                    </tr>
                                 }
                             }
                         </tbody>
@@ -49,7 +49,7 @@
             <!-- /.panel - body-->
         </div>
     </div>
-    <div id="plan" style="float:right; width:48%; height:400px;">
+    <div id="plan" style="float:right; width:48%; height:600px;">
     </div>
 </div>
 
@@ -61,40 +61,32 @@
                 检验报告统计
             </div>
             <div class="panel-body">
-                <table id="tab_1" class="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>序号</th>
-                            <th>时间</th>
-                            <th>未审批数</th>
-                            <th>未批准数</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>2017年9月</td>
-                            <td><a>15</a></td>
-                            <td><a>20</a></td>
-                            <td><a>查看报表</a></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>2017年8月</td>
-                            <td><a>7</a></td>
-                            <td><a>3</a></td>
-                            <td><a>查看报表</a></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>2017年7月</td>
-                            <td><a>6</a></td>
-                            <td><a>9</a></td>
-                            <td><a>查看报表</a></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="width:100%;height:305px; overflow-x:hidden;overflow-y:auto;">
+                    <table id="tab_1" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>抽样日期</th>
+                                <th>未审批数</th>
+                                <th>未批准数</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var TestReportMonthDataStatistics = ViewBag.TestReportMonthDataStatisticslist as List<E_TestReportDataStatistics>;
+                                foreach (var item in TestReportMonthDataStatistics)
+                                {
+                                    <tr>
+                                        <td>@item.updatetime</td>
+                                        <td><a href="/TestReport/TestReportList?samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=2&isapproval=0&issearch=1">@item.examinecount</a></td>
+                                        <td><a href="/TestReport/TestReportList?samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=0&isapproval=2&issearch=1">@item.approvalcount</a></td>
+                                        <td><a href="javascript:GetExamineApprovalStatistics('@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))','@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))')">查看报表</a></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.panel - body-->
         </div>
@@ -107,8 +99,7 @@
     var colorList = ['#C23531', '#2F4554', '#61A0A8', '#D48265', '#91C7AE', '#749F83', '#CA8622', '#BDA29A', '#6E7074', '#546570', '#C4CCD3', '#996e55', '#02716d'];
 
     //总体未完成情况统计
-    function GetSummaryWork()
-    {
+    function GetSummaryWork() {
         $.getJSON("/ExpeStatistics/SummaryWork", function (result) {
             var myChart = echarts.init(document.getElementById('main'));
             var option = {
@@ -139,139 +130,112 @@
         });
     }
 
+    //实验计划完成情况统计
+    function GetExpePlanStatistics() {
+        $.getJSON("/ExpeStatistics/ExpePlanStatistics", function (result) {
+            var myChart = echarts.init(document.getElementById('plan'));
+            option = {
+                title: {
+                    text: '实验计划'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['已完成实验计划', '未完成实验计划']
+                },
+                grid: {
+                    left: '3%',
+                    right: '1%',
+                    bottom: '1%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    boundaryGap: [0, 0.01]
+                },
+                yAxis: {
+                    type: 'category',
+                    data: eval(result).names //['张三', '李四', '王五']
+                },
+                series: [
+                    {
+                        name: '已完成实验计划',
+                        type: 'bar',
+                        data: eval(result).completeds//[120, 130, 125]
+                    },
+                    {
+                        name: '未完成实验计划',
+                        type: 'bar',
+                        data: eval(result).notcompleted//[5, 20, 15]
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        });
+    }
+    
+    //未审批/未批准统计
+    function GetExamineApprovalStatistics(starttime, endtime)
+    {
+        var myChart = echarts.init(document.getElementById('TestReport'));
+        $.getJSON("/ExpeStatistics/ExamineApprovalStatistics?starttime=" + starttime + "&endtime=" + endtime, function (result) {
+            option = {
+                title: {
+                    text: '未审批/未批准统计'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['未审批', '未批准']
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: 'none'
+                        },
+                        dataView: { readOnly: false },
+                        magicType: { type: ['line', 'bar'] },
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: eval(result).dataarray //['9月1号', '9月2号', '9月3号', '9月4号', '9月5号', '...', '9月30号']
+                },
+                yAxis: {
+                },
+                series: [
+                    {
+                        name: '未审批',
+                        type: 'line',
+                        data: eval(result).examinearray //[11, 11, 15, 13, 12, 13, 10]
+                    },
+                    {
+                        name: '未批准',
+                        type: 'line',
+                        data: eval(result).approvalarray // [10, 9, 5, 12, 3, 10, 7]
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        });
+    }
+
+    //页面初始化加载
     $(document).ready(function () {
         GetSummaryWork();
+        GetExpePlanStatistics();
+        var starttime = "@(DateTime.Now.ToString("yyyy-MM")+"-01")";
+        var endtime = "@(DateTime.Now.AddMonths(1).ToString("yyyy-MM")+"-01")";
+        GetExamineApprovalStatistics(starttime, endtime);
     });
-    
-
-    //未完成实验计划统计
-    var myChart2 = echarts.init(document.getElementById('plan'));
-    option2 = {
-        title: {
-            text: '实验计划'
-        },
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'shadow'
-            }
-        },
-        legend: {
-            data: ['已完成实验计划', '未完成实验计划']
-        },
-        grid: {
-            left: '3%',
-            right: '1%',
-            bottom: '1%',
-            containLabel: true
-        },
-        xAxis: {
-            type: 'value',
-            boundaryGap: [0, 0.01]
-        },
-        yAxis: {
-            type: 'category',
-            data: ['张三', '李四', '王五']
-        },
-        series: [
-            {
-                name: '已完成实验计划',
-                type: 'bar',
-                data: [120, 130, 125]
-            },
-            {
-                name: '未完成实验计划',
-                type: 'bar',
-                data: [5, 20, 15]
-            }
-        ]
-    };
-    myChart2.setOption(option2);
-
-    //未审批与未批准检验报告统计
-    var myChart3 = echarts.init(document.getElementById('TestReport'));
-    option3 = {
-        title: {
-            text: '未审批/未批准统计'
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        legend: {
-            data: ['未审批', '未批准']
-        },
-        toolbox: {
-            show: true,
-            feature: {
-                dataZoom: {
-                    yAxisIndex: 'none'
-                },
-                dataView: { readOnly: false },
-                magicType: { type: ['line', 'bar'] },
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: ['9月1号', '9月2号', '9月3号', '9月4号', '9月5号', '...', '9月30号']
-        },
-        yAxis: {
-            //type: 'value',
-            //axisLabel: {
-            //    formatter: '{value} °C'
-            //}
-        },
-        series: [
-            {
-                name: '未审批',
-                type: 'line',
-                data: [11, 11, 15, 13, 12, 13, 10]//,
-                //markPoint: {
-                //    data: [
-                //        { type: 'max', name: '最大值' },
-                //        { type: 'min', name: '最小值' }
-                //    ]
-                //},
-                //markLine: {
-                //    data: [
-                //        { type: 'average', name: '平均值' }
-                //    ]
-                //}
-            },
-            {
-                name: '未批准',
-                type: 'line',
-                data: [10, 9, 5, 12, 3, 10, 7]//,
-                //markPoint: {
-                //    data: [
-                //        { name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }
-                //    ]
-                //},
-                //markLine: {
-                //    data: [
-                //        { type: 'average', name: '平均值' },
-                //        [{
-                //            symbol: 'none',
-                //            x: '90%',
-                //            yAxis: 'max'
-                //        }, {
-                //            symbol: 'circle',
-                //            label: {
-                //                normal: {
-                //                    position: 'start',
-                //                    formatter: '最大值'
-                //                }
-                //            },
-                //            type: 'max',
-                //            name: '最高点'
-                //        }]
-                //    ]
-                //}
-            }
-        ]
-    };
-    myChart3.setOption(option3);
 
 </script>

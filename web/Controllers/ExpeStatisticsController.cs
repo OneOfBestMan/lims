@@ -24,6 +24,7 @@ namespace Web.Controllers
         T_tb_Laboratory tLaboratory = new T_tb_Laboratory(); //实验室操作
         T_tb_DetectProject tDetectProject = new T_tb_DetectProject();//实验项目操作
         D_tb_DetectProject dDetectProject = new D_tb_DetectProject();
+        D_Statistics dStatistics = new D_Statistics(); //统计
         //
         // GET: /ExpeStatistics/
 
@@ -208,9 +209,11 @@ namespace Web.Controllers
         /// </summary>
         public ActionResult UnfinishedWorkList()
         {
-            D_Statistics dStatistics = new D_Statistics();
+            
             List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
             ViewBag.ExpePlanStatisticslist = ExpePlanStatisticslist;
+            List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportMonthDataStatistics();
+            ViewBag.TestReportMonthDataStatisticslist = TestReportMonthDataStatisticslist;
 
             return View("~/views/ExpeStatistics/UnfinishedWorkList.cshtml");
         }
@@ -220,9 +223,51 @@ namespace Web.Controllers
         /// </summary>
         public JsonResult SummaryWork()
         {
-            D_Statistics dStatistics = new D_Statistics();
             List<int> result = dStatistics.SummaryWork();
             return Json(new { result = result }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取实验计划统计
+        /// </summary>
+        public JsonResult ExpePlanStatistics()
+        {
+            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
+            return Json(new
+            {
+                names = ExpePlanStatisticslist.Select(p => p.headpersonnename).ToList(),
+                completeds = ExpePlanStatisticslist.Select(p => p.completed).ToList(),
+                notcompleted = ExpePlanStatisticslist.Select(p => p.notcompleted).ToList()
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取未审批、未批准检验报告统计
+        /// </summary>
+        public JsonResult ExamineApprovalStatistics(DateTime starttime,DateTime endtime)
+        {
+            List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportDayDataStatistics(starttime, endtime);
+            List<string> dataarray = new List<string>();
+            List<int> examinearray = new List<int>();
+            List<int> approvalarray = new List<int>();
+            DateTime time = starttime;
+            while (time < endtime)
+            {
+                dataarray.Add(time.ToString("MM月dd日"));
+                E_TestReportDataStatistics model = TestReportMonthDataStatisticslist.Where(p => p.updatetime == time.ToString("yyyy-MM-dd")).FirstOrDefault();
+                if (model != null)
+                {
+                    examinearray.Add(model.examinecount);
+                    approvalarray.Add(model.approvalcount);
+                }
+                else
+                {
+                    examinearray.Add(0);
+                    approvalarray.Add(0);
+                }
+                time = time.AddDays(1);
+            }
+            return Json(new { dataarray= dataarray, examinearray= examinearray, approvalarray= approvalarray },JsonRequestBehavior.AllowGet);
         }
 
     }

@@ -123,6 +123,27 @@
                         </div>
 
                         <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">审批</span>
+                                <select class="form-control" id="dropexamine" name="isexamine">
+                                    <option value="0" @(ePageParameter.isexamine==0?"selected":"")>请选择</option>
+                                    <option value="1" @(ePageParameter.isexamine==1?"selected":"")>已审批</option>
+                                    <option value="2" @(ePageParameter.isexamine==2?"selected":"")>未审批</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">批准</span>
+                                <select class="form-control" id="dropapproval" name="isapproval">
+                                    <option value="0" @(ePageParameter.isapproval==0?"selected":"")>请选择</option>
+                                    <option value="1" @(ePageParameter.isapproval==1?"selected":"")>已批准</option>
+                                    <option value="2" @(ePageParameter.isapproval==2?"selected":"")>未批准</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <!--用于后台区分是否需要查询-->
                             <input type="hidden" name="issearch" value="1" />
                             <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>

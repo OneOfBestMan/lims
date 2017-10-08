@@ -19,6 +19,8 @@ using DAL.Sample;
 using Model;
 using System.Text;
 using Comp;
+using DAL.PersonnelManage;
+using Model.PersonnelManage;
 
 namespace Web.Controllers
 {
@@ -31,6 +33,7 @@ namespace Web.Controllers
         tb_SampleBLL tSample = new tb_SampleBLL(); //样品管理
         D_Sample _dSample = new D_Sample();
         T_tb_Area tArea = new T_tb_Area();
+        D_tb_InPersonnel dInPersonnel = new D_tb_InPersonnel();//人员管理
         //
         // GET: /DetectProject/
 
@@ -41,12 +44,15 @@ namespace Web.Controllers
             ePageParameter.pagesize = 20;
 
             ViewBag.ExpePlanList = this.GetList(ePageParameter);
+            ViewBag.PersonnelList = dInPersonnel.GetList(new E_tb_InPersonnel() { });
+            
             ViewBag.ePageParameter = ePageParameter;
             ViewBag.page = Utils.ShowPage(ePageParameter.count, ePageParameter.pagesize, pageIndex, 5);
 
             ViewData["PlanTypeList"] = this.GetPlanTypeList(true);
             ViewData["ProjectList"] = PageTools.GetSelectList(tProject.GetList("").Tables[0], "ProjectID", "ProjectName", true);
             ViewData["AreaList"] = PageTools.GetSelectList(tArea.GetList("").Tables[0], "AreaID", "AreaName", true);
+
             return View("/views/ExpePlan/ExpePlanList.cshtml");
 
             //if (Request["ApprovalPersonnelName"] != null)
@@ -101,6 +107,10 @@ namespace Web.Controllers
             if (ePageParameter.status>0)//样品名称
             {
                 strWhere.AddWhere("T.Status =" + ePageParameter.status);
+            }
+            if (ePageParameter.headpersonnelid > 0) //实验计划主要负责人
+            {
+                strWhere.AddWhere("T.headpersonnelid=" + ePageParameter.headpersonnelid);
             }
             //添加数据权限判断
             switch (CurrentUserInfo.DataRange)

@@ -367,29 +367,24 @@ namespace DAL.ExpePlan
         /// </summary>
         public DataSet GetListByPage(string strWhere, string orderby, int startIndex, int endIndex, ref int total)
         {
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append("SELECT * FROM ( ");
-            strSql.Append(" SELECT ROW_NUMBER() OVER (");
+            string order = "order by T.PlanID desc";
             if (!string.IsNullOrEmpty(orderby.Trim()))
             {
-                strSql.Append("order by T." + orderby);
+                order = $"order by T.{orderby}";
             }
-            else
-            {
-                strSql.Append("order by T.PlanID desc");
-            }
-            strSql.Append(")AS Row, T.*,A.ProjectName,B.PersonnelName as HeadPersonnelName,C.name as SampleName,D.RecordID ");
-            strSql.Append(@"from tb_ExpePlan T  
-                            left join tb_Project as A on T.ProjectID=A.ProjectID
-                            left join tb_InPersonnel as B on T.HeadPersonnelID=B.PersonnelID 
-                            left join tb_Sample as C on T.SampleID=C.id
-                            left join tb_OriginalRecord as D on T.TaskNo=D.TaskNo
-");
-            if (!string.IsNullOrEmpty(strWhere.Trim()))
-            {
-                strSql.Append(strWhere);
-            }
-            strSql.Append(" ) TT");
+
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                SELECT * FROM (  
+                    SELECT ROW_NUMBER() OVER ({order})AS Row, T.*,A.ProjectName,B.PersonnelName as HeadPersonnelName,C.name as SampleName,D.RecordID 
+                    from tb_ExpePlan T  
+                    left join tb_Project as A on T.ProjectID=A.ProjectID
+                    left join tb_InPersonnel as B on T.HeadPersonnelID=B.PersonnelID 
+                    left join tb_Sample as C on T.SampleID=C.id
+                    left join tb_OriginalRecord as D on T.TaskNo=D.TaskNo
+                    {strWhere}
+                ) TT
+            ");
             total = DbHelperSQL.GetCount(strSql.ToString());
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
             return DbHelperSQL.Query(strSql.ToString());

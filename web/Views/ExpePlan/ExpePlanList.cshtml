@@ -1,6 +1,7 @@
 ﻿@model Model.ExpePlan.E_tb_ExpePlan
 @using Model;
 @using System.Data;
+@using Model.PersonnelManage;
 @{
     ViewBag.Title = "ExpePlanList";
     Layout = "~/Views/Share/_LayOut.cshtml";
@@ -109,7 +110,21 @@
                                 </select>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">检验负责人</span>
+                                <select class="form-control" id="drop_headpersonnelid" name="headpersonnelid">
+                                    <option value="0" @(ePageParameter.headpersonnelid == 0 ? "selected" : "")>请选择</option>
+                                    @{
+                                        var PersonnelList = ViewBag.PersonnelList as List<E_tb_InPersonnel>;
+                                        foreach (var item in PersonnelList)
+                                        {
+                                            <option value="@item.PersonnelID" @(ePageParameter.headpersonnelid == item.PersonnelID ? "selected" : "")>@item.PersonnelName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <!--用于后台区分是否需要查询-->
                             <input type="hidden" name="issearch" value="1" />
