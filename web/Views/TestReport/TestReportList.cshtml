@@ -38,12 +38,18 @@
                     <a href="/TestReport/TestReportList?isexamine=2&isapproval=0&issearch=1&expeplannopass=1" title="未完成的实验计划" class="btn btn-block btn-social btn-warning" style="float:left;margin-top:0px;margin-left:5px;width:80px;">
                         <i class="fa fa-file-text-o"></i>@ViewBag.NoFinishExpePlanCount
                     </a>
-                    <a href="/TestReport/TestReportList?isexamine=0&isapproval=2&issearch=1" title="未批准的检验报告" class="btn btn-block btn-social btn-primary" style="float:left;margin-top:0px;margin-left:5px;width:80px;">
-                        <i class="fa fa-check"></i>@ViewBag.NoApprovalTestReportCount
-                    </a>
-                    <a href="/TestReport/TestReportList?isexamine=2&isapproval=0&issearch=1" title="未审批的检验报告" class="btn btn-block btn-social btn-success" style="float:left;margin-top:0px;margin-left:5px;width:80px;">
-                        <i class="fa fa-check"></i>@ViewBag.NoExamineTestReportCount
-                    </a>
+                    @if (Convert.ToBoolean(ViewData["e765047d"]))
+                    {
+                        <a href="/TestReport/TestReportList?isexamine=0&isapproval=2&issearch=1" title="未批准的检验报告" class="btn btn-block btn-social btn-primary" style="float:left;margin-top:0px;margin-left:5px;width:80px;">
+                            <i class="fa fa-check"></i>@ViewBag.NoApprovalTestReportCount
+                        </a>
+                    }
+                    @if (Convert.ToBoolean(ViewData["5c89823a"]))
+                    {
+                        <a href="/TestReport/TestReportList?isexamine=2&isapproval=0&issearch=1" title="未审批的检验报告" class="btn btn-block btn-social btn-success" style="float:left;margin-top:0px;margin-left:5px;width:80px;">
+                            <i class="fa fa-check"></i>@ViewBag.NoExamineTestReportCount
+                        </a>
+                    }
                 </div>
             </h1>
 
@@ -57,10 +63,10 @@
                                 <select class="form-control" id="dropAreaID" name="areaid">
                                     <option value="">请选择</option>
                                     @{
-                                        var arealist = ViewBag.arealist as List<E_tb_Area>;
-                                        foreach (E_tb_Area item in arealist)
-                                        {
-                                            <option value="@item.AreaID" @(ePageParameter.areaid == item.AreaID ? "selected" : "")>@item.AreaName</option>
+    var arealist = ViewBag.arealist as List<E_tb_Area>;
+    foreach (E_tb_Area item in arealist)
+    {
+                                    <option value="@item.AreaID" @(ePageParameter.areaid == item.AreaID ? "selected" : "")>@item.AreaName</option>
                                         }
                                     }
                                 </select>
