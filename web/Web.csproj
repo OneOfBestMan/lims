@@ -309,6 +309,7 @@
     <Content Include="Skins\admin\vendor\datetimepicker\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Skins\admin\vendor\datetimepicker\js\bootstrap-datetimepicker.js" />
     <Content Include="Skins\admin\vendor\datetimepicker\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Skins\admin\vendor\social-buttons\social-buttons.css" />
     <Content Include="Skins\css\custom.css" />
     <Content Include="Content\CSS\Indexcss.css" />
     <Content Include="Content\CSS\Maincss.css" />

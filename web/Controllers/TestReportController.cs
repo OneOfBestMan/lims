@@ -21,6 +21,7 @@ using Comp;
 using DAL.TestReport;
 using DAL.PersonnelManage;
 using Model.PersonnelManage;
+using DAL.Statistics;
 
 namespace Web.Controllers
 {
@@ -34,6 +35,7 @@ namespace Web.Controllers
         T_tb_TypeDict tTypeDict = new T_tb_TypeDict();//类别字典
         T_tb_ExpePlan tExpePlan = new T_tb_ExpePlan();//实验计划管理
         D_tb_TestReport dTestReport = new D_tb_TestReport();
+        D_Statistics dStatistics = new D_Statistics();//数据统计
         //
         // GET: /Laboratory/
 
@@ -47,6 +49,10 @@ namespace Web.Controllers
             ViewBag.TestReportList = this.GetList(ePageParameter);
             ViewBag.ePageParameter = ePageParameter;
             ViewBag.page = Utils.ShowPage(ePageParameter.count, ePageParameter.pagesize, pageIndex, 5);
+
+            ViewBag.NoFinishExpePlanCount=dStatistics.GetNoFinishExpePlanCount(CurrentUserInfo.PersonnelID);
+            ViewBag.NoExamineTestReportCount = dStatistics.GetNoExamineTestReportCount();
+            ViewBag.NoApprovalTestReportCount = dStatistics.GetNoApprovalTestReportCount();
 
             return View("/views/TestReport/TestReportList.cshtml");
         }
@@ -112,6 +118,11 @@ namespace Web.Controllers
             else if (ePageParameter.isapproval == 2) //未批准
             {
                 strWhere = PageTools.AddWhere(strWhere, "(T.ApprovalPersonnelID is null or T.ApprovalPersonnelID=0)");
+            }
+
+            if (ePageParameter.expeplannopass > 0) //是否查询未完成的实验计划
+            {
+                strWhere = PageTools.AddWhere(strWhere, "(T.ApprovalPersonnelID is null or T.ApprovalPersonnelID=0 or T.examinePersonnelID is null or T.examinePersonnelID=0 or T.MainTestPersonnelID is null or T.MainTestPersonnelID=0)");
             }
 
             //添加数据权限判断
@@ -431,7 +442,7 @@ namespace Web.Controllers
             //判断检验报告是否审核通过
             if (eTestReport.ApprovalPersonnelID > 0 && eTestReport.examinePersonnelID > 0 && eTestReport.MainTestPersonnelID > 0)
             {
-                tExpePlan.UpdateStatusByPlanIDS(eTestReport.TaskNoS, eTestReport.ReportID);
+                dTestReport.ExpePlanPass(eTestReport.ReportID.ToString());
             }
             return true;
         }
@@ -462,6 +473,10 @@ namespace Web.Controllers
         public JsonResult Approval(string ids, DateTime issuedtime)
         {
             bool result = dTestReport.Approval(ids, CurrentUserInfo.PersonnelID, issuedtime);
+            if (result)
+            {
+                dTestReport.ExpePlanPass(ids.ToString()); //更新实验计划完成状态
+            }
             return Json(result ? "True" : "批量批准失败", JsonRequestBehavior.AllowGet);
         }
 
@@ -472,6 +487,10 @@ namespace Web.Controllers
         public JsonResult Examine(string ids)
         {
             bool result = dTestReport.Examine(ids, CurrentUserInfo.PersonnelID);
+            if (result)
+            {
+                dTestReport.ExpePlanPass(ids.ToString()); //更新实验计划完成状态
+            }
             string msg = (result)?"审核成功！":"审核失败！";
             return Json(new { result= result, msg = msg }, JsonRequestBehavior.AllowGet);
         }

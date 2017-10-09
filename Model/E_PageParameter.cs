@@ -155,5 +155,10 @@ namespace Model
         /// 是否批准
         /// </summary>
         public int isapproval { get; set; }
+
+        /// <summary>
+        /// 未完成实验计划
+        /// </summary>
+        public int expeplannopass { get; set; }
     }
 }

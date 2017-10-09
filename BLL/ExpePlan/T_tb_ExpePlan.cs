@@ -184,10 +184,10 @@ namespace BLL.ExpePlan
         /// </summary>
         /// <param name="PlanIDS"></param>
         /// <returns></returns>
-        public int UpdateStatusByPlanIDS(string PlanIDS, int ReportID)
-        {
-            return dal.UpdateStatusByPlanIDS(PlanIDS, ReportID);
-        }
+        //public int UpdateStatusByPlanIDS(string PlanIDS, int ReportID)
+        //{
+        //    return dal.UpdateStatusByPlanIDS(PlanIDS, ReportID);
+        //}
 
         /// <summary>
         /// 检查是已存在该任务单号

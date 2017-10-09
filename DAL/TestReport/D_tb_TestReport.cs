@@ -603,5 +603,52 @@ namespace DAL.TestReport
             }
         }
 
+        /// <summary>
+        /// 更新实验计划审批状态
+        /// </summary>
+        /// <param name="ReportIDS">检验报告ID集合</param>
+        /// <returns>是否执行完毕</returns>
+        public bool ExpePlanPass(string ReportIDS)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                --更新错误数据
+                update tb_ExpePlan set [status]=1 where PlanID in (
+                select tasknos from dbo.tb_TestReport where ReportID in ({ReportIDS}) and ApprovalPersonnelID>0 and examinePersonnelID>0 and MainTestPersonnelID>0 and tasknos not like '%,%'
+                ) and [status]!=1
+                --创建临时表
+                create table #T_PlanID
+                (
+                PlanID nvarchar(max)
+                )
+                --填充临时表数据
+                declare T_cursor cursor for select tasknos from dbo.tb_TestReport where ReportID in ({ReportIDS}) and ApprovalPersonnelID>0 and examinePersonnelID>0 and MainTestPersonnelID>0 and tasknos like '%,%'
+                 open T_cursor 
+                  declare @tasknos nvarchar(max)
+                  --开始遍历数据
+                  fetch next from T_cursor into @tasknos
+                  while @@fetch_status=0 
+                   begin  
+                   insert into #T_PlanID (PlanID)
+                   SELECT * FROM [splitString] (@tasknos,',')
+                   fetch next from T_cursor into @tasknos
+                   end 
+                  close T_cursor 
+                  deallocate T_cursor
+                --更新数据
+                update tb_ExpePlan set [status]=1 where PlanID in (
+                select PlanID from #T_PlanID
+                ) and [status]!=1
+                --删除临时表
+                drop table #T_PlanID
+            ");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                conn.Execute(strSql.ToString());
+                return true;
+            }
+        }
+
     }
 }

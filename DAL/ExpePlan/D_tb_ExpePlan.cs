@@ -395,18 +395,18 @@ namespace DAL.ExpePlan
         /// </summary>
         /// <param name="PlanIDS"></param>
         /// <returns></returns>
-        public int UpdateStatusByPlanIDS(string PlanIDS,int ReportID)
-        {
-            //更新委托检验状态
-            StringBuilder str = new StringBuilder();
-            str.Append("update tb_EntrustTesting set IsComplete=1,ReportID=" + ReportID + " where TaskNo in (select TaskNo from tb_ExpePlan where PlanTypeID=2 and PlanID in (" + PlanIDS + "))");
-            DbHelperSQL.ExecuteSql(str.ToString());
+        //public int UpdateStatusByPlanIDS(string PlanIDS,int ReportID)
+        //{
+        //    //更新委托检验状态
+        //    StringBuilder str = new StringBuilder();
+        //    str.Append("update tb_EntrustTesting set IsComplete=1,ReportID=" + ReportID + " where TaskNo in (select TaskNo from tb_ExpePlan where PlanTypeID=2 and PlanID in (" + PlanIDS + "))");
+        //    DbHelperSQL.ExecuteSql(str.ToString());
 
-            //更新检验计划状态
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append("Update tb_ExpePlan set Status=1 where PlanID in (" + PlanIDS + ")");
-            return DbHelperSQL.ExecuteSql(strSql.ToString());
-        }
+        //    //更新检验计划状态
+        //    StringBuilder strSql = new StringBuilder();
+        //    strSql.Append("Update tb_ExpePlan set Status=1 where PlanID in (" + PlanIDS + ")");
+        //    return DbHelperSQL.ExecuteSql(strSql.ToString());
+        //}
 
         /// <summary>
         /// 检查是已存在该任务单号

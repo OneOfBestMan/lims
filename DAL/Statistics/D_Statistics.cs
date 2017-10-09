@@ -102,5 +102,50 @@ namespace DAL.Statistics
                 return conn.Query<E_TestReportDataStatistics>(strSql.ToString()).ToList();
             }
         }
+
+        /// <summary>
+        /// 获取未完成实验计划
+        /// </summary>
+        public int GetNoFinishExpePlanCount(int HeadPersonnelID)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                 select count(1) from dbo.tb_ExpePlan where HeadPersonnelID={HeadPersonnelID} and status!=1
+            ");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                return Convert.ToInt32(conn.ExecuteScalar(strSql.ToString()));
+            }
+        }
+
+        /// <summary>
+        /// 获取未审批检验报告
+        /// </summary>
+        public int GetNoExamineTestReportCount()
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                 select count(1) from dbo.tb_TestReport where examinePersonnelID=0 or examinePersonnelID is null
+            ");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                return Convert.ToInt32(conn.ExecuteScalar(strSql.ToString()));
+            }
+        }
+
+        /// <summary>
+        /// 获取未批准检验报告
+        /// </summary>
+        public int GetNoApprovalTestReportCount()
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                 select count(1) from dbo.tb_TestReport where ApprovalPersonnelID=0 or ApprovalPersonnelID is null
+            ");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                return Convert.ToInt32(conn.ExecuteScalar(strSql.ToString()));
+            }
+        }
     }
 }
