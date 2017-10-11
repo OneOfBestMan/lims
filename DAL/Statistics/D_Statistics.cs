@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Comp;
 
 namespace DAL.Statistics
 {
@@ -39,13 +40,37 @@ namespace DAL.Statistics
         /// <summary>
         /// 获取实验计划统计列表
         /// </summary>
-        public List<E_ExpePlanStatistics> GetExpePlanStatistics()
+        public List<E_ExpePlanStatistics> GetExpePlanStatistics(int areaid,int headpersonnelid, DateTime? starttime, DateTime? endtime)
         {
+            StringBuilder strWhere = new StringBuilder();
+            if (areaid > 0) //地区ID
+            {
+                strWhere.AddWhere($"areaid={areaid}");
+            }
+            if (headpersonnelid > 0)//检验负责人ID
+            {
+                strWhere.AddWhere($"headpersonnelid={headpersonnelid}");
+            }
+            if(starttime!=null) //检验开始时间
+            {
+                strWhere.AddWhere($"InspectTime>=cast('{starttime.ToString()}' as datetime)");
+            }
+            if (endtime != null) //检验结束时间
+            {
+                strWhere.AddWhere($"InspectTime<cast('{endtime.ToString()}' as datetime)");
+            }
+
             StringBuilder strSql = new StringBuilder();
             strSql.Append($@"
-                select A.*,B.PersonnelName as headpersonnename from (
-                select headpersonnelid,sum(case when [Status]=1 then 1 else 0 end) as completed,sum(case when [Status]!=1 then 1 else 0 end) as notcompleted 
-                from [tb_ExpePlan] group by headpersonnelid
+                select A.*,B.PersonnelName as headpersonnename 
+                from (
+	                select 
+		                headpersonnelid,
+		                sum(case when [Status]=1 then 1 else 0 end) as completed,
+		                sum(case when [Status]!=1 then 1 else 0 end) as notcompleted 
+	                from [tb_ExpePlan] 
+	                {strWhere.ToString()}
+	                group by headpersonnelid
                 ) as A inner join tb_InPersonnel as B on A.headpersonnelid=B.PersonnelID
             ");
 
@@ -54,6 +79,51 @@ namespace DAL.Statistics
                 return conn.Query<E_ExpePlanStatistics>(strSql.ToString()).ToList();
             }
         }
+
+        /// <summary>
+        /// 获取实验计划统计列表 按照天进行统计
+        /// </summary>
+        public List<E_ExpePlanStatistics> GetExpePlanStatisticsForDay(int areaid, int headpersonnelid, DateTime? starttime, DateTime? endtime)
+        {
+            StringBuilder strWhere = new StringBuilder();
+            if (areaid > 0) //地区ID
+            {
+                strWhere.AddWhere($"areaid={areaid}");
+            }
+            if (headpersonnelid > 0)//检验负责人ID
+            {
+                strWhere.AddWhere($"headpersonnelid={headpersonnelid}");
+            }
+            if (starttime != null) //检验开始时间
+            {
+                strWhere.AddWhere($"InspectTime>=cast('{starttime.ToString()}' as datetime)");
+            }
+            if (endtime != null) //检验结束时间
+            {
+                strWhere.AddWhere($"InspectTime<cast('{endtime.ToString()}' as datetime)");
+            }
+
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"
+                select A.*,B.PersonnelName as headpersonnename 
+                from (
+	                select 
+		                headpersonnelid,
+		                inspectTime,
+		                sum(case when [Status]=1 then 1 else 0 end) as completed,
+		                sum(case when [Status]!=1 then 1 else 0 end) as notcompleted 
+	                from [tb_ExpePlan] 
+	                {strWhere.ToString()}
+	                group by headpersonnelid,inspectTime
+                ) as A inner join tb_InPersonnel as B on A.headpersonnelid=B.PersonnelID
+            ");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                return conn.Query<E_ExpePlanStatistics>(strSql.ToString()).ToList();
+            }
+        }
+
 
         /// <summary>
         /// 获取检验报告按月统计

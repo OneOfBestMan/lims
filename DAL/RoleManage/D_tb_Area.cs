@@ -240,7 +240,7 @@ namespace DAL.RoleManage
         /// 获取实体集合
         /// </summary>
         /// <returns>返回实体集合</returns>
-        public List<E_tb_Area> GetlList()
+        public List<E_tb_Area> GetList()
         {
             List<E_tb_Area> list = new List<E_tb_Area>();
             

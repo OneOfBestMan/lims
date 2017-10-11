@@ -30,5 +30,10 @@ namespace Model.Statistics
         /// 未完成
         /// </summary>
         public int notcompleted { get; set; }
+
+        /// <summary>
+        /// 检验时间
+        /// </summary>
+        public DateTime inspectTime { get; set; }
     }
 }

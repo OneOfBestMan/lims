@@ -16,6 +16,8 @@ using DAL.RoleManage;
 using DAL.ClientManage;
 using DAL.Statistics;
 using Model.Statistics;
+using BLL.RoleManage;
+using Model.RoleManage;
 
 namespace Web.Controllers
 {
@@ -25,6 +27,8 @@ namespace Web.Controllers
         T_tb_DetectProject tDetectProject = new T_tb_DetectProject();//实验项目操作
         D_tb_DetectProject dDetectProject = new D_tb_DetectProject();
         D_Statistics dStatistics = new D_Statistics(); //统计
+        D_tb_Area dArea = new D_tb_Area(); //区域
+
         //
         // GET: /ExpeStatistics/
 
@@ -45,7 +49,7 @@ namespace Web.Controllers
             }
             ViewData["LaboratoryList"] = new SelectList(list, "Value", "Text");
 
-            ViewBag.AreaList = new D_tb_Area().GetlList();
+            ViewBag.AreaList = new D_tb_Area().GetList();
             ViewBag.ClientManageList = new D_tb_ClientManage().GetList();
             return View();
         }
@@ -209,12 +213,11 @@ namespace Web.Controllers
         /// </summary>
         public ActionResult UnfinishedWorkList()
         {
-            
-            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
-            ViewBag.ExpePlanStatisticslist = ExpePlanStatisticslist;
+            //List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
+            //ViewBag.ExpePlanStatisticslist = ExpePlanStatisticslist;
             List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportMonthDataStatistics();
             ViewBag.TestReportMonthDataStatisticslist = TestReportMonthDataStatisticslist;
-
+            ViewBag.AreaList = dArea.GetList();
             return View("~/views/ExpeStatistics/UnfinishedWorkList.cshtml");
         }
 
@@ -228,17 +231,63 @@ namespace Web.Controllers
         }
 
         /// <summary>
+        /// 获取实验计划统计数据列表
+        /// </summary>
+        public JsonResult GetExpePlanList(int areaid, int headpersonnelid, DateTime? starttime, DateTime? endtime)
+        {
+            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics(areaid, headpersonnelid, starttime, endtime);
+            return Json(ExpePlanStatisticslist, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 获取实验计划统计
         /// </summary>
-        public JsonResult ExpePlanStatistics()
+        public JsonResult ExpePlanStatistics(int areaid,int headpersonnelid, DateTime starttime,DateTime endtime)
         {
-            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
-            return Json(new
+            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatisticsForDay(areaid, headpersonnelid, starttime,endtime);
+
+            //人名
+            List<string> namearray = new List<string>();
+            ExpePlanStatisticslist.ForEach(p =>
             {
-                names = ExpePlanStatisticslist.Select(p => p.headpersonnename).ToList(),
-                completeds = ExpePlanStatisticslist.Select(p => p.completed).ToList(),
-                notcompleted = ExpePlanStatisticslist.Select(p => p.notcompleted).ToList()
-            }, JsonRequestBehavior.AllowGet);
+                if (!namearray.Contains(p.headpersonnename))
+                {
+                    namearray.Add(p.headpersonnename);
+                }
+            });
+
+            //日期集合
+            List<string> dataarray = new List<string>();
+            DateTime time = starttime;
+            while (time < endtime)
+            {
+                dataarray.Add(time.ToString("MM月dd日"));
+                time = time.AddDays(1);
+            }
+
+            //数据集合
+            List<E_Series> serieslist = new List<E_Series>();
+            foreach (var item in namearray)
+            {
+                List<int> dataitem = new List<int>();
+                List<E_ExpePlanStatistics> tempExpePlanStatistics = ExpePlanStatisticslist.Where(p => p.headpersonnename == item).ToList();
+                DateTime temptime = starttime;
+                while (temptime < endtime)
+                {
+                    E_ExpePlanStatistics model = tempExpePlanStatistics.Where(p => p.inspectTime.ToString("yyyy-MM-dd") == temptime.ToString("yyyy-MM-dd")).FirstOrDefault();
+                    if (model != null)
+                    {
+                        dataitem.Add(model.notcompleted);
+                    }
+                    else
+                    {
+                        dataitem.Add(0);
+                    }
+                    temptime = temptime.AddDays(1);
+                }
+                serieslist.Add(new E_Series() { name = item, data = dataitem });
+            }
+            return Json(new { namearray = namearray, dataarray = dataarray, serieslist = serieslist }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

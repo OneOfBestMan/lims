@@ -179,7 +179,7 @@ namespace Web.Controllers
             eExpePlan.AreaID = CurrentUserInfo.AreaID;
             if (eExpePlan.EditType == "Add")
             {
-                eExpePlan.Status = 0;
+                eExpePlan.Status = 2;//2：未完成
                 if (tExpePlan.IsExistsTaskNo(eExpePlan.TaskNo) > 0)
                 {
                     msg = "任务单号已存在！";

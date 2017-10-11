@@ -23,7 +23,7 @@ namespace Model.ExpePlan
         private string _inspectmethod;
         private int? _headpersonnelid;
         private string _taskno;
-        private int? _status;
+        private int? _status=2; //默认为未完成状态
         private string _remark;
         private int? _areaid;
         private int? _editpersonnelid;

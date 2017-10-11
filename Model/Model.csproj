@@ -80,6 +80,7 @@
     <Compile Include="ShowImage\E_tb_ShowImages.cs" />
     <Compile Include="E_Task.cs" />
     <Compile Include="Statistics\E_ExpePlanStatistics.cs" />
+    <Compile Include="Statistics\E_Series.cs" />
     <Compile Include="Statistics\E_TestReportMonthDataStatistics.cs" />
     <Compile Include="tb_attachment.cs" />
     <Compile Include="tb_Base.cs" />
