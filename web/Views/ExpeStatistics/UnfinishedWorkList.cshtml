@@ -11,7 +11,7 @@
 <div id="main" style="width: 98%;height:400px;"></div>
 
 <!--未完成实验计划统计-->
-<div style="height:600px;">
+<div style="height:560px;">
     <div style="float:left; width:48%;">
         <!--内容-->
         <div class="panel panel-default">
@@ -66,14 +66,14 @@
                     </div>
                 </div>
 
-                <div style="width:100%; height:465px;padding-top:10px; overflow-x:hidden; overflow-y:auto;">
+                <div style="width:100%; height:445px;padding-top:10px; overflow-x:hidden; overflow-y:auto;">
                     <table id="tab_1" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>检验负责人</th>
                                 <th>已完成实验计划</th>
                                 <th>未完成计划数量</th>
-                                <th>操作</th>
+                                <th>总计划数量</th>
                             </tr>
                         </thead>
                         <tbody id="tbody_ExpePlanStatisticslist">
@@ -97,7 +97,7 @@
         </div>
     </div>
 
-    <div id="plan" style="float:right; width:48%; height:600px;">
+    <div id="plan" style="float:right; width:48%; height:570px;">
         <div id="expeplan" style="width:100%;height:100%;"></div>
     </div>
 </div>
@@ -110,38 +110,65 @@
                 检验报告统计
             </div>
             <div class="panel-body">
-                <div style="width:100%;height:305px; overflow-x:hidden;overflow-y:auto;">
-                    <table id="tab_1" class="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>抽样日期</th>
-                                <th>未审批数</th>
-                                <th>未批准数</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                                var TestReportMonthDataStatistics = ViewBag.TestReportMonthDataStatisticslist as List<E_TestReportDataStatistics>;
-                                foreach (var item in TestReportMonthDataStatistics)
-                                {
-                                    <tr>
-                                        <td>@item.updatetime</td>
-                                        <td><a href="/TestReport/TestReportList?samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=2&isapproval=0&issearch=1">@item.examinecount</a></td>
-                                        <td><a href="/TestReport/TestReportList?samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=0&isapproval=2&issearch=1">@item.approvalcount</a></td>
-                                        <td><a href="javascript:GetExamineApprovalStatistics('@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))','@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))')">查看报表</a></td>
-                                    </tr>
+
+                <div class="form-inline">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">单位名称</span>
+                            <select class="form-control" id="dropTestReportAreaID" name="testreportareaid">
+                                @{
+                                    var arealist2 = ViewData["AreaList"] as List<E_tb_Area>;
+                                    foreach (var item in arealist2)
+                                    {
+                                        <option value="@item.AreaID">@item.AreaName</option>
+                                    }
                                 }
-                            }
-                        </tbody>
-                    </table>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">起始年份</span>
+                            <select class="form-control" id="dropStartYear" name="startyear">
+                                @{
+                                    for (int i = 2012; i <= DateTime.Now.Year; i++)
+                                    {
+                                        <option value="@i" @(i == DateTime.Now.Year ? "selected" : "")>@i</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">结束年份</span>
+                            <select class="form-control" id="dropEndYear" name="endyear">
+                                @{
+                                    for (int i = 2012; i <= DateTime.Now.Year; i++)
+                                    {
+                                        <option value="@i" @(i == DateTime.Now.Year ? "selected" : "")>@i</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <a class="btn btn-primary" href="javascript:GetTestReportList()"><i class="fa fa-search"></i> 查询 </a>
+                    </div>
+                </div>
+
+                <div style="width:100%;height:275px; padding-top:10px; overflow-x:hidden;overflow-y:auto;" id="TestReportStatisticsList">
                 </div>
             </div>
             <!-- /.panel - body-->
         </div>
     </div>
+
     <div id="TestReport" style="float:right; width:48%; height:400px;">
+        <div id="TestReportChart" style="width:100%;height:100%;"></div>
     </div>
+
 </div>
 
 <script type="text/javascript">
@@ -207,7 +234,8 @@
                 html += "   <td>"+jsondata[i].headpersonnename+"</td>";
                 html += "   <td><a href='/ExpePlan/ExpePlanList?areaid="+areaid+"&starttime="+starttime+"&endtime="+endtime+"&headpersonnelid="+jsondata[i].headpersonnelid+"&status=1'>"+jsondata[i].completed+"</a></td>";
                 html += "   <td><a " + style + " href='/ExpePlan/ExpePlanList?areaid=" + areaid + "&starttime=" + starttime + "&endtime=" + endtime + "&headpersonnelid=" + jsondata[i].headpersonnelid + "&status=2'>" + jsondata[i].notcompleted + "</a></td>";
-                html += "   <td><a href='javascript:GetExpePlanStatistics(" + areaid + "," + jsondata[i].headpersonnelid + ",\"" + starttime + "\",\"" + endtime + "\")'>查看统计</a></td>";
+                html += "   <td>" + (parseInt(jsondata[i].completed) + parseInt(jsondata[i].notcompleted)) + "</td>";
+                //html += "   <td><a href='javascript:GetExpePlanStatistics(" + areaid + "," + jsondata[i].headpersonnelid + ",\"" + starttime + "\",\"" + endtime + "\")'>查看统计</a></td>";
                 html += "</tr>";
             }
             $("#tbody_ExpePlanStatisticslist").html(html);
@@ -219,18 +247,118 @@
     function GetExpePlanStatistics(areaid, headpersonnelid, starttime, endtime) {
         $("#plan").html('<div id="expeplan" style="width:100%;height:100%;"></div>');
         var data = "areaid=" + areaid + "&headpersonnelid=" + headpersonnelid + "&starttime=" + starttime + "&endtime=" + endtime;
+
         $.getJSON("/ExpeStatistics/ExpePlanStatistics?" + data, function (result) {
-            var jsondata = eval(result);
             var myChart = echarts.init(document.getElementById('expeplan'));
             option = {
                 title: {
-                    text: ''
+                    text: '实验计划'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['已完成实验计划', '未完成实验计划']
+                },
+                grid: {
+                    left: '3%',
+                    right: '1%',
+                    bottom: '1%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'value',
+                    boundaryGap: [0, 0.01]
+                },
+                yAxis: {
+                    type: 'category',
+                    data: eval(result).names //['张三', '李四', '王五']
+                },
+                series: [
+                    {
+                        name: '已完成实验计划',
+                        type: 'bar',
+                        data: eval(result).completeds//[120, 130, 125]
+                    },
+                    {
+                        name: '未完成实验计划',
+                        type: 'bar',
+                        data: eval(result).notcompleted//[5, 20, 15]
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        });
+
+        //$.getJSON("/ExpeStatistics/ExpePlanStatistics?" + data, function (result) {
+        //    var jsondata = eval(result);
+        //    var myChart = echarts.init(document.getElementById('expeplan'));
+        //    option = {
+        //        title: {
+        //            text: ''
+        //        },
+        //        tooltip: {
+        //            trigger: 'axis'
+        //        },
+        //        legend: {
+        //            data:jsondata.namearray
+        //        },
+        //        toolbox: {
+        //            show: true,
+        //            feature: {
+        //                dataZoom: {
+        //                    yAxisIndex: 'none'
+        //                },
+        //                dataView: { readOnly: false },
+        //                magicType: { type: ['line', 'bar'] },
+        //                restore: {},
+        //                saveAsImage: {}
+        //            }
+        //        },
+        //        xAxis: {
+        //            type: 'category',
+        //            boundaryGap: false,
+        //            data: jsondata.dataarray
+        //        },
+        //        yAxis: {
+        //        },
+        //        series: jsondata.serieslist
+        //    };
+        //    myChart.setOption(option);
+        //});
+
+    }
+
+    //获取检验报告统计列表
+    function GetTestReportList()
+    {
+        var areaid = $("#dropTestReportAreaID").val();
+        var startyear = $("#dropStartYear").val();
+        var endyear = $("#dropEndYear").val();
+        var data = "areaid=" + areaid + "&startyear=" + startyear + "&endyear=" + endyear;
+        $("#TestReportStatisticsList").load("/ExpeStatistics/GetTestReportList?" + data);
+
+        GetExamineApprovalStatistics(data); //显示报表
+    }
+
+    //未审批/未批准统计
+    function GetExamineApprovalStatistics(data) {
+        $("#TestReport").html('<div id="TestReportChart" style="width:100%;height:100%;"></div>');
+        var myChart = echarts.init(document.getElementById('TestReportChart'));
+        $.getJSON("/ExpeStatistics/ExamineApprovalStatistics?" + data, function (result) {
+            var jsondata = eval(result);
+            option = {
+                title: {
+                    text: '历年工作量对比'
                 },
                 tooltip: {
                     trigger: 'axis'
                 },
                 legend: {
-                    data:jsondata.namearray
+                    data: jsondata.namearray//['未审批', '未批准']
                 },
                 toolbox: {
                     show: true,
@@ -247,7 +375,7 @@
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: jsondata.dataarray
+                    data: jsondata.dataarray //['9月1号', '9月2号', '9月3号', '9月4号', '9月5号', '...', '9月30号']
                 },
                 yAxis: {
                 },
@@ -257,63 +385,15 @@
         });
     }
 
-    //未审批/未批准统计
-    function GetExamineApprovalStatistics(starttime, endtime) {
-        var myChart = echarts.init(document.getElementById('TestReport'));
-        $.getJSON("/ExpeStatistics/ExamineApprovalStatistics?starttime=" + starttime + "&endtime=" + endtime, function (result) {
-            option = {
-                title: {
-                    text: '未审批/未批准统计'
-                },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data: ['未审批', '未批准']
-                },
-                toolbox: {
-                    show: true,
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: 'none'
-                        },
-                        dataView: { readOnly: false },
-                        magicType: { type: ['line', 'bar'] },
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: eval(result).dataarray //['9月1号', '9月2号', '9月3号', '9月4号', '9月5号', '...', '9月30号']
-                },
-                yAxis: {
-                },
-                series: [
-                    {
-                        name: '未审批',
-                        type: 'line',
-                        data: eval(result).examinearray //[11, 11, 15, 13, 12, 13, 10]
-                    },
-                    {
-                        name: '未批准',
-                        type: 'line',
-                        data: eval(result).approvalarray // [10, 9, 5, 12, 3, 10, 7]
-                    }
-                ]
-            };
-            myChart.setOption(option);
-        });
-    }
-
     //页面初始化加载
     $(document).ready(function () {
         GetSummaryWork();
         GetExpePlanList();
-        var starttime = "@(DateTime.Now.ToString("yyyy-MM")+"-01")";
+        GetTestReportList();
+
+        @*var starttime = "@(DateTime.Now.ToString("yyyy-MM")+"-01")";
         var endtime = "@(DateTime.Now.AddMonths(1).ToString("yyyy-MM")+"-01")";
-        GetExamineApprovalStatistics(starttime, endtime);
+        GetExamineApprovalStatistics(starttime, endtime);*@
     });
 
 </script>

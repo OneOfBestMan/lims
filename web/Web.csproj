@@ -2188,6 +2188,7 @@
     <Content Include="Views\NewDrug\DrugLockInfo.cshtml" />
     <Content Include="Views\TestReport\Secrecy.cshtml" />
     <Content Include="Views\ExpeStatistics\UnfinishedWorkList.cshtml" />
+    <Content Include="Views\ExpeStatistics\TestReportStatisticsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -92,7 +92,7 @@ namespace Web.Controllers
             }
             return strJson;
         }
-        
+
         public string GetListByReport(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
             DataTable dt = new DataTable();
@@ -153,14 +153,14 @@ namespace Web.Controllers
             dr2["name"] = "总合计";
 
             DataRow row = dDetectProject.GetAllListCountForReport(strWhere.ToString());
-            dr2["QualifiedLevel"] = row["QualifiedLevel"].ToString() == "" ? "0": row["QualifiedLevel"].ToString();
-            dr2["QualifiedLevelA"] = row["QualifiedLevelA"].ToString()==""?"0": row["QualifiedLevelA"].ToString();
-            dr2["QualifiedLevelB"] = row["QualifiedLevelB"].ToString()==""?"0": row["QualifiedLevelB"].ToString();
+            dr2["QualifiedLevel"] = row["QualifiedLevel"].ToString() == "" ? "0" : row["QualifiedLevel"].ToString();
+            dr2["QualifiedLevelA"] = row["QualifiedLevelA"].ToString() == "" ? "0" : row["QualifiedLevelA"].ToString();
+            dr2["QualifiedLevelB"] = row["QualifiedLevelB"].ToString() == "" ? "0" : row["QualifiedLevelB"].ToString();
             dt2.Rows.InsertAt(dr2, 1);
 
             return "{\"total\":" + total + ",\"rows\":" + JsonConvert.SerializeObject(dt) + ",\"footer\":" + JsonConvert.SerializeObject(dt2) + "}";
         }
-        
+
         public FileResult ExportReport(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
             //拼接查询条件
@@ -200,7 +200,7 @@ namespace Web.Controllers
 
             DataTable dt = new DataTable();
             dt = tDetectProject.GetExportListByReport(strWhere.ToString(), "").Tables[0];
-            
+
             MemoryStream stream = new MemoryStream();
             stream = PublicClass.ExportReportToExcel(dt);
             string filename = "实验统计列表" + DateTime.Now.ToFileTime() + ".xls";
@@ -215,8 +215,8 @@ namespace Web.Controllers
         {
             //List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
             //ViewBag.ExpePlanStatisticslist = ExpePlanStatisticslist;
-            List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportMonthDataStatistics();
-            ViewBag.TestReportMonthDataStatisticslist = TestReportMonthDataStatisticslist;
+            //List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportMonthDataStatistics();
+            //ViewBag.TestReportMonthDataStatisticslist = TestReportMonthDataStatisticslist;
             ViewBag.AreaList = dArea.GetList();
             return View("~/views/ExpeStatistics/UnfinishedWorkList.cshtml");
         }
@@ -242,81 +242,141 @@ namespace Web.Controllers
         /// <summary>
         /// 获取实验计划统计
         /// </summary>
-        public JsonResult ExpePlanStatistics(int areaid,int headpersonnelid, DateTime starttime,DateTime endtime)
+        public JsonResult ExpePlanStatistics(int areaid, int headpersonnelid, DateTime starttime, DateTime endtime)
         {
-            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatisticsForDay(areaid, headpersonnelid, starttime,endtime);
-
-            //人名
-            List<string> namearray = new List<string>();
-            ExpePlanStatisticslist.ForEach(p =>
+            List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics(areaid, headpersonnelid, starttime, endtime);
+            return Json(new
             {
-                if (!namearray.Contains(p.headpersonnename))
-                {
-                    namearray.Add(p.headpersonnename);
-                }
-            });
+                names = ExpePlanStatisticslist.Select(p => p.headpersonnename).ToList(),
+                completeds = ExpePlanStatisticslist.Select(p => p.completed).ToList(),
+                notcompleted = ExpePlanStatisticslist.Select(p => p.notcompleted).ToList()
+            }, JsonRequestBehavior.AllowGet);
 
-            //日期集合
-            List<string> dataarray = new List<string>();
-            DateTime time = starttime;
-            while (time < endtime)
-            {
-                dataarray.Add(time.ToString("MM月dd日"));
-                time = time.AddDays(1);
-            }
+            //List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatisticsForDay(areaid, headpersonnelid, starttime,endtime);
+            ////人名
+            //List<string> namearray = new List<string>();
+            //ExpePlanStatisticslist.ForEach(p =>
+            //{
+            //    if (!namearray.Contains(p.headpersonnename))
+            //    {
+            //        namearray.Add(p.headpersonnename);
+            //    }
+            //});
 
-            //数据集合
-            List<E_Series> serieslist = new List<E_Series>();
-            foreach (var item in namearray)
-            {
-                List<int> dataitem = new List<int>();
-                List<E_ExpePlanStatistics> tempExpePlanStatistics = ExpePlanStatisticslist.Where(p => p.headpersonnename == item).ToList();
-                DateTime temptime = starttime;
-                while (temptime < endtime)
-                {
-                    E_ExpePlanStatistics model = tempExpePlanStatistics.Where(p => p.inspectTime.ToString("yyyy-MM-dd") == temptime.ToString("yyyy-MM-dd")).FirstOrDefault();
-                    if (model != null)
-                    {
-                        dataitem.Add(model.notcompleted);
-                    }
-                    else
-                    {
-                        dataitem.Add(0);
-                    }
-                    temptime = temptime.AddDays(1);
-                }
-                serieslist.Add(new E_Series() { name = item, data = dataitem });
-            }
-            return Json(new { namearray = namearray, dataarray = dataarray, serieslist = serieslist }, JsonRequestBehavior.AllowGet);
+            ////日期集合
+            //List<string> dataarray = new List<string>();
+            //DateTime time = starttime;
+            //while (time < endtime)
+            //{
+            //    dataarray.Add(time.ToString("MM月dd日"));
+            //    time = time.AddDays(1);
+            //}
+
+            ////数据集合
+            //List<E_Series> serieslist = new List<E_Series>();
+            //foreach (var item in namearray)
+            //{
+            //    List<int> dataitem = new List<int>();
+            //    List<E_ExpePlanStatistics> tempExpePlanStatistics = ExpePlanStatisticslist.Where(p => p.headpersonnename == item).ToList();
+            //    DateTime temptime = starttime;
+            //    while (temptime < endtime)
+            //    {
+            //        E_ExpePlanStatistics model = tempExpePlanStatistics.Where(p => p.inspectTime.ToString("yyyy-MM-dd") == temptime.ToString("yyyy-MM-dd")).FirstOrDefault();
+            //        if (model != null)
+            //        {
+            //            dataitem.Add(model.notcompleted);
+            //        }
+            //        else
+            //        {
+            //            dataitem.Add(0);
+            //        }
+            //        temptime = temptime.AddDays(1);
+            //    }
+            //    serieslist.Add(new E_Series() { name = item, data = dataitem });
+            //}
+            //return Json(new { namearray = namearray, dataarray = dataarray, serieslist = serieslist }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取检验报告统计列表
+        /// </summary>
+        public ActionResult GetTestReportList(int areaid, int startyear, int endyear)
+        {
+            DateTime starttime = Convert.ToDateTime(startyear + "-01-01");
+            DateTime endtime = Convert.ToDateTime((endyear + 1) + "-01-01");
+            List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportMonthDataStatistics(areaid, starttime, endtime);
+            ViewBag.AreaID = areaid;
+            return PartialView("~/Views/ExpeStatistics/TestReportStatisticsList.cshtml", TestReportMonthDataStatisticslist);
         }
 
         /// <summary>
         /// 获取未审批、未批准检验报告统计
         /// </summary>
-        public JsonResult ExamineApprovalStatistics(DateTime starttime,DateTime endtime)
+        public JsonResult ExamineApprovalStatistics(int areaid, int startyear, int endyear)
         {
-            List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportDayDataStatistics(starttime, endtime);
-            List<string> dataarray = new List<string>();
-            List<int> examinearray = new List<int>();
-            List<int> approvalarray = new List<int>();
-            DateTime time = starttime;
-            while (time < endtime)
+            DateTime starttime = Convert.ToDateTime(startyear + "-01-01");
+            DateTime endtime = Convert.ToDateTime((endyear + 1) + "-01-01");
+            List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportMonthDataStatistics(areaid, starttime, endtime);
+            
+            //年份
+            List<string> namearray = new List<string>();
+            for (int i = startyear; i <= endyear; i++)
             {
-                dataarray.Add(time.ToString("MM月dd日"));
-                E_TestReportDataStatistics model = TestReportMonthDataStatisticslist.Where(p => p.updatetime == time.ToString("yyyy-MM-dd")).FirstOrDefault();
-                if (model != null)
-                {
-                    examinearray.Add(model.examinecount);
-                    approvalarray.Add(model.approvalcount);
-                }
-                else
-                {
-                    examinearray.Add(0);
-                    approvalarray.Add(0);
-                }
-                time = time.AddDays(1);
+                namearray.Add(i + "年");
             }
-            return Json(new { dataarray= dataarray, examinearray= examinearray, approvalarray= approvalarray },JsonRequestBehavior.AllowGet);
+
+            //日期集合
+            List<string> dataarray = new List<string>();
+            for (int i = 1; i <= 12; i++)
+            {
+                dataarray.Add(i + "月");
+            }
+
+            //数据集合
+            List<E_Series> serieslist = new List<E_Series>();
+            for (int year = startyear; year <= endyear; year++)
+            {
+                List<int> dataitem = new List<int>();
+                for (int month = 1; month <= 12; month++)
+                {
+                    DateTime temptime = Convert.ToDateTime(year + "-" + month + "-01");
+                    E_TestReportDataStatistics model = TestReportMonthDataStatisticslist.Where(p => p.updatetime == temptime.ToString("yyyy-MM")).FirstOrDefault();
+                    if (model != null)
+                    {
+                        dataitem.Add(model.total);
+                    }
+                    else
+                    {
+                        dataitem.Add(0);
+                    }
+                }
+                serieslist.Add(new E_Series() { name = (year+"年"), data = dataitem }); 
+            }
+            return Json(new { namearray = namearray, dataarray = dataarray, serieslist = serieslist }, JsonRequestBehavior.AllowGet);
+
+
+            //List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportDayDataStatistics(starttime, endtime);
+            //List<string> dataarray = new List<string>();
+            //List<int> examinearray = new List<int>();
+            //List<int> approvalarray = new List<int>();
+            //DateTime time = starttime;
+            //while (time < endtime)
+            //{
+            //    dataarray.Add(time.ToString("MM月dd日"));
+            //    E_TestReportDataStatistics model = TestReportMonthDataStatisticslist.Where(p => p.updatetime == time.ToString("yyyy-MM-dd")).FirstOrDefault();
+            //    if (model != null)
+            //    {
+            //        examinearray.Add(model.examinecount);
+            //        approvalarray.Add(model.approvalcount);
+            //    }
+            //    else
+            //    {
+            //        examinearray.Add(0);
+            //        approvalarray.Add(0);
+            //    }
+            //    time = time.AddDays(1);
+            //}
+            //return Json(new { dataarray= dataarray, examinearray= examinearray, approvalarray= approvalarray },JsonRequestBehavior.AllowGet);
         }
 
     }

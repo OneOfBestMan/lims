@@ -25,5 +25,10 @@ namespace Model.Statistics
         /// 未批准个数
         /// </summary>
         public int approvalcount { get; set; }
+
+        /// <summary>
+        /// 总检验报告个数
+        /// </summary>
+        public int total { get; set; }
     }
 }

@@ -83,62 +83,78 @@ namespace DAL.Statistics
         /// <summary>
         /// 获取实验计划统计列表 按照天进行统计
         /// </summary>
-        public List<E_ExpePlanStatistics> GetExpePlanStatisticsForDay(int areaid, int headpersonnelid, DateTime? starttime, DateTime? endtime)
-        {
-            StringBuilder strWhere = new StringBuilder();
-            if (areaid > 0) //地区ID
-            {
-                strWhere.AddWhere($"areaid={areaid}");
-            }
-            if (headpersonnelid > 0)//检验负责人ID
-            {
-                strWhere.AddWhere($"headpersonnelid={headpersonnelid}");
-            }
-            if (starttime != null) //检验开始时间
-            {
-                strWhere.AddWhere($"InspectTime>=cast('{starttime.ToString()}' as datetime)");
-            }
-            if (endtime != null) //检验结束时间
-            {
-                strWhere.AddWhere($"InspectTime<cast('{endtime.ToString()}' as datetime)");
-            }
+        //public List<E_ExpePlanStatistics> GetExpePlanStatisticsForDay(int areaid, int headpersonnelid, DateTime? starttime, DateTime? endtime)
+        //{
+        //    StringBuilder strWhere = new StringBuilder();
+        //    if (areaid > 0) //地区ID
+        //    {
+        //        strWhere.AddWhere($"areaid={areaid}");
+        //    }
+        //    if (headpersonnelid > 0)//检验负责人ID
+        //    {
+        //        strWhere.AddWhere($"headpersonnelid={headpersonnelid}");
+        //    }
+        //    if (starttime != null) //检验开始时间
+        //    {
+        //        strWhere.AddWhere($"InspectTime>=cast('{starttime.ToString()}' as datetime)");
+        //    }
+        //    if (endtime != null) //检验结束时间
+        //    {
+        //        strWhere.AddWhere($"InspectTime<cast('{endtime.ToString()}' as datetime)");
+        //    }
 
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append($@"
-                select A.*,B.PersonnelName as headpersonnename 
-                from (
-	                select 
-		                headpersonnelid,
-		                inspectTime,
-		                sum(case when [Status]=1 then 1 else 0 end) as completed,
-		                sum(case when [Status]!=1 then 1 else 0 end) as notcompleted 
-	                from [tb_ExpePlan] 
-	                {strWhere.ToString()}
-	                group by headpersonnelid,inspectTime
-                ) as A inner join tb_InPersonnel as B on A.headpersonnelid=B.PersonnelID
-            ");
+        //    StringBuilder strSql = new StringBuilder();
+        //    strSql.Append($@"
+        //        select A.*,B.PersonnelName as headpersonnename 
+        //        from (
+	       //         select 
+		      //          headpersonnelid,
+		      //          inspectTime,
+		      //          sum(case when [Status]=1 then 1 else 0 end) as completed,
+		      //          sum(case when [Status]!=1 then 1 else 0 end) as notcompleted 
+	       //         from [tb_ExpePlan] 
+	       //         {strWhere.ToString()}
+	       //         group by headpersonnelid,inspectTime
+        //        ) as A inner join tb_InPersonnel as B on A.headpersonnelid=B.PersonnelID
+        //    ");
 
-            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
-            {
-                return conn.Query<E_ExpePlanStatistics>(strSql.ToString()).ToList();
-            }
-        }
+        //    using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+        //    {
+        //        return conn.Query<E_ExpePlanStatistics>(strSql.ToString()).ToList();
+        //    }
+        //}
 
 
         /// <summary>
         /// 获取检验报告按月统计
         /// </summary>
-        public List<E_TestReportDataStatistics> GetTestReportMonthDataStatistics()
+        public List<E_TestReportDataStatistics> GetTestReportMonthDataStatistics(int areaid,DateTime starttime,DateTime endtime)
         {
+            StringBuilder strWhere = new StringBuilder();
+            strWhere.AddWhere("SamplingTime is not null");
+            if (areaid > 0) //地区ID
+            {
+                strWhere.AddWhere($"areaid={areaid}");
+            }
+            if (starttime != null) //抽样开始时间
+            {
+                strWhere.AddWhere($"SamplingTime>=cast('{starttime.ToString()}' as datetime)");
+            }
+            if (endtime != null) //抽样结束时间
+            {
+                strWhere.AddWhere($"SamplingTime<cast('{endtime.ToString()}' as datetime)");
+            }
+
             StringBuilder strSql = new StringBuilder();
             strSql.Append($@"
-                 select updatetime,sum(examine) as examinecount, sum(Approval) as approvalcount
+                 select updatetime,sum(examine) as examinecount, sum(Approval) as approvalcount,sum(total) as total
                  from (
                      select 
                          substring(CONVERT(nvarchar(50),SamplingTime,23),0,8) as updatetime, --日期时间格式
+                         1 as total, --总数
                          case when examinePersonnelID is not null and examinePersonnelID>0 then 0 else 1 end as examine, --未审批个数
                          case when ApprovalPersonnelID is not null and ApprovalPersonnelID>0 then 0 else 1 end as Approval --未批准个数
-                     from [tb_TestReport] where SamplingTime is not null
+                     from [tb_TestReport] {strWhere.ToString()}
                  ) T group by updatetime order by updatetime desc
             ");
 
