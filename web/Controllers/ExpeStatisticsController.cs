@@ -310,7 +310,7 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 获取未审批、未批准检验报告统计
+        /// 获取未审核、未批准检验报告统计
         /// </summary>
         public JsonResult ExamineApprovalStatistics(int areaid, int startyear, int endyear)
         {

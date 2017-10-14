@@ -17,7 +17,7 @@ namespace Model.Statistics
         public string updatetime { get; set; }
 
         /// <summary>
-        /// 未审批个数
+        /// 未审核个数
         /// </summary>
         public int examinecount { get; set; }
 

@@ -450,6 +450,9 @@
             $("#formdata select").each(function () {
                 data += "&" + $(this).attr("name") + "=" + $(this).val();
             });
+            $("#formdata textarea").each(function () {
+                data += "&" + $(this).attr("name") + "=" + $(this).val();
+            });
 
             $.post("/TestReport/Save", data, function (data) {
                 if (data == "True") {

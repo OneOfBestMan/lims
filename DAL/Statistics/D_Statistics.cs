@@ -17,7 +17,7 @@ namespace DAL.Statistics
     public class D_Statistics
     {
         /// <summary>
-        /// 统计未完成工作（未完成实验计划、未审批检验报告、未批准检验报告）
+        /// 统计未完成工作（未完成实验计划、未审核检验报告、未批准检验报告）
         /// </summary>
         public List<int> SummaryWork()
         {
@@ -25,7 +25,7 @@ namespace DAL.Statistics
             strSql.Append($@"
                 select count(1) as num from[dbo].[tb_ExpePlan] where Status in (0, 2)--未完成实验计划
                 union all
-                select count(1) as num from tb_TestReport where examinePersonnelID = 0 or examinePersonnelID is null--未审批检验报告
+                select count(1) as num from tb_TestReport where examinePersonnelID = 0 or examinePersonnelID is null--未审核检验报告
                 union all
                 select count(1) as num from tb_TestReport where ApprovalPersonnelID = 0 or ApprovalPersonnelID is null--未批准检验报告
             ");
@@ -152,7 +152,7 @@ namespace DAL.Statistics
                      select 
                          substring(CONVERT(nvarchar(50),SamplingTime,23),0,8) as updatetime, --日期时间格式
                          1 as total, --总数
-                         case when examinePersonnelID is not null and examinePersonnelID>0 then 0 else 1 end as examine, --未审批个数
+                         case when examinePersonnelID is not null and examinePersonnelID>0 then 0 else 1 end as examine, --未审核个数
                          case when ApprovalPersonnelID is not null and ApprovalPersonnelID>0 then 0 else 1 end as Approval --未批准个数
                      from [tb_TestReport] {strWhere.ToString()}
                  ) T group by updatetime order by updatetime desc
@@ -165,7 +165,7 @@ namespace DAL.Statistics
         }
 
         /// <summary>
-        /// 获取未批准、未审批检验报告按天统计
+        /// 获取未批准、未审核检验报告按天统计
         /// </summary>
         /// <returns></returns>
         public List<E_TestReportDataStatistics> GetTestReportDayDataStatistics(DateTime starttime,DateTime endtime)
@@ -176,7 +176,7 @@ namespace DAL.Statistics
                  from (
 	                 select 
 		                 CONVERT(nvarchar(50),SamplingTime,23) as updatetime, --日期时间格式
-		                 case when examinePersonnelID is not null and examinePersonnelID>0 then 0 else 1 end as examine, --未审批个数
+		                 case when examinePersonnelID is not null and examinePersonnelID>0 then 0 else 1 end as examine, --未审核个数
 		                 case when ApprovalPersonnelID is not null and ApprovalPersonnelID>0 then 0 else 1 end as Approval --未批准个数
 	                 from [tb_TestReport] 
                      where SamplingTime is not null and SamplingTime>=cast('{starttime.ToString("yyyy-MM-dd")}' as datetime) and SamplingTime<cast('{endtime.ToString("yyyy-MM-dd")}' as datetime)
@@ -205,7 +205,7 @@ namespace DAL.Statistics
         }
 
         /// <summary>
-        /// 获取未审批检验报告
+        /// 获取未审核检验报告
         /// </summary>
         public int GetNoExamineTestReportCount()
         {

@@ -604,7 +604,7 @@ namespace DAL.TestReport
         }
 
         /// <summary>
-        /// 更新实验计划审批状态
+        /// 更新实验计划审核状态
         /// </summary>
         /// <param name="ReportIDS">检验报告ID集合</param>
         /// <returns>是否执行完毕</returns>

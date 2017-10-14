@@ -20,7 +20,7 @@ namespace Model.TestReport
         public int issecrecy { get; set; }
 
         /// <summary>
-        /// 保密审批人（只有被设置为该检验报告的 保密审批人才能看到该检验报告。）
+        /// 保密审核人（只有被设置为该检验报告的 保密审核人才能看到该检验报告。）
         /// </summary>
         public int secrecyexaminepid { get; set; }
 

@@ -147,7 +147,7 @@ namespace Model
         public int headpersonnelid { get; set; }
 
         /// <summary>
-        /// 是否审批
+        /// 是否审核
         /// </summary>
         public int isexamine { get; set; }
 

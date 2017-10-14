@@ -8,7 +8,7 @@
     <thead>
         <tr>
             <th>抽样日期</th>
-            <th>未审批数</th>
+            <th>未审核数</th>
             <th>未批准数</th>
             <th>检验报告总数</th>
         </tr>
@@ -19,8 +19,8 @@
             {
                 <tr>
                     <td>@item.updatetime</td>
-                    <td><a href="/TestReport/TestReportList?areaid=@(ViewBag.AreaID)&samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=2&isapproval=0&issearch=1">@item.examinecount</a></td>
-                    <td><a href="/TestReport/TestReportList?areaid=@(ViewBag.AreaID)&samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=0&isapproval=2&issearch=1">@item.approvalcount</a></td>
+                    <td><a href="/TestReport/TestReportList?areaid=@(ViewBag.AreaID)&samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=2&isapproval=0&issearch=1" style="@(item.examinecount>0?"color:red;font-weight: bold;":"")" >@item.examinecount</a></td>
+                    <td><a href="/TestReport/TestReportList?areaid=@(ViewBag.AreaID)&samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&isexamine=0&isapproval=2&issearch=1" style="@(item.approvalcount>0?"color:red;font-weight: bold;":"")" >@item.approvalcount</a></td>
                     <td><a href="/TestReport/TestReportList?areaid=@(ViewBag.AreaID)&samplingtimestart=@(Convert.ToDateTime(item.updatetime+"-01").ToString("yyyy-MM-dd"))&samplingtimeend=@(Convert.ToDateTime(item.updatetime+"-01").AddMonths(1).ToString("yyyy-MM-dd"))&issearch=1">@item.total</a></td>
                 </tr>
             }

@@ -103,11 +103,11 @@ namespace Web.Controllers
             {
                 strWhere = PageTools.AddWhere(strWhere, "SamplingTime<=cast('" + ePageParameter.samplingtimeend.ToString() + "' as datetime)");
             }
-            if (ePageParameter.isexamine == 1) //已审批
+            if (ePageParameter.isexamine == 1) //已审核
             {
                 strWhere = PageTools.AddWhere(strWhere, "T.examinePersonnelID>0");
             }
-            else if (ePageParameter.isexamine == 2) //未审批
+            else if (ePageParameter.isexamine == 2) //未审核
             {
                 strWhere = PageTools.AddWhere(strWhere, "(T.examinePersonnelID is null or T.examinePersonnelID=0)");
             }
@@ -136,7 +136,7 @@ namespace Web.Controllers
                     break;
             }
 
-            //保密数据获取,只有设置保密的自己或者指定的审批人能看到对应的保密数据
+            //保密数据获取,只有设置保密的自己或者指定的审核人能看到对应的保密数据
             strWhere = PageTools.AddWhere(strWhere, $"(issecrecy=0 or secrecyexaminepid={CurrentUserInfo.PersonnelID} or setsecrecypid={CurrentUserInfo.PersonnelID})");
 
             return strWhere;
@@ -300,7 +300,7 @@ namespace Web.Controllers
 检验单位地址：:山东省烟台市龙口市环海中路中海油物流码头配餐公司龙口配送基地<br/>
 邮政编码：265700<br/>
 联系电话：0535-8838131<br/>
-传真：0535-8838131";
+传真：0535-8838131<br/><br/>";
                                             break;
                                         }
                                 }
