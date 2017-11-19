@@ -61,5 +61,10 @@ namespace Model.ExpeStatistics
         /// </summary>
         public string Department { get; set; }
 
+        /// <summary>
+        /// 抽样地址
+        /// </summary>
+        public string DetectionAdress { get; set; }
+
     }
 }

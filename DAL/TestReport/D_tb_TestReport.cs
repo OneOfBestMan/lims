@@ -294,160 +294,54 @@ namespace DAL.TestReport
         /// </summary>
         public E_tb_TestReport GetModel(int ReportID)
         {
-
+            E_tb_TestReport model = null;
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select  top 1 ReportID,RecordIDS,TaskNoS,ReportNo,SampleNum,SampleName,Department,TestType,IssuedTime,TestingCompany,Specifications,ProductionTime,Packing,productNum,ToSampleMode,SendTestAddress,SamplingPlace,SamplingCompany,SamplingPersonnel,SamplingTime,TestTime,ShelfLife,TestBasis,Conclusion,Remarks,Explain,ApprovalPersonnelID,examinePersonnelID,MainTestPersonnelID,FilePath,AreaID,EditPersonnelID,AddTime,UpdateTime from tb_TestReport ");
-            strSql.Append(" where ReportID=@ReportID");
-            SqlParameter[] parameters = {
-					new SqlParameter("@ReportID", SqlDbType.Int,4)
-};
-            parameters[0].Value = ReportID;
-
-            E_tb_TestReport model = new E_tb_TestReport();
-            DataSet ds = DbHelperSQL.Query(strSql.ToString(), parameters);
-            if (ds.Tables[0].Rows.Count > 0)
+            strSql.Append(@"SELECT top 1 
+                              A.[ReportID]
+                              , A.[RecordIDS]
+                              , A.[TaskNoS]
+                              , A.[ReportNo]
+                              , A.[SampleNum]
+                              ,B.name as SampleName  --, A.[SampleName] //样品名称
+                              ,case when B.isDetection = 1 then B.detectionCompany else C.ClientName end as [Department] --, A.[Department] 动态获取样品管理对应的  送/抽检单位
+                              , A.[TestType]
+                              , A.[IssuedTime]
+                              , A.[TestingCompany]
+                              , A.[Specifications]
+                              , A.[ProductionTime]
+                              , A.[Packing]
+                              , A.[productNum]
+                              , A.[ToSampleMode]
+                              , A.[SendTestAddress]
+                              ,B.detectionAdress as SamplingPlace    --, A.[SamplingPlace] //抽样地点
+                              ,B.detectionCompany as SamplingCompany --, A.[SamplingCompany] //抽样单位
+                              , A.[SamplingPersonnel]
+                              , A.[SamplingTime]
+                              , A.[TestTime]
+                              , A.[ShelfLife]
+                              , A.[TestBasis]
+                              , A.[Conclusion]
+                              , A.[Remarks]
+                              , A.[Explain]
+                              , A.[ApprovalPersonnelID]
+                              , A.[examinePersonnelID]
+                              , A.[MainTestPersonnelID]
+                              , A.[FilePath]
+                              , A.[AreaID]
+                              , A.[EditPersonnelID]
+                              , A.[AddTime]
+                              , A.[UpdateTime]
+                              , A.[issecrecy]
+                              , A.[secrecyexaminepid]
+                              , A.[setsecrecypid]
+                          FROM [tb_TestReport] as A
+                               left join tb_Sample as B on A.[SampleNum] = B.[SampleNum]
+                               left join tb_ClientManage as C on B.InspectCompany = C.ClientID 
+                          where ReportID=@ReportID");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
-                if (ds.Tables[0].Rows[0]["ReportID"].ToString() != "")
-                {
-                    model.ReportID = int.Parse(ds.Tables[0].Rows[0]["ReportID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["RecordIDS"] != null)
-                {
-                    model.RecordIDS = ds.Tables[0].Rows[0]["RecordIDS"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["TaskNoS"] != null)
-                {
-                    model.TaskNoS = ds.Tables[0].Rows[0]["TaskNoS"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["ReportNo"] != null)
-                {
-                    model.ReportNo = ds.Tables[0].Rows[0]["ReportNo"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["SampleNum"] != null)
-                {
-                    model.SampleNum = ds.Tables[0].Rows[0]["SampleNum"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["SampleName"] != null)
-                {
-                    model.SampleName = ds.Tables[0].Rows[0]["SampleName"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Department"] != null)
-                {
-                    model.Department = ds.Tables[0].Rows[0]["Department"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["TestType"].ToString() != "")
-                {
-                    model.TestType = int.Parse(ds.Tables[0].Rows[0]["TestType"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["IssuedTime"].ToString() != "")
-                {
-                    model.IssuedTime = DateTime.Parse(ds.Tables[0].Rows[0]["IssuedTime"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["TestingCompany"] != null)
-                {
-                    model.TestingCompany = ds.Tables[0].Rows[0]["TestingCompany"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Specifications"] != null)
-                {
-                    model.Specifications = ds.Tables[0].Rows[0]["Specifications"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["ProductionTime"].ToString() != "")
-                {
-                    model.ProductionTime = DateTime.Parse(ds.Tables[0].Rows[0]["ProductionTime"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["Packing"] != null)
-                {
-                    model.Packing = ds.Tables[0].Rows[0]["Packing"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["productNum"] != null)
-                {
-                    model.productNum = ds.Tables[0].Rows[0]["productNum"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["ToSampleMode"] != null)
-                {
-                    model.ToSampleMode = ds.Tables[0].Rows[0]["ToSampleMode"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["SendTestAddress"] != null)
-                {
-                    model.SendTestAddress = ds.Tables[0].Rows[0]["SendTestAddress"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["SamplingPlace"] != null)
-                {
-                    model.SamplingPlace = ds.Tables[0].Rows[0]["SamplingPlace"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["SamplingCompany"] != null)
-                {
-                    model.SamplingCompany = ds.Tables[0].Rows[0]["SamplingCompany"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["SamplingPersonnel"] != null)
-                {
-                    model.SamplingPersonnel = ds.Tables[0].Rows[0]["SamplingPersonnel"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["SamplingTime"].ToString() != "")
-                {
-                    model.SamplingTime = DateTime.Parse(ds.Tables[0].Rows[0]["SamplingTime"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["TestTime"].ToString() != "")
-                {
-                    model.TestTime = DateTime.Parse(ds.Tables[0].Rows[0]["TestTime"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["ShelfLife"] != null)
-                {
-                    model.ShelfLife = ds.Tables[0].Rows[0]["ShelfLife"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["TestBasis"] != null)
-                {
-                    model.TestBasis = ds.Tables[0].Rows[0]["TestBasis"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Conclusion"] != null)
-                {
-                    model.Conclusion = ds.Tables[0].Rows[0]["Conclusion"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Remarks"] != null)
-                {
-                    model.Remarks = ds.Tables[0].Rows[0]["Remarks"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["Explain"] != null)
-                {
-                    model.Explain = ds.Tables[0].Rows[0]["Explain"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["ApprovalPersonnelID"].ToString() != "")
-                {
-                    model.ApprovalPersonnelID = int.Parse(ds.Tables[0].Rows[0]["ApprovalPersonnelID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["examinePersonnelID"].ToString() != "")
-                {
-                    model.examinePersonnelID = int.Parse(ds.Tables[0].Rows[0]["examinePersonnelID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["MainTestPersonnelID"].ToString() != "")
-                {
-                    model.MainTestPersonnelID = int.Parse(ds.Tables[0].Rows[0]["MainTestPersonnelID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["FilePath"] != null)
-                {
-                    model.FilePath = ds.Tables[0].Rows[0]["FilePath"].ToString();
-                }
-                if (ds.Tables[0].Rows[0]["AreaID"].ToString() != "")
-                {
-                    model.AreaID = int.Parse(ds.Tables[0].Rows[0]["AreaID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["EditPersonnelID"].ToString() != "")
-                {
-                    model.EditPersonnelID = int.Parse(ds.Tables[0].Rows[0]["EditPersonnelID"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["AddTime"].ToString() != "")
-                {
-                    model.AddTime = DateTime.Parse(ds.Tables[0].Rows[0]["AddTime"].ToString());
-                }
-                if (ds.Tables[0].Rows[0]["UpdateTime"].ToString() != "")
-                {
-                    model.UpdateTime = DateTime.Parse(ds.Tables[0].Rows[0]["UpdateTime"].ToString());
-                }
+                 model = conn.Query<E_tb_TestReport>(strSql.ToString(), new { ReportID = ReportID }).FirstOrDefault();
                 return model;
-            }
-            else
-            {
-                return null;
             }
         }
 
@@ -457,8 +351,48 @@ namespace DAL.TestReport
         public DataSet GetList(string strWhere)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ReportID,RecordIDS,TaskNoS,ReportNo,SampleNum,SampleName,Department,TestType,IssuedTime,TestingCompany,Specifications,ProductionTime,Packing,productNum,ToSampleMode,SendTestAddress,SamplingPlace,SamplingCompany,SamplingPersonnel,SamplingTime,TestTime,ShelfLife,TestBasis,Conclusion,Remarks,Explain,ApprovalPersonnelID,examinePersonnelID,MainTestPersonnelID,FilePath,AreaID,EditPersonnelID,AddTime,UpdateTime ");
-            strSql.Append(" FROM tb_TestReport ");
+            strSql.Append(@"SELECT top 1 
+                              A.[ReportID]
+                              , A.[RecordIDS]
+                              , A.[TaskNoS]
+                              , A.[ReportNo]
+                              , A.[SampleNum]
+                              ,B.name as SampleName  --, A.[SampleName] //样品名称
+                              ,case when B.isDetection = 1 then B.detectionCompany else C.ClientName end as [Department] --, A.[Department] 动态获取样品管理对应的  送/抽检单位
+                              , A.[TestType]
+                              , A.[IssuedTime]
+                              , A.[TestingCompany]
+                              , A.[Specifications]
+                              , A.[ProductionTime]
+                              , A.[Packing]
+                              , A.[productNum]
+                              , A.[ToSampleMode]
+                              , A.[SendTestAddress]
+                              ,B.detectionAdress as SamplingPlace    --, A.[SamplingPlace] //抽样地点
+                              ,B.detectionCompany as SamplingCompany --, A.[SamplingCompany] //抽样单位
+                              , A.[SamplingPersonnel]
+                              , A.[SamplingTime]
+                              , A.[TestTime]
+                              , A.[ShelfLife]
+                              , A.[TestBasis]
+                              , A.[Conclusion]
+                              , A.[Remarks]
+                              , A.[Explain]
+                              , A.[ApprovalPersonnelID]
+                              , A.[examinePersonnelID]
+                              , A.[MainTestPersonnelID]
+                              , A.[FilePath]
+                              , A.[AreaID]
+                              , A.[EditPersonnelID]
+                              , A.[AddTime]
+                              , A.[UpdateTime]
+                              , A.[issecrecy]
+                              , A.[secrecyexaminepid]
+                              , A.[setsecrecypid]
+                          FROM [tb_TestReport] as A
+                               left join tb_Sample as B on A.[SampleNum] = B.[SampleNum]
+                               left join tb_ClientManage as C on B.InspectCompany = C.ClientID ");
+            
             if (strWhere.Trim() != "")
             {
                 strSql.Append(" where " + strWhere);
@@ -471,19 +405,68 @@ namespace DAL.TestReport
         /// </summary>
         public DataSet GetList(int Top, string strWhere, string filedOrder)
         {
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append("select ");
+            string sqltop = "";
             if (Top > 0)
             {
-                strSql.Append(" top " + Top.ToString());
+                sqltop = $" top {Top.ToString()} ";
             }
-            strSql.Append(" ReportID,RecordIDS,TaskNoS,ReportNo,SampleNum,SampleName,Department,TestType,IssuedTime,TestingCompany,Specifications,ProductionTime,Packing,productNum,ToSampleMode,SendTestAddress,SamplingPlace,SamplingCompany,SamplingPersonnel,SamplingTime,TestTime,ShelfLife,TestBasis,Conclusion,Remarks,Explain,ApprovalPersonnelID,examinePersonnelID,MainTestPersonnelID,FilePath,AreaID,EditPersonnelID,AddTime,UpdateTime ");
-            strSql.Append(" FROM tb_TestReport ");
+
+            string sqlwhere = "";
             if (strWhere.Trim() != "")
             {
-                strSql.Append(" where " + strWhere);
+                sqlwhere = $" where {strWhere.Trim()}";
             }
-            strSql.Append(" order by " + filedOrder);
+
+            string sqlorder = "";
+                if (!string.IsNullOrEmpty(filedOrder))
+            {
+                sqlorder = $" order by {filedOrder}";
+            }
+
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"SELECT {sqltop}
+                              A.[ReportID]
+                              , A.[RecordIDS]
+                              , A.[TaskNoS]
+                              , A.[ReportNo]
+                              , A.[SampleNum]
+                              ,B.name as SampleName  --, A.[SampleName] //样品名称
+                              ,case when B.isDetection = 1 then B.detectionCompany else C.ClientName end as [Department] --, A.[Department] 动态获取样品管理对应的  送/抽检单位
+                              , A.[TestType]
+                              , A.[IssuedTime]
+                              , A.[TestingCompany]
+                              , A.[Specifications]
+                              , A.[ProductionTime]
+                              , A.[Packing]
+                              , A.[productNum]
+                              , A.[ToSampleMode]
+                              , A.[SendTestAddress]
+                              ,B.detectionAdress as SamplingPlace    --, A.[SamplingPlace] //抽样地点
+                              ,B.detectionCompany as SamplingCompany --, A.[SamplingCompany] //抽样单位
+                              , A.[SamplingPersonnel]
+                              , A.[SamplingTime]
+                              , A.[TestTime]
+                              , A.[ShelfLife]
+                              , A.[TestBasis]
+                              , A.[Conclusion]
+                              , A.[Remarks]
+                              , A.[Explain]
+                              , A.[ApprovalPersonnelID]
+                              , A.[examinePersonnelID]
+                              , A.[MainTestPersonnelID]
+                              , A.[FilePath]
+                              , A.[AreaID]
+                              , A.[EditPersonnelID]
+                              , A.[AddTime]
+                              , A.[UpdateTime]
+                              , A.[issecrecy]
+                              , A.[secrecyexaminepid]
+                              , A.[setsecrecypid]
+                          FROM [tb_TestReport] as A
+                               left join tb_Sample as B on A.[SampleNum] = B.[SampleNum]
+                               left join tb_ClientManage as C on B.InspectCompany = C.ClientID 
+                               {sqlwhere} {sqlorder}");
+            
             return DbHelperSQL.Query(strSql.ToString());
         }
 
@@ -496,27 +479,43 @@ namespace DAL.TestReport
         /// </summary>
         public DataSet GetListByPage(string strWhere, string orderby, int startIndex, int endIndex, ref int total)
         {
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append("SELECT * FROM ( ");
-            strSql.Append(" SELECT ROW_NUMBER() OVER (");
+            string sqlorder = "order by T.ReportID desc";
             if (!string.IsNullOrEmpty(orderby.Trim()))
             {
-                strSql.Append("order by T." + orderby);
+                sqlorder = $"order by T.{orderby}";
             }
-            else
-            {
-                strSql.Append("order by T.ReportID desc");
-            }
-            strSql.Append(")AS Row, T.*,B.PersonnelName as ApprovalPersonnelName,C.PersonnelName as examinePersonnelName,D.PersonnelName as MainTestPersonnelName,E.TypeName as TestTypeName  from tb_TestReport T ");
-            strSql.Append(@"left join tb_InPersonnel as B on T.ApprovalPersonnelID=B.PersonnelID
-                            left join tb_InPersonnel as C on T.examinePersonnelID=C.PersonnelID
-                            left join tb_InPersonnel as D on T.MainTestPersonnelID=D.PersonnelID
-                            left join tb_TypeDict as E on T.TestType=E.TypeID");
+
+            string sqlwhere = "";
             if (!string.IsNullOrEmpty(strWhere.Trim()))
             {
-                strSql.Append(" WHERE " + strWhere);
+                sqlwhere = $" WHERE {strWhere}";
             }
-            strSql.Append(" ) TT");
+            
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"SELECT * FROM (
+                                SELECT ROW_NUMBER() OVER ({sqlorder}) AS Row, 
+                                       T.[ReportID], T.[RecordIDS], T.[TaskNoS], T.[ReportNo], T.[SampleNum]
+                                       ,F.name as SampleName  --, A.[SampleName] //样品名称
+                                       ,case when F.isDetection = 1 then F.detectionCompany else G.ClientName end as [Department] --, T.[Department] 动态获取样品管理对应的  送/抽检单位
+                                       , T.[TestType], T.[IssuedTime], T.[TestingCompany], T.[Specifications], T.[ProductionTime]
+                                       , T.[Packing], T.[productNum], T.[ToSampleMode], T.[SendTestAddress]
+                                       ,F.detectionAdress as SamplingPlace    --, A.[SamplingPlace] //抽样地点
+                                       ,F.detectionCompany as SamplingCompany --, A.[SamplingCompany] //抽样单位
+                                       , T.[SamplingPersonnel], T.[SamplingTime], T.[TestTime], T.[ShelfLife]
+                                       , T.[TestBasis], T.[Conclusion], T.[Remarks], T.[Explain], T.[ApprovalPersonnelID]
+                                       , T.[examinePersonnelID], T.[MainTestPersonnelID], T.[FilePath], T.[AreaID], T.[EditPersonnelID]
+                                       , T.[AddTime], T.[UpdateTime], T.[issecrecy], T.[secrecyexaminepid], T.[setsecrecypid]
+                                       ,B.PersonnelName as ApprovalPersonnelName,C.PersonnelName as examinePersonnelName
+                                       ,D.PersonnelName as MainTestPersonnelName,E.TypeName as TestTypeName  
+                                from tb_TestReport T 
+                                    left join tb_InPersonnel as B on T.ApprovalPersonnelID=B.PersonnelID
+                                    left join tb_InPersonnel as C on T.examinePersonnelID=C.PersonnelID
+                                    left join tb_InPersonnel as D on T.MainTestPersonnelID=D.PersonnelID
+                                    left join tb_TypeDict as E on T.TestType=E.TypeID 
+                                    left join tb_Sample as F on T.[SampleNum] = F.[SampleNum]
+                                    left join tb_ClientManage as G on F.InspectCompany = G.ClientID 
+                            {sqlwhere} ) TT");
+
             total = DbHelperSQL.GetCount(strSql.ToString());
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
             return DbHelperSQL.Query(strSql.ToString());
@@ -543,7 +542,7 @@ namespace DAL.TestReport
         public bool Approval(string ids,int ApprovalPersonnelID,DateTime IssuedTime)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append($"update tb_TestReport set ApprovalPersonnelID={ApprovalPersonnelID},IssuedTime=cast('{IssuedTime.ToString()}' as datetime) where ReportID in ({ids}) and (ApprovalPersonnelID is null or ApprovalPersonnelID=0)");
+            strSql.Append($"update tb_TestReport set ApprovalPersonnelID={ApprovalPersonnelID},IssuedTime=cast('{IssuedTime.ToString()}' as datetime) where ReportID in ({ids}) ");//  and (ApprovalPersonnelID is null or ApprovalPersonnelID=0)
 
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {

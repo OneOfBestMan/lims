@@ -68,9 +68,11 @@
                     var txt_EndTime = $("#txt_EndTime").val();
                     var GHS = $("#dropGHS").val();
                     var Department = $("#dropDepartment").val();
+                    var DetectionAdress = $("#dropDetectionAdress").val();
 
                     var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
-                    var url = '@Url.Action("ExportReport", "ExpeStatistics")' + "?ddl_type=" + ddl_type + "&txt_search=" + txt_search + "&txt_StartTime=" + txt_StartTime + "&txt_EndTime=" + txt_EndTime + "&GHS=" + GHS + "&Department=" + Department;
+                    var url = '@Url.Action("ExportReport", "ExpeStatistics")' + "?ddl_type=" + ddl_type + "&txt_search=" + txt_search + "&txt_StartTime="
+                        + txt_StartTime + "&txt_EndTime=" + txt_EndTime + "&GHS=" + GHS + "&Department=" + Department + "&DetectionAdress=" + DetectionAdress;
                     $("#exportExcel").attr("href", url);
                 }
             });
@@ -96,6 +98,7 @@
             var txt_EndTime = $("#txt_EndTime").val();
             var GHS = $("#dropGHS").val();
             var Department = $("#dropDepartment").val();
+            var DetectionAdress = $("#dropDetectionAdress").val();
             var tablequeryParams = $('#dgtable').datagrid('options').queryParams;
             tablequeryParams.ddl_type = ddl_type;
             tablequeryParams.txt_search = txt_search;
@@ -104,6 +107,7 @@
             tablequeryParams.pageNumber = 1;
             tablequeryParams.GHS = GHS;
             tablequeryParams.Department = Department;
+            tablequeryParams.DetectionAdress = DetectionAdress;
 
             $('#dgtable').datagrid('options').queryParams = tablequeryParams;
             $("#dgtable").datagrid("reload");
@@ -148,6 +152,20 @@
                            }
                        }
                    </select> 
+                </td>
+
+                <td align="right" style="width:80px;">抽检地点：</td>
+                <td align="left" style="width:60px;">
+                    <select id="dropDetectionAdress" style="width:120px;">
+                        <option value="">请选择</option>
+                        @{
+                            var detectionAdressList = ViewBag.detectionAdressList as List<string>;
+                            foreach (var item in detectionAdressList)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        }
+                    </select>
                 </td>
 
                 <td align="right"style="width:40px;">按：</td>

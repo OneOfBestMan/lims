@@ -158,6 +158,8 @@
                                 <th>任务单号</th>
                                 <th>状态</th>
                                 <th>备注</th>
+                                <th>原始记录</th>
+                                <th>检验报告</th>
                                 <th style="width:200px;">操作</th>
                             </tr>
                         </thead>
@@ -177,6 +179,30 @@
                                         <td>@item["TaskNo"].ToString()</td>
                                         <td>@(item["Status"].ToString() == "1" ? "完成" : "未完成")</td>
                                         <td>@item["Remark"].ToString()</td>
+                                        <td>
+                                            @{ 
+                                                if(Convert.IsDBNull(item["RecordID"]))
+                                                {
+                                                    <span>未生成</span>
+                                                }
+                                                else
+                                                {
+                                                    <a href="/OriginalRecord/OriginalRecordList?recordid=@item["RecordID"].ToString()" style="color:Blue; font-weight:bold;">@item["RecordID"].ToString()</a>
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            @{
+                                                if (Convert.IsDBNull(item["ReportID"]))
+                                                {
+                                                    <span>未生成</span>
+                                                }
+                                                else
+                                                {
+                                                    <a href="/TestReport/TestReportList?reportid=@item["ReportID"].ToString()" style="color:Blue; font-weight:bold;">@item["ReportID"].ToString()</a>
+                                                }
+                                            }
+                                        </td>
                                         <td>
                                             @if (Convert.ToBoolean(ViewData["4935c772"]))
                                             {

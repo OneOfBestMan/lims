@@ -152,15 +152,12 @@ namespace Web.Controllers
             DataTable dt = new DataTable();
             int total = 0;
             string strWhere = GetWhere(ePageParameter);
-            try
-            {
+            
                 //dt = tTestReport.GetListByPage(strWhere, "UpdateTime DESC,T.SampleName ASC", pageNumber * pageSize - (pageSize - 1), pageNumber * pageSize, ref total).Tables[0];
                 int startindex = ePageParameter.pageindex * ePageParameter.pagesize + 1;
                 int endindex = (ePageParameter.pageindex + 1) * ePageParameter.pagesize;
                 dt = tTestReport.GetListByPage(strWhere, "TestTime DESC", startindex, endindex, ref total).Tables[0];
-            }
-            catch { }
-
+            
             if (dt != null && dt.Rows.Count > 0)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -228,17 +225,21 @@ namespace Web.Controllers
                 //ViewData["RecordSelect"] = tOriginalRecord.GetList("RecordID in (" + eTestReport.RecordIDS + ")").Tables[0];
                 ViewData["ReportDataList"] = tTestReportData.GetList("ReportID=" + eTestReport.ReportID).Tables[0]; //检验数据
 
+                E_tb_InPersonnel eInPersonnel = null;
                 if (eTestReport.ApprovalPersonnelID != null && eTestReport.ApprovalPersonnelID > 0)
                 {
-                    eTestReport.ApprovalPersonnelName = tInPersonnel.GetModel(Convert.ToInt32(eTestReport.ApprovalPersonnelID)).PersonnelName;
+                    eInPersonnel = tInPersonnel.GetModel(Convert.ToInt32(eTestReport.ApprovalPersonnelID));
+                    eTestReport.ApprovalPersonnelName = (eInPersonnel != null ? eInPersonnel.PersonnelName : "");
                 }
                 if (eTestReport.examinePersonnelID != null && eTestReport.examinePersonnelID > 0)
                 {
-                    eTestReport.examinePersonnelName = tInPersonnel.GetModel(Convert.ToInt32(eTestReport.examinePersonnelID)).PersonnelName;
+                    eInPersonnel = tInPersonnel.GetModel(Convert.ToInt32(eTestReport.examinePersonnelID));
+                    eTestReport.examinePersonnelName = (eInPersonnel != null ? eInPersonnel.PersonnelName : "");
                 }
                 if (eTestReport.MainTestPersonnelID != null && eTestReport.MainTestPersonnelID > 0)
                 {
-                    eTestReport.MainTestPersonnelName = tInPersonnel.GetModel(Convert.ToInt32(eTestReport.MainTestPersonnelID)).PersonnelName;
+                    eInPersonnel = tInPersonnel.GetModel(Convert.ToInt32(eTestReport.MainTestPersonnelID));
+                    eTestReport.MainTestPersonnelName = (eInPersonnel != null ? eInPersonnel.PersonnelName : "");
                 }
                 if (string.IsNullOrEmpty(eTestReport.Explain))
                 {
@@ -253,7 +254,8 @@ namespace Web.Controllers
                     {
                         try
                         {
-                            var _areaid = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(eTestReport.MainTestPersonnelID.Value).AreaID;
+                            eInPersonnel = tInPersonnel.GetModel(eTestReport.MainTestPersonnelID.Value);
+                            var _areaid = (eInPersonnel != null ? eInPersonnel.AreaID : 0);
                             if (_areaid > 0)
                             {
                                 switch (_areaid)
@@ -433,7 +435,7 @@ namespace Web.Controllers
             //结论
             DataTable TestReportDataDT = tTestReportData.GetList("ReportID=" + eTestReport.ReportID + " and QualifiedLevel=''").Tables[0];
             eTestReport.EditPersonnelID = CurrentUserInfo.PersonnelID;
-            eTestReport.AreaID = new BLL.PersonnelManage.T_tb_InPersonnel().GetModel(eTestReport.MainTestPersonnelID.Value).AreaID;
+            eTestReport.AreaID = tInPersonnel.GetModel(eTestReport.MainTestPersonnelID.Value).AreaID;
             eTestReport.RecordIDS = eTestReport.RecordIDS.TrimEnd(',');
             eTestReport.TaskNoS = eTestReport.TaskNoS.TrimEnd(',');
             eTestReport.UpdateTime = DateTime.Now;

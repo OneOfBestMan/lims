@@ -172,7 +172,7 @@ namespace Web.Controllers
             ViewData["InsStandList"] = InsStandList;
             return View(eOriginalRecord);
         }
-        
+
         /// <summary>
         /// 删除实验室信息
         /// </summary>
@@ -205,7 +205,7 @@ namespace Web.Controllers
 
             return Json(new { result = result, msg = "修改成功！" });
         }
-        
+
         /// <summary>
         /// 更新检验报告
         /// </summary>
@@ -219,7 +219,7 @@ namespace Web.Controllers
             tb_Sample eSample = tSample.GetModel(eOriginalRecord.SampleID.Value);
             string productNum = eSample.protNum;//产品批次
             E_tb_TestReport eTestReport = null;
-            var tempmodel = tTestReport.GetModelList(" SampleNum = '" + eSample.sampleNum + "'");
+            var tempmodel = tTestReport.GetModelList(" A.SampleNum = '" + eSample.sampleNum + "'");
             if (tempmodel != null && tempmodel.Count > 0)
             {
                 eTestReport = tempmodel.First();
@@ -242,8 +242,8 @@ namespace Web.Controllers
                 }
                 else
                 {
-                    var clint = new BLL.ClientManage.T_tb_ClientManage().GetModel(Convert.ToInt32(eSample.InspectCompany));
-                    Department = clint.ClientName;
+                    var client = new BLL.ClientManage.T_tb_ClientManage().GetModel(Convert.ToInt32(eSample.InspectCompany));
+                    Department = (client != null ? client.ClientName : "");
                 }
                 eTestReport.Department = Department;//送/抽检单位
                 eTestReport.SendTestAddress = eSample.InspectAddress;//送检单位地址
@@ -389,11 +389,11 @@ namespace Web.Controllers
                                     // 正则表达式剔除非数字字符（不包含小数点.） 
                                     str = Regex.Replace(str, @"[^\d.\d]", "");
                                     // 如果是数字，则转换为decimal类型 
-                                    if (Regex.IsMatch(str, @"^[+-]?\d*[.]?\d*$"))
+                                    if (Regex.IsMatch(str, @"^[+-]?\d*[.]?\d*$") && !string.IsNullOrEmpty(str))
                                     {
                                         result = int.Parse(str);
                                     }
-                                    if (!String.IsNullOrEmpty(eTestReportData.TestResult))
+                                    if (!String.IsNullOrEmpty(eTestReportData.TestResult) && !string.IsNullOrEmpty(str))
                                     {
                                         Decimal _testResult = Convert.ToDecimal(eTestReportData.TestResult);
                                         if (_testResult <= result)
@@ -414,9 +414,9 @@ namespace Web.Controllers
             }
             return Json(new { result = true, msg = "更新成功！" }, JsonRequestBehavior.AllowGet);
         }
-        
+
         //*********************************原有代码****************************************************
-        
+
         /// <summary>
         /// 阅览文件
         /// 作者：章建国
@@ -520,6 +520,6 @@ namespace Web.Controllers
             ViewBag._SWFURL = filename;
             return View();
         }
-        
+
     }
 }

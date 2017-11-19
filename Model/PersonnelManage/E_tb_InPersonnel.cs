@@ -11,9 +11,6 @@ namespace Model.PersonnelManage
     [Serializable]
     public partial class E_tb_InPersonnel
     {
-        public E_tb_InPersonnel()
-        { }
-        #region Model
         private int _personnelid;
         private int? _areaid;
         private string _personnelname;
@@ -149,9 +146,7 @@ namespace Model.PersonnelManage
             set { _password = value; }
             get { return _password; }
         }
-        #endregion Model
-
-        #region 数据接口
+       
         /// <summary>
         /// 编辑类型
         /// </summary>
@@ -179,7 +174,8 @@ namespace Model.PersonnelManage
         /// 所属角色名称
         /// </summary>
         public string rolename { get; set; }
-        #endregion
+
+        public int isdelete { get; set; } = 0;
 
     }
 }

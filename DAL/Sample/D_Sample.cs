@@ -324,5 +324,40 @@ namespace DAL.Sample
                 return (count > 0);
             }
         }
+
+        /// <summary>
+        /// 验证样品编号是否存在
+        /// </summary>
+        /// <param name="SampleNum">样品编号</param>
+        /// <returns>返回是否已存在</returns>
+        public bool IsExistsSampleNum(string SampleNum,int SampleID=0)
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append(@"select id from tb_Sample where sampleNum=@SampleNum");
+            if(SampleID>0)
+            {
+                strSql.Append(" and id!=@SampleID");
+            }
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                List<tb_Sample> list = conn.Query<tb_Sample>(strSql.ToString(), new { SampleNum = SampleNum, SampleID = SampleID }).ToList();
+                return list != null && list.Count > 0;
+            }
+        }
+
+        /// <summary>
+        /// 获取样品抽样地址集合
+        /// </summary>
+        public List<string> GetDetectionAdressList()
+        {
+            List<string> list = new List<string>();
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append(@"select detectionAdress from tb_Sample group by detectionAdress having detectionAdress is not null and detectionAdress<>''");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                list = conn.Query<string>(strSql.ToString()).ToList();
+                return list;
+            }
+        }
     }
 }

@@ -98,6 +98,14 @@ namespace Web.Controllers
         {
             bool result = false;
             string msg = "";
+
+            //判断样品编号是否已存在
+            if (_dSample.IsExistsSampleNum(eSample.sampleNum, eSample.id))
+            {
+                msg = "样品编号已存在，请更换样品编号！";
+                return Json(new { result = result, msg = msg }, JsonRequestBehavior.AllowGet);
+            }
+
             eSample.updateUser = CurrentUserInfo.PersonnelID;
             eSample.updateDate = DateTime.Now;
             if (eSample.id > 0)//若存在数据，执行更新

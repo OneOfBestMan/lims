@@ -18,6 +18,7 @@ using DAL.Statistics;
 using Model.Statistics;
 using BLL.RoleManage;
 using Model.RoleManage;
+using DAL.Sample;
 
 namespace Web.Controllers
 {
@@ -28,6 +29,7 @@ namespace Web.Controllers
         D_tb_DetectProject dDetectProject = new D_tb_DetectProject();
         D_Statistics dStatistics = new D_Statistics(); //统计
         D_tb_Area dArea = new D_tb_Area(); //区域
+        D_Sample dSample = new D_Sample();//样品管理
 
         //
         // GET: /ExpeStatistics/
@@ -51,6 +53,7 @@ namespace Web.Controllers
 
             ViewBag.AreaList = new D_tb_Area().GetList();
             ViewBag.ClientManageList = new D_tb_ClientManage().GetList();
+            ViewBag.detectionAdressList = dSample.GetDetectionAdressList();
             return View();
         }
 
@@ -103,11 +106,16 @@ namespace Web.Controllers
 
             if (!string.IsNullOrEmpty(eSearchParameter.GHS))  //检验单位
             {
-                strWhere.AddWhere("T.GHS like '" + eSearchParameter.GHS + "'");
+                strWhere.AddWhere("GHS like '" + eSearchParameter.GHS + "'");
             }
             if (!string.IsNullOrEmpty(eSearchParameter.Department)) //抽送检单位
             {
-                strWhere.AddWhere("T.Department like '" + eSearchParameter.Department + "'");
+                strWhere.AddWhere("Department like '" + eSearchParameter.Department + "'");
+            }
+
+            if(!string.IsNullOrEmpty(eSearchParameter.DetectionAdress))//抽样地址
+            {
+                strWhere.AddWhere("DetectionAdress='" + eSearchParameter.DetectionAdress + "'");
             }
 
             if (!string.IsNullOrEmpty(eSearchParameter.txt_search))
@@ -167,11 +175,15 @@ namespace Web.Controllers
             StringBuilder strWhere = new StringBuilder();
             if (!string.IsNullOrEmpty(eSearchParameter.GHS))  //检验单位
             {
-                strWhere.AddWhere("T.GHS like '%" + eSearchParameter.GHS + "%'");
+                strWhere.AddWhere("GHS like '%" + eSearchParameter.GHS + "%'");
             }
             if (!string.IsNullOrEmpty(eSearchParameter.Department)) //抽送检单位
             {
-                strWhere.AddWhere("T.Department like '%" + eSearchParameter.Department + "%'");
+                strWhere.AddWhere("Department like '%" + eSearchParameter.Department + "%'");
+            }
+            if (!string.IsNullOrEmpty(eSearchParameter.DetectionAdress))//抽样地址
+            {
+                strWhere.AddWhere("DetectionAdress='" + eSearchParameter.DetectionAdress + "'");
             }
 
             if (!string.IsNullOrEmpty(eSearchParameter.txt_search))
@@ -213,10 +225,6 @@ namespace Web.Controllers
         /// </summary>
         public ActionResult UnfinishedWorkList()
         {
-            //List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics();
-            //ViewBag.ExpePlanStatisticslist = ExpePlanStatisticslist;
-            //List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportMonthDataStatistics();
-            //ViewBag.TestReportMonthDataStatisticslist = TestReportMonthDataStatisticslist;
             ViewBag.AreaList = dArea.GetList();
             return View("~/views/ExpeStatistics/UnfinishedWorkList.cshtml");
         }
@@ -353,30 +361,7 @@ namespace Web.Controllers
                 serieslist.Add(new E_Series() { name = (year+"年"), data = dataitem }); 
             }
             return Json(new { namearray = namearray, dataarray = dataarray, serieslist = serieslist }, JsonRequestBehavior.AllowGet);
-
-
-            //List<E_TestReportDataStatistics> TestReportMonthDataStatisticslist = dStatistics.GetTestReportDayDataStatistics(starttime, endtime);
-            //List<string> dataarray = new List<string>();
-            //List<int> examinearray = new List<int>();
-            //List<int> approvalarray = new List<int>();
-            //DateTime time = starttime;
-            //while (time < endtime)
-            //{
-            //    dataarray.Add(time.ToString("MM月dd日"));
-            //    E_TestReportDataStatistics model = TestReportMonthDataStatisticslist.Where(p => p.updatetime == time.ToString("yyyy-MM-dd")).FirstOrDefault();
-            //    if (model != null)
-            //    {
-            //        examinearray.Add(model.examinecount);
-            //        approvalarray.Add(model.approvalcount);
-            //    }
-            //    else
-            //    {
-            //        examinearray.Add(0);
-            //        approvalarray.Add(0);
-            //    }
-            //    time = time.AddDays(1);
-            //}
-            //return Json(new { dataarray= dataarray, examinearray= examinearray, approvalarray= approvalarray },JsonRequestBehavior.AllowGet);
+            
         }
 
     }

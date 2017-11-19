@@ -157,7 +157,7 @@ namespace DAL.PersonnelManage
         {
 
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("delete from tb_InPersonnel ");
+            strSql.Append("update tb_InPersonnel set isdelete=1");
             strSql.Append(" where PersonnelID=@PersonnelID");
             SqlParameter[] parameters = {
 					new SqlParameter("@PersonnelID", SqlDbType.Int,4)
@@ -180,7 +180,7 @@ namespace DAL.PersonnelManage
         public bool DeleteList(string PersonnelIDlist)
         {
             StringBuilder strSql = new StringBuilder();
-            strSql.Append("delete from tb_InPersonnel ");
+            strSql.Append("update tb_InPersonnel set isdelete=1");
             strSql.Append(" where PersonnelID in (" + PersonnelIDlist + ")  ");
             int rows = DbHelperSQL.ExecuteSql(strSql.ToString());
             if (rows > 0)
@@ -287,10 +287,10 @@ namespace DAL.PersonnelManage
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("select PersonnelID,AreaID,PersonnelName,Department,Sex,Birthday,Educational,Title,Post,WorkingTime,Description,Tel,CID,UserName,PassWord ");
-            strSql.Append(" FROM tb_InPersonnel ");
+            strSql.Append(" FROM tb_InPersonnel where isdelete=0 ");
             if (strWhere.Trim() != "")
             {
-                strSql.Append(" where " + strWhere);
+                strSql.Append(" and " + strWhere);
             }
             return DbHelperSQL.Query(strSql.ToString());
         }
@@ -307,10 +307,10 @@ namespace DAL.PersonnelManage
                 strSql.Append(" top " + Top.ToString());
             }
             strSql.Append(" PersonnelID,AreaID,PersonnelName,Department,Sex,Birthday,Educational,Title,Post,WorkingTime,Description,Tel,CID,UserName,PassWord ");
-            strSql.Append(" FROM tb_InPersonnel ");
+            strSql.Append(" FROM tb_InPersonnel where isdelete=0 ");
             if (strWhere.Trim() != "")
             {
-                strSql.Append(" where " + strWhere);
+                strSql.Append(" and " + strWhere);
             }
             strSql.Append(" order by " + filedOrder);
             return DbHelperSQL.Query(strSql.ToString());
@@ -349,10 +349,10 @@ namespace DAL.PersonnelManage
             {
                 strSql.Append("order by T.PersonnelID desc");
             }
-            strSql.Append(")AS Row, T.*  from tb_InPersonnel T ");
+            strSql.Append(")AS Row, T.*  from tb_InPersonnel T where T.isdelete=0");
             if (!string.IsNullOrEmpty(strWhere.Trim()))
             {
-                strSql.Append(" WHERE " + strWhere);
+                strSql.Append(" and " + strWhere);
             }
             strSql.Append(" ) TT");
             total = DbHelperSQL.GetCount(strSql.ToString());
@@ -367,7 +367,7 @@ namespace DAL.PersonnelManage
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append("select top 1 A.*,C.DataRange,C.RoleName from tb_InPersonnel as A join tb_UserRole as B  on A.PersonnelID=B.PersonnelID join tb_Role as C on B.RoleID=C.RoleID");
-            strSql.Append(" where A.UserName=@UserName and A.PassWord=@PassWord");
+            strSql.Append(" where A.isdelete=0 and A.UserName=@UserName and A.PassWord=@PassWord");
 
             E_tb_InPersonnel model = null;
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
@@ -389,6 +389,7 @@ namespace DAL.PersonnelManage
 
             //拼接查询条件
             StringBuilder strwhere = new StringBuilder();
+            strwhere.AddWhere($"isdelete=0"); //未删除数据
             if (model.AreaID > 0) //区域ID
             {
                 strwhere.AddWhere($"AreaID={model.AreaID}");

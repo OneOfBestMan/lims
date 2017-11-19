@@ -344,7 +344,7 @@ namespace DAL.Laboratory
                 strSql.Append("order by T.DetectTime desc");
             }
             strSql.Append(@")AS Row,  T.*");
-            strSql.Append(@"from (SELECT     
+            strSql.Append($@"from (SELECT     
 		                                dbo.tb_Sample.name,			--样品名称
 		                                dbo.tb_Project.ProjectName, --项目名称
 		                                count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel,  --检验次数
@@ -360,6 +360,7 @@ namespace DAL.Laboratory
 		                                     INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID --检验报告数据
 		                                     INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID --检验报告
 		                                     INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId   --区域
+                                             {strWhere.Trim()}
 		                                group by 
 		                                     dbo.tb_Sample.name, 
 		                                     dbo.tb_Project.ProjectName, 
@@ -368,10 +369,6 @@ namespace DAL.Laboratory
 		                                     dbo.tb_TestReport.Department,
 		                                     dbo.tb_Area.TestReportName
 	                                        ) T ");
-            if (!string.IsNullOrEmpty(strWhere.Trim()))
-            {
-                strSql.Append(strWhere);
-            }
             strSql.Append(" ) TT");
             total = DbHelperSQL.GetCount(strSql.ToString());
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
@@ -434,6 +431,7 @@ FROM         dbo.tb_Sample INNER JOIN
 	                            INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
 	                            INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
 	                            INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId   --区域
+                                {strWhere.ToString()}
 	                            group by 
 	                            dbo.tb_Sample.name, 
 	                            dbo.tb_Project.ProjectName, 
@@ -441,7 +439,7 @@ FROM         dbo.tb_Sample INNER JOIN
 	                            dbo.tb_OriginalRecord.DetectTime,
 	                            dbo.tb_TestReport.Department,
 	                            dbo.tb_Area.TestReportName
-                            ) as T {strWhere.ToString()}");
+                            ) as T");
             
             DataSet ds = DbHelperSQL.Query(strSql.ToString());
             if (ds != null && ds.Tables != null && ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0)
@@ -479,6 +477,7 @@ FROM         dbo.tb_Sample INNER JOIN
 			                            INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
 			                            INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
 			                            INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId 
+                                        {strWhere}
 		                            group by 
 			                            dbo.tb_Sample.name, 
 			                            dbo.tb_Project.ProjectName, 
@@ -487,7 +486,6 @@ FROM         dbo.tb_Sample INNER JOIN
 			                            dbo.tb_TestReport.Department,
 			                            dbo.tb_Area.TestReportName
 	                            ) T  
-	                            {strWhere}
                             ) TT");
 
             return DbHelperSQL.Query(strSql.ToString());

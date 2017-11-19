@@ -376,12 +376,13 @@ namespace DAL.ExpePlan
             StringBuilder strSql = new StringBuilder();
             strSql.Append($@"
                 SELECT * FROM (  
-                    SELECT ROW_NUMBER() OVER ({order})AS Row, T.*,A.ProjectName,B.PersonnelName as HeadPersonnelName,C.name as SampleName,D.RecordID 
+                    SELECT ROW_NUMBER() OVER ({order})AS Row, T.*,A.ProjectName,B.PersonnelName as HeadPersonnelName,C.name as SampleName,D.RecordID,E.ReportID
                     from tb_ExpePlan T  
                     left join tb_Project as A on T.ProjectID=A.ProjectID
                     left join tb_InPersonnel as B on T.HeadPersonnelID=B.PersonnelID 
                     left join tb_Sample as C on T.SampleID=C.id
                     left join tb_OriginalRecord as D on T.TaskNo=D.TaskNo
+                    left join tb_TestReport as E on E.SampleNum=C.SampleNum
                     {strWhere}
                 ) TT
             ");
@@ -389,25 +390,7 @@ namespace DAL.ExpePlan
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
             return DbHelperSQL.Query(strSql.ToString());
         }
-
-        /// <summary>
-        /// 根据实验计划ID集合更新计划完成状态
-        /// </summary>
-        /// <param name="PlanIDS"></param>
-        /// <returns></returns>
-        //public int UpdateStatusByPlanIDS(string PlanIDS,int ReportID)
-        //{
-        //    //更新委托检验状态
-        //    StringBuilder str = new StringBuilder();
-        //    str.Append("update tb_EntrustTesting set IsComplete=1,ReportID=" + ReportID + " where TaskNo in (select TaskNo from tb_ExpePlan where PlanTypeID=2 and PlanID in (" + PlanIDS + "))");
-        //    DbHelperSQL.ExecuteSql(str.ToString());
-
-        //    //更新检验计划状态
-        //    StringBuilder strSql = new StringBuilder();
-        //    strSql.Append("Update tb_ExpePlan set Status=1 where PlanID in (" + PlanIDS + ")");
-        //    return DbHelperSQL.ExecuteSql(strSql.ToString());
-        //}
-
+        
         /// <summary>
         /// 检查是已存在该任务单号
         /// </summary>
