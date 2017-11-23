@@ -52,6 +52,7 @@
                         <div class="input-group">
                             <span class="input-group-addon">月份</span>
                             <select class="form-control" id="dropMonth" name="month">
+                                <option value="0">全年</option>
                                 @{
                                     for (int i = 1; i <= 12; i++)
                                     {
@@ -77,18 +78,6 @@
                             </tr>
                         </thead>
                         <tbody id="tbody_ExpePlanStatisticslist">
-                            @*@{
-                                var ExpePlanStatisticslist = ViewBag.ExpePlanStatisticslist as List<E_ExpePlanStatistics>;
-                                foreach (var item in ExpePlanStatisticslist)
-                                {
-                                    <tr>
-                                        <td>@item.headpersonnename</td>
-                                        <td><a href="/ExpePlan/ExpePlanList?headpersonnelid=@item.headpersonnelid&status=1">@item.completed</a></td>
-                                        <td><a href="/ExpePlan/ExpePlanList?headpersonnelid=@item.headpersonnelid&status=2">@item.notcompleted</a></td>
-                                        <td><a href="javascript:void(0)">查看统计</a></td>
-                                    </tr>
-                                }
-                            }*@
                         </tbody>
                     </table>
                 </div>
@@ -214,7 +203,12 @@
         var month = $("#dropMonth").val();
         var starttime = year + "-" + month + "-01";
         var endtime = year + "-" + (parseInt(month) + 1) + "-01";
-        if (parseInt(month) == 12)
+        if (parseInt(month) == 0)
+        {
+            starttime = "";
+            endtime = "";
+        }
+        else if (parseInt(month) == 12)
         {
             endtime = (parseInt(year) + 1) + "-01-01";
         }

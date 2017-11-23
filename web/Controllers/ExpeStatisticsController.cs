@@ -250,7 +250,7 @@ namespace Web.Controllers
         /// <summary>
         /// 获取实验计划统计
         /// </summary>
-        public JsonResult ExpePlanStatistics(int areaid, int headpersonnelid, DateTime starttime, DateTime endtime)
+        public JsonResult ExpePlanStatistics(int areaid, int headpersonnelid, DateTime? starttime, DateTime? endtime)
         {
             List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics(areaid, headpersonnelid, starttime, endtime);
             return Json(new

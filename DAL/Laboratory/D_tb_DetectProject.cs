@@ -297,8 +297,7 @@ namespace DAL.Laboratory
         }*/
 
         #endregion  Method
-
-        #region 数据接口
+            
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -327,57 +326,52 @@ namespace DAL.Laboratory
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
             return DbHelperSQL.Query(strSql.ToString());
         }
-
-
-
+        
         public DataSet GetListByReport(string strWhere, string orderby, int startIndex, int endIndex, ref int total)
         {
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append("SELECT * FROM ( ");
-            strSql.Append(" SELECT ROW_NUMBER() OVER (");
+            string ordersql = "";
             if (!string.IsNullOrEmpty(orderby.Trim()))
             {
-                strSql.Append("order by T." + orderby);
+                ordersql="order by " + orderby;
             }
             else
             {
-                strSql.Append("order by T.DetectTime desc");
+                ordersql = "order by DetectTime desc";
             }
-            strSql.Append(@")AS Row,  T.*");
-            strSql.Append($@"from (SELECT     
-		                                dbo.tb_Sample.name,			--样品名称
-		                                dbo.tb_Project.ProjectName, --项目名称
-		                                count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel,  --检验次数
-		                                sum(case when dbo.tb_TestReportData.QualifiedLevel =  '合格' then 1 else 0 end) as QualifiedLevelA, --合格个数
-		                                sum(case when dbo.tb_TestReportData.QualifiedLevel != '合格' then 1 else 0 end) as QualifiedLevelB, --非合格个数
-		                                dbo.tb_TestReportData.TestPersonnelName,  --检验人名称
-		                                dbo.tb_OriginalRecord.DetectTime,   --检验日期
-		                                dbo.tb_TestReport.Department,		--送/抽检单位
-		                                dbo.tb_Area.TestReportName as GHS	--检验中心名称
-                                        FROM dbo.tb_Sample 
-		                                     INNER JOIN dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID		--原始记录
-		                                     INNER JOIN dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID		--检验项目
-		                                     INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID --检验报告数据
-		                                     INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID --检验报告
-		                                     INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId   --区域
-                                             {strWhere.Trim()}
-		                                group by 
-		                                     dbo.tb_Sample.name, 
-		                                     dbo.tb_Project.ProjectName, 
-		                                     dbo.tb_TestReportData.TestPersonnelName, 
-		                                     dbo.tb_OriginalRecord.DetectTime,
-		                                     dbo.tb_TestReport.Department,
-		                                     dbo.tb_Area.TestReportName
-	                                        ) T ");
-            strSql.Append(" ) TT");
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"select * from 
+                            (
+	                            SELECT  ROW_NUMBER() OVER ({ordersql})AS Row,
+			                            name,        --样品名称
+			                            ProjectName, --项目名称
+			                            count(QualifiedLevel) as QualifiedLevel,  --检验次数
+			                            sum(case when QualifiedLevel =  '合格' then 1 else 0 end) as QualifiedLevelA, --合格个数
+			                            sum(case when QualifiedLevel != '合格' then 1 else 0 end) as QualifiedLevelB, --非合格个数
+			                            TestPersonnelName,  --检验人名称
+			                            DetectTime,   --检验日期
+			                            Department,	  --送/抽检单位
+			                            GHS	--检验中心名称
+	                            FROM
+	                            (
+		                            select * from
+		                            (
+			                            select A.name,A.DetectionAdress,C.ProjectName,D.QualifiedLevel,D.TestPersonnelName,B.DetectTime,E.Department,F.TestReportName as GHS
+			                            FROM dbo.tb_Sample as A
+				                             INNER JOIN dbo.tb_OriginalRecord as B ON A.id = B.SampleID		--原始记录
+				                             INNER JOIN dbo.tb_Project as C ON B.ProjectID = C.ProjectID		--检验项目
+				                             INNER JOIN dbo.tb_TestReportData as D ON B.RecordID = D.RecordID --检验报告数据
+				                             INNER JOIN dbo.tb_TestReport as E ON E.ReportID = D.ReportID --检验报告
+				                             INNER JOIN dbo.tb_Area as F ON F.AreaId = E.AreaId   --区域
+		                            ) as T1
+		                            {strWhere}
+	                            ) as T2
+	                            group by name,ProjectName,TestPersonnelName,DetectTime,Department,GHS
+                            ) as TT");
             total = DbHelperSQL.GetCount(strSql.ToString());
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
             return DbHelperSQL.Query(strSql.ToString());
         }
-        #endregion
-
-
-
+      
         public int GetListCountForReport(DataRow dr,string isPass)
         {
             int count = 0;
@@ -415,30 +409,31 @@ FROM         dbo.tb_Sample INNER JOIN
             StringBuilder strSql = new StringBuilder();
             strSql.Append($@"select sum(QualifiedLevel) as QualifiedLevel,sum(QualifiedLevelA) as QualifiedLevelA,sum(QualifiedLevelB) as QualifiedLevelB from 
                             (
-	                            SELECT    
-	                            count(dbo.tb_TestReportData.QualifiedLevel) as QualifiedLevel,
-                                sum(case when dbo.tb_TestReportData.QualifiedLevel='合格' then 1 else 0 end) as QualifiedLevelA,
-	                            sum(case when dbo.tb_TestReportData.QualifiedLevel <>'合格' then 1 else 0 end) as QualifiedLevelB,
-	                            dbo.tb_Sample.name, 
-	                            dbo.tb_Project.ProjectName, 
-	                            dbo.tb_TestReportData.TestPersonnelName, 
-	                            dbo.tb_OriginalRecord.DetectTime,
-	                            dbo.tb_TestReport.Department,
-	                            dbo.tb_Area.TestReportName as GHS
-	                            FROM dbo.tb_Sample 
-	                            INNER JOIN dbo.tb_OriginalRecord ON dbo.tb_Sample.id = dbo.tb_OriginalRecord.SampleID 
-	                            INNER JOIN dbo.tb_Project ON dbo.tb_OriginalRecord.ProjectID = dbo.tb_Project.ProjectID 
-	                            INNER JOIN dbo.tb_TestReportData ON dbo.tb_OriginalRecord.RecordID = dbo.tb_TestReportData.RecordID
-	                            INNER JOIN dbo.tb_TestReport ON dbo.tb_TestReport.ReportID = dbo.tb_TestReportData.ReportID
-	                            INNER JOIN dbo.tb_Area ON dbo.tb_Area.AreaId = dbo.tb_TestReport.AreaId   --区域
-                                {strWhere.ToString()}
-	                            group by 
-	                            dbo.tb_Sample.name, 
-	                            dbo.tb_Project.ProjectName, 
-	                            dbo.tb_TestReportData.TestPersonnelName, 
-	                            dbo.tb_OriginalRecord.DetectTime,
-	                            dbo.tb_TestReport.Department,
-	                            dbo.tb_Area.TestReportName
+	                            SELECT  ROW_NUMBER() OVER (order by DetectTime desc)AS Row,
+			                            name,			--样品名称
+			                            ProjectName, --项目名称
+			                            count(QualifiedLevel) as QualifiedLevel,  --检验次数
+			                            sum(case when QualifiedLevel =  '合格' then 1 else 0 end) as QualifiedLevelA, --合格个数
+			                            sum(case when QualifiedLevel != '合格' then 1 else 0 end) as QualifiedLevelB, --非合格个数
+			                            TestPersonnelName,  --检验人名称
+			                            DetectTime,   --检验日期
+			                            Department,		--送/抽检单位
+			                            GHS	--检验中心名称
+	                            FROM
+	                            (
+		                            select * from
+		                            (
+			                            select A.name,A.DetectionAdress,C.ProjectName,D.QualifiedLevel,D.TestPersonnelName,B.DetectTime,E.Department,F.TestReportName as GHS
+			                            FROM dbo.tb_Sample as A
+				                             INNER JOIN dbo.tb_OriginalRecord as B ON A.id = B.SampleID		--原始记录
+				                             INNER JOIN dbo.tb_Project as C ON B.ProjectID = C.ProjectID		--检验项目
+				                             INNER JOIN dbo.tb_TestReportData as D ON B.RecordID = D.RecordID --检验报告数据
+				                             INNER JOIN dbo.tb_TestReport as E ON E.ReportID = D.ReportID --检验报告
+				                             INNER JOIN dbo.tb_Area as F ON F.AreaId = E.AreaId   --区域
+		                            ) as T1
+		                            {strWhere}
+	                            ) as T2
+	                            group by name,ProjectName,TestPersonnelName,DetectTime,Department,GHS
                             ) as T");
             
             DataSet ds = DbHelperSQL.Query(strSql.ToString());
