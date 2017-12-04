@@ -241,8 +241,14 @@ namespace Web.Controllers
         /// <summary>
         /// 获取实验计划统计数据列表
         /// </summary>
-        public JsonResult GetExpePlanList(int areaid, int headpersonnelid, DateTime? starttime, DateTime? endtime)
+        public JsonResult GetExpePlanList(int areaid, int headpersonnelid, DateTime? starttime, DateTime? endtime,int? year)
         {
+            if (starttime == null && endtime == null && year != null)
+            {
+                starttime = Convert.ToDateTime(year + "-01-01");
+                endtime = Convert.ToDateTime(starttime).AddYears(1);
+            }
+
             List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatistics(areaid, headpersonnelid, starttime, endtime);
             return Json(ExpePlanStatisticslist, JsonRequestBehavior.AllowGet);
         }

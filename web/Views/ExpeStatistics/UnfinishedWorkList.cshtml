@@ -212,7 +212,7 @@
         {
             endtime = (parseInt(year) + 1) + "-01-01";
         }
-        var data = "areaid=" + areaid + "&headpersonnelid=0&starttime=" + starttime + "&endtime=" + endtime;
+        var data = "areaid=" + areaid + "&headpersonnelid=0&starttime=" + starttime + "&endtime=" + endtime + "&year=" + year;
         $.getJSON("/ExpeStatistics/GetExpePlanList?" + data, function (result) {
             var jsondata = eval(result);
             var html = "";
