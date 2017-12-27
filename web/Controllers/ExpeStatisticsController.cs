@@ -58,8 +58,7 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 获取所有数据列表
-        /// 作者：小朱
+        /// 获取所有数据列表---未找到引用
         /// </summary>
         /// <returns>将DataTable转换为Json数据格式通过string类型返回</returns>
         public string GetList(int pageNumber, int pageSize, string LaboratoryID, string StartTime, string EndTime)
@@ -96,6 +95,9 @@ namespace Web.Controllers
             return strJson;
         }
 
+        /// <summary>
+        /// 前台获取数据列表
+        /// </summary>
         public string GetListByReport(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
             DataTable dt = new DataTable();
@@ -169,6 +171,11 @@ namespace Web.Controllers
             return "{\"total\":" + total + ",\"rows\":" + JsonConvert.SerializeObject(dt) + ",\"footer\":" + JsonConvert.SerializeObject(dt2) + "}";
         }
 
+
+
+        /// <summary>
+        /// 时间统计-导出
+        /// </summary>
         public FileResult ExportReport(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
             //拼接查询条件
@@ -218,8 +225,7 @@ namespace Web.Controllers
             string filename = "实验统计列表" + DateTime.Now.ToFileTime() + ".xls";
             return File(stream, "application/vnd.ms-excel", filename);
         }
-
-
+        
         /// <summary>
         /// 未完成工作统计
         /// </summary>

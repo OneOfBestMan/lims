@@ -2008,7 +2008,7 @@
     <Content Include="Views\Drug\doDrugInfo.cshtml" />
     <Content Include="Views\ExpePlan\ExpePlanList.cshtml" />
     <Content Include="Views\ExpePlan\ExpePlanEdit.cshtml" />
-    <Content Include="Views\ExpeStatistics\ExpeStatisticsList.cshtml" />
+    <Content Include="Views\ExpeStatistics\ExpeStatisticsList_Old.cshtml" />
     <Content Include="Views\OriginalRecord\OriginalRecordList.cshtml" />
     <Content Include="Views\OriginalRecord\OriginalRecordEdit.cshtml" />
     <Content Include="Views\TestReport\TestReportList.cshtml" />

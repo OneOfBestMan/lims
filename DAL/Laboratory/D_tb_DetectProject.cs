@@ -14,9 +14,6 @@ namespace DAL.Laboratory
     /// </summary>
     public partial class D_tb_DetectProject
     {
-        public D_tb_DetectProject()
-        { }
-        #region  Method
         /// <summary>
         /// 是否存在该记录
         /// </summary>
@@ -32,8 +29,7 @@ namespace DAL.Laboratory
 
             return DbHelperSQL.Exists(strSql.ToString(), parameters);
         }
-
-
+        
         /// <summary>
         /// 增加一条数据
         /// </summary>
@@ -167,14 +163,12 @@ namespace DAL.Laboratory
                 return false;
             }
         }
-
-
+        
         /// <summary>
         /// 得到一个对象实体
         /// </summary>
         public E_tb_DetectProject GetModel(int ProjectID)
         {
-
             StringBuilder strSql = new StringBuilder();
             strSql.Append("select  top 1 ProjectID,LaboratoryID,RelationProjectID,TaskNo,ProjectName,DetectTime,HeadPersonnelID,MainPerson,Tel,UpdateTime from tb_DetectProject ");
             strSql.Append(" where ProjectID=@ProjectID");
@@ -270,33 +264,6 @@ namespace DAL.Laboratory
             strSql.Append(" order by " + filedOrder);
             return DbHelperSQL.Query(strSql.ToString());
         }
-
-        /*
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        public DataSet GetList(int PageSize,int PageIndex,string strWhere)
-        {
-            SqlParameter[] parameters = {
-                    new SqlParameter("@tblName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@fldName", SqlDbType.VarChar, 255),
-                    new SqlParameter("@PageSize", SqlDbType.Int),
-                    new SqlParameter("@PageIndex", SqlDbType.Int),
-                    new SqlParameter("@IsReCount", SqlDbType.Bit),
-                    new SqlParameter("@OrderType", SqlDbType.Bit),
-                    new SqlParameter("@strWhere", SqlDbType.VarChar,1000),
-                    };
-            parameters[0].Value = "tb_DetectProject";
-            parameters[1].Value = "ProjectID";
-            parameters[2].Value = PageSize;
-            parameters[3].Value = PageIndex;
-            parameters[4].Value = 0;
-            parameters[5].Value = 0;
-            parameters[6].Value = strWhere;	
-            return DbHelperSQL.RunProcedure("UP_GetRecordByPage",parameters,"ds");
-        }*/
-
-        #endregion  Method
             
         /// <summary>
         /// 分页获取数据列表
@@ -402,8 +369,7 @@ FROM         dbo.tb_Sample INNER JOIN
             }
             return count;
         }
-
-
+        
         public DataRow GetAllListCountForReport(string strWhere)
         {
             StringBuilder strSql = new StringBuilder();
