@@ -2189,6 +2189,7 @@
     <Content Include="Views\TestReport\Secrecy.cshtml" />
     <Content Include="Views\ExpeStatistics\UnfinishedWorkList.cshtml" />
     <Content Include="Views\ExpeStatistics\TestReportStatisticsList.cshtml" />
+    <Content Include="Views\ExpeStatistics\ExpeStatisticsList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

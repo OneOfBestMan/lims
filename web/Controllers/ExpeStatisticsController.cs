@@ -31,29 +31,38 @@ namespace Web.Controllers
         D_tb_Area dArea = new D_tb_Area(); //区域
         D_Sample dSample = new D_Sample();//样品管理
 
-        //
-        // GET: /ExpeStatistics/
-
-        public ActionResult ExpeStatisticsList()
+        /// <summary>
+        /// 实验统计列表
+        /// </summary>
+        public ActionResult ExpeStatisticsList(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
-            ViewData["ddl_company"] = PublicClass.GetAreaList("请选择", CurrentUserInfo.AreaID.Value);
-            List<SelectListItem> list = new List<SelectListItem>();
-            list.Add(new SelectListItem() { Text = "请选择", Value = "-1", Selected = true });
-            string strWhere = "";
-            if (CurrentUserInfo.DataRange != 1)
-            {
-                strWhere = "AreaID=" + CurrentUserInfo.AreaID;
-            }
-            List<E_tb_Laboratory> listmd = tLaboratory.GetModelList(strWhere);
-            foreach (E_tb_Laboratory item in listmd)
-            {
-                list.Add(new SelectListItem() { Text = item.LaboratoryName, Value = item.LaboratoryID.ToString() });
-            }
-            ViewData["LaboratoryList"] = new SelectList(list, "Value", "Text");
+            //页面查询项数据
+            ViewBag.AreaList = new D_tb_Area().GetList(); //检验单位
+            ViewBag.ClientManageList = new D_tb_ClientManage().GetList(); //送/抽检单位
+            ViewBag.detectionAdressList = dSample.GetDetectionAdressList(); //抽检单位
+            ViewBag.ePageParameter = eSearchParameter; //反选查询项
 
-            ViewBag.AreaList = new D_tb_Area().GetList();
-            ViewBag.ClientManageList = new D_tb_ClientManage().GetList();
-            ViewBag.detectionAdressList = dSample.GetDetectionAdressList();
+           //获取数据列表
+            DataTable dt = new DataTable();
+            int total = 0;
+            string strWhere = this.GetListByReportStrWhere(eSearchParameter);
+            int startindex = (eSearchParameter.page-1) * eSearchParameter.pageSize+1;
+            int endindex = eSearchParameter.page * eSearchParameter.pageSize;
+            dt = tDetectProject.GetListByReport(strWhere, "", startindex, endindex, ref total).Tables[0];
+            ViewBag.ReportListDt = dt;
+            ViewBag.page = Utils.ShowPage(total, eSearchParameter.pageSize, eSearchParameter.page, 10);
+
+            //本页合计
+            ViewBag.SumQualifiedLevel = dt.Compute("sum(QualifiedLevel)", "");
+            ViewBag.SumQualifiedLevelA = dt.Compute("sum(QualifiedLevelA)", "");
+            ViewBag.SumQualifiedLevelB = dt.Compute("sum(QualifiedLevelB)", "");
+
+            //总查询合计
+            DataRow row = dDetectProject.GetAllListCountForReport(strWhere.ToString());
+            ViewBag.TotalQualifiedLevel = row["QualifiedLevel"].ToString() == "" ? "0" : row["QualifiedLevel"].ToString();
+            ViewBag.TotalQualifiedLevelA = row["QualifiedLevelA"].ToString() == "" ? "0" : row["QualifiedLevelA"].ToString();
+            ViewBag.TotalQualifiedLevelB = row["QualifiedLevelB"].ToString() == "" ? "0" : row["QualifiedLevelB"].ToString();
+            
             return View();
         }
 
@@ -96,16 +105,11 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 前台获取数据列表
+        /// 获取查询条件
         /// </summary>
-        public string GetListByReport(E_ExpeStatisticsSearchParameter eSearchParameter)
+        public string GetListByReportStrWhere(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
-            DataTable dt = new DataTable();
-            int total = 0;
-
             StringBuilder strWhere = new StringBuilder();
-
-
             if (!string.IsNullOrEmpty(eSearchParameter.GHS))  //检验单位
             {
                 strWhere.AddWhere("GHS like '" + eSearchParameter.GHS + "'");
@@ -114,111 +118,43 @@ namespace Web.Controllers
             {
                 strWhere.AddWhere("Department like '" + eSearchParameter.Department + "'");
             }
-
             if(!string.IsNullOrEmpty(eSearchParameter.DetectionAdress))//抽样地址
             {
                 strWhere.AddWhere("DetectionAdress='" + eSearchParameter.DetectionAdress + "'");
             }
-
-            if (!string.IsNullOrEmpty(eSearchParameter.txt_search))
+            if (!string.IsNullOrEmpty(eSearchParameter.samplenum))//样品名称
             {
-                switch (eSearchParameter.ddl_type)
-                {
-                    case "ypmc":
-                        strWhere.AddWhere("name like '%" + eSearchParameter.txt_search + "%'");
-                        break;
-                    case "jyxm":
-                        strWhere.AddWhere("ProjectName like '%" + eSearchParameter.txt_search + "%'");
-                        break;
-                    case "jyr":
-                        strWhere.AddWhere("TestPersonnelName like '%" + eSearchParameter.txt_search + "%'");
-                        break;
-                }
+                strWhere.AddWhere("name like '%" + eSearchParameter.samplenum + "%'");
             }
-            if (!string.IsNullOrEmpty(eSearchParameter.txt_StartTime))
+            if (!string.IsNullOrEmpty(eSearchParameter.projectname))//检验项目
+            {
+                strWhere.AddWhere("ProjectName like '%" + eSearchParameter.projectname + "%'");
+            }
+            if (!string.IsNullOrEmpty(eSearchParameter.testpersonnelname))//检验人
+            {
+                strWhere.AddWhere("TestPersonnelName like '%" + eSearchParameter.testpersonnelname + "%'");
+            }
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_StartTime)) //检验开始日期
             {
                 strWhere.AddWhere("DetectTime >= '" + eSearchParameter.txt_StartTime + "'");
             }
-            if (!string.IsNullOrEmpty(eSearchParameter.txt_EndTime))
+            if (!string.IsNullOrEmpty(eSearchParameter.txt_EndTime)) //检验结束日期
             {
                 strWhere.AddWhere("DetectTime <= '" + eSearchParameter.txt_EndTime + "'");
             }
-
-
-            int startindex = eSearchParameter.pageNumber * eSearchParameter.pageSize - (eSearchParameter.pageSize - 1);
-            int endindex = eSearchParameter.pageNumber * eSearchParameter.pageSize;
-            dt = tDetectProject.GetListByReport(strWhere.ToString(), "", startindex, endindex, ref total).Tables[0];
-
-            //张伟修改，增加合计
-            DataTable dt2 = dt.Clone();
-            DataRow dr1 = dt2.NewRow();
-            dr1["name"] = "本页合计";
-            dr1["QualifiedLevel"] = dt.Compute("sum(QualifiedLevel)", "");
-            dr1["QualifiedLevelA"] = dt.Compute("sum(QualifiedLevelA)", "");
-            dr1["QualifiedLevelB"] = dt.Compute("sum(QualifiedLevelB)", "");
-            dt2.Rows.InsertAt(dr1, 0);
-
-            //总查询合计
-            DataRow dr2 = dt2.NewRow();
-            dr2["name"] = "总合计";
-
-            DataRow row = dDetectProject.GetAllListCountForReport(strWhere.ToString());
-            dr2["QualifiedLevel"] = row["QualifiedLevel"].ToString() == "" ? "0" : row["QualifiedLevel"].ToString();
-            dr2["QualifiedLevelA"] = row["QualifiedLevelA"].ToString() == "" ? "0" : row["QualifiedLevelA"].ToString();
-            dr2["QualifiedLevelB"] = row["QualifiedLevelB"].ToString() == "" ? "0" : row["QualifiedLevelB"].ToString();
-            dt2.Rows.InsertAt(dr2, 1);
-
-            return "{\"total\":" + total + ",\"rows\":" + JsonConvert.SerializeObject(dt) + ",\"footer\":" + JsonConvert.SerializeObject(dt2) + "}";
+            return strWhere.ToString();
         }
-
-
-
+        
         /// <summary>
         /// 时间统计-导出
         /// </summary>
         public FileResult ExportReport(E_ExpeStatisticsSearchParameter eSearchParameter)
         {
             //拼接查询条件
-            StringBuilder strWhere = new StringBuilder();
-            if (!string.IsNullOrEmpty(eSearchParameter.GHS))  //检验单位
-            {
-                strWhere.AddWhere("GHS like '%" + eSearchParameter.GHS + "%'");
-            }
-            if (!string.IsNullOrEmpty(eSearchParameter.Department)) //抽送检单位
-            {
-                strWhere.AddWhere("Department like '%" + eSearchParameter.Department + "%'");
-            }
-            if (!string.IsNullOrEmpty(eSearchParameter.DetectionAdress))//抽样地址
-            {
-                strWhere.AddWhere("DetectionAdress='" + eSearchParameter.DetectionAdress + "'");
-            }
-
-            if (!string.IsNullOrEmpty(eSearchParameter.txt_search))
-            {
-                switch (eSearchParameter.ddl_type)
-                {
-                    case "ypmc":
-                        strWhere.AddWhere("name like '%" + eSearchParameter.txt_search + "%'");
-                        break;
-                    case "jyxm":
-                        strWhere.AddWhere("ProjectName like '%" + eSearchParameter.txt_search + "%'");
-                        break;
-                    case "jyr":
-                        strWhere.AddWhere("TestPersonnelName like '%" + eSearchParameter.txt_search + "%'");
-                        break;
-                }
-            }
-            if (!string.IsNullOrEmpty(eSearchParameter.txt_StartTime))
-            {
-                strWhere.AddWhere("DetectTime >= '" + eSearchParameter.txt_StartTime + "'");
-            }
-            if (!string.IsNullOrEmpty(eSearchParameter.txt_EndTime))
-            {
-                strWhere.AddWhere("DetectTime <= '" + eSearchParameter.txt_EndTime + "'");
-            }
+            string strWhere = this.GetListByReportStrWhere(eSearchParameter);
 
             DataTable dt = new DataTable();
-            dt = tDetectProject.GetExportListByReport(strWhere.ToString(), "").Tables[0];
+            dt = tDetectProject.GetExportListByReport(strWhere, "").Tables[0];
 
             MemoryStream stream = new MemoryStream();
             stream = PublicClass.ExportReportToExcel(dt);
@@ -271,50 +207,6 @@ namespace Web.Controllers
                 completeds = ExpePlanStatisticslist.Select(p => p.completed).ToList(),
                 notcompleted = ExpePlanStatisticslist.Select(p => p.notcompleted).ToList()
             }, JsonRequestBehavior.AllowGet);
-
-            //List<E_ExpePlanStatistics> ExpePlanStatisticslist = dStatistics.GetExpePlanStatisticsForDay(areaid, headpersonnelid, starttime,endtime);
-            ////人名
-            //List<string> namearray = new List<string>();
-            //ExpePlanStatisticslist.ForEach(p =>
-            //{
-            //    if (!namearray.Contains(p.headpersonnename))
-            //    {
-            //        namearray.Add(p.headpersonnename);
-            //    }
-            //});
-
-            ////日期集合
-            //List<string> dataarray = new List<string>();
-            //DateTime time = starttime;
-            //while (time < endtime)
-            //{
-            //    dataarray.Add(time.ToString("MM月dd日"));
-            //    time = time.AddDays(1);
-            //}
-
-            ////数据集合
-            //List<E_Series> serieslist = new List<E_Series>();
-            //foreach (var item in namearray)
-            //{
-            //    List<int> dataitem = new List<int>();
-            //    List<E_ExpePlanStatistics> tempExpePlanStatistics = ExpePlanStatisticslist.Where(p => p.headpersonnename == item).ToList();
-            //    DateTime temptime = starttime;
-            //    while (temptime < endtime)
-            //    {
-            //        E_ExpePlanStatistics model = tempExpePlanStatistics.Where(p => p.inspectTime.ToString("yyyy-MM-dd") == temptime.ToString("yyyy-MM-dd")).FirstOrDefault();
-            //        if (model != null)
-            //        {
-            //            dataitem.Add(model.notcompleted);
-            //        }
-            //        else
-            //        {
-            //            dataitem.Add(0);
-            //        }
-            //        temptime = temptime.AddDays(1);
-            //    }
-            //    serieslist.Add(new E_Series() { name = item, data = dataitem });
-            //}
-            //return Json(new { namearray = namearray, dataarray = dataarray, serieslist = serieslist }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

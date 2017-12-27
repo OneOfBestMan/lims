@@ -1,0 +1,213 @@
+﻿@using Model.RoleManage;
+@using Model.ClientManage;
+@using Model;
+@using System.Data;
+@using Model.ExpeStatistics;
+@{
+    ViewBag.Title = "实验统计";
+    Layout = "~/Views/Share/_LayOut.cshtml";
+    var ePageParameter = ViewBag.ePageParameter == null ? new E_ExpeStatisticsSearchParameter() : (E_ExpeStatisticsSearchParameter)ViewBag.ePageParameter;
+}
+
+<link href="/skins/admin/vendor/datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/skins/admin/vendor/datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="/skins/artDialog/dist/dialog.js"></script>
+<script src="/skins/artDialog/dist/dialog-plus.js"></script>
+<link href="/Skins/admin/vendor/social-buttons/social-buttons.css" rel="stylesheet" />
+
+<div class="ng-scope">
+    <div class="row ng-scope">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <!--标题-->
+            <h1 class="page-header" style="padding-bottom:15px;"> 实验统计 </h1>
+
+            <!--操作-->
+            <div class="form" style="padding-bottom:10px;">
+                <form action="/ExpeStatistics/ExpeStatisticsList" method="get">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">检验单位</span>
+                                <select class="form-control" id="GHS" name="GHS" style="width:180px;">
+                                    <option value="">请选择</option>
+                                    @{
+                                        var AreaList = ViewBag.AreaList as List<E_tb_Area>;
+                                        foreach (E_tb_Area item in AreaList)
+                                        {
+                                    <option value="@item.TestReportName" @(ePageParameter.GHS == item.TestReportName ? "selected" : "")>@item.TestReportName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">送/抽检单位</span>
+                                <select class="form-control" id="Department" name="Department" style="width:180px;">
+                                    <option value="">请选择</option>
+                                    @{
+                                        var ClientManageList = ViewBag.ClientManageList as List<E_tb_ClientManage>;
+                                        foreach (var item in ClientManageList)
+                                        {
+                                    <option value="@item.ClientName" @(ePageParameter.Department == item.ClientName ? "selected" : "")>@item.ClientName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">抽检地点</span>
+                                <select class="form-control" id="DetectionAdress" name="DetectionAdress" style="width:180px;">
+                                    <option value="">请选择</option>
+                                    @{
+                                        var detectionAdressList = ViewBag.detectionAdressList as List<string>;
+                                        foreach (var item in detectionAdressList)
+                                        {
+                                    <option value="@item" @(ePageParameter.DetectionAdress == item ? "selected" : "")>@item</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">样品名称</span>
+                                <input type="text" class="form-control" id="samplenum" name="samplenum" value="@ePageParameter.samplenum" style="width:200px;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-inline" style="padding-top:5px;">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">检验项目</span>
+                                <input type="text" class="form-control" id="projectname" name="projectname" value="@ePageParameter.projectname" style="width:180px;" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">检 验 人</span>
+                                <input type="text" class="form-control" id="testpersonnelname" name="testpersonnelname" value="@ePageParameter.testpersonnelname" style="width:180px;" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">检验日期</span>
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='txt_StartTime' name="txt_StartTime" value="@(ePageParameter.txt_StartTime!=null?Convert.ToDateTime(ePageParameter.txt_StartTime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                                至
+                                <div class='input-group date inputtime'>
+                                    <input type='text' class="form-control" id='txt_EndTime' name="txt_EndTime" value="@(ePageParameter.txt_EndTime!=null?Convert.ToDateTime(ePageParameter.txt_EndTime).ToString("yyyy-MM-dd"):"")" style="width:120px;" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <!--用于后台区分是否需要查询-->
+                            <input type="hidden" name="issearch" value="1" />
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> 查询 </button>
+                        </div>
+                        <div class="form-group pull-right">
+                            <a class="btn btn-info" href="javascript:ExpAll()"><i class="fa fa-cloud-download"></i> 批量下载 </a>
+                            <!--用于请求导出文件-->
+                            <iframe id="Expframe" src="" width="1" height="1"></iframe>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!--内容-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    实验统计
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <table id="tab_1" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:45px;">检验时间</th>
+                                <th>样品名称</th>
+                                <th style="width:150px;">检验单位</th>
+                                <th style="width:150px;">送/抽检单位</th>
+                                <th style="width:150px;">检验项目</th>
+                                <th style="width:75px;">检验人</th>
+                                <th style="width:75px;">检验次数</th>
+                                <th style="width:75px;">合格</th>
+                                <th style="width:75px;">不合格</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var TestReportList = ViewBag.ReportListDt as DataTable;
+                                foreach (DataRow item in TestReportList.Rows)
+                                {
+                                    <tr>
+                                        <td>@(item["DetectTime"]==null||string.IsNullOrEmpty(item["DetectTime"].ToString())?"":Convert.ToDateTime(item["DetectTime"].ToString()).ToShortDateString())</td>
+                                        <td title="@item["name"].ToString()">@item["name"].ToString()</td>
+                                        <td>@item["GHS"].ToString()</td>
+                                        <td>@item["Department"].ToString()</td>
+                                        <td>@item["ProjectName"].ToString()</td>
+                                        <td>@item["TestPersonnelName"].ToString()</td>
+                                        <td align="center" >@item["QualifiedLevel"].ToString()</td>
+                                        <td align="center">@item["QualifiedLevelA"].ToString()</td>
+                                        <td align="center">@item["QualifiedLevelB"].ToString()</td>
+                                    </tr>
+                                }
+                            }
+                            <tr style="font-weight:bold;" ><td colspan="6" align="right">本页合计</td><td align="center">@ViewBag.SumQualifiedLevel</td><td align="center">@ViewBag.SumQualifiedLevelA</td><td align="center">@ViewBag.SumQualifiedLevelB</td></tr>
+                            <tr style="font-weight:bold;"><td colspan="6" align="right">总合计</td><td align="center">@ViewBag.TotalQualifiedLevel</td><td align="center">@ViewBag.TotalQualifiedLevelA</td><td align="center">@ViewBag.TotalQualifiedLevelB</td></tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row">
+                        <div style="text-align: center">
+                            @Html.Raw(ViewBag.page)
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel - body-->
+            </div>
+            <!-- /.col - lg - 12-->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //初始化时间选择控件
+        $(".inputtime").datetimepicker({
+            minView: "month",//设置只显示到月份
+            format: "yyyy-mm-dd",//日期格式
+            autoclose: true,//选中关闭
+            todayBtn: true,//今日按钮
+            language: 'cn'
+        });
+    });
+
+    //批量导出
+    function ExpAll()
+    {
+        var txt_StartTime = $("#txt_StartTime").val();
+        var txt_EndTime = $("#txt_EndTime").val();
+        var GHS = $("#GHS").val();
+        var Department = $("#Department").val();
+        var DetectionAdress = $("#DetectionAdress").val();
+        var samplenum = $("#samplenum").val();
+        var projectname = $("#projectname").val();
+        var testpersonnelname = $("#testpersonnelname").val();
+
+        var url = '@Url.Action("ExportReport", "ExpeStatistics")' + "?samplenum=" + samplenum + "&projectname=" + projectname + "&txt_StartTime="
+            + txt_StartTime + "&txt_EndTime=" + txt_EndTime + "&GHS=" + GHS + "&Department=" + Department + "&DetectionAdress=" + DetectionAdress + "&testpersonnelname=" + testpersonnelname;
+        $("#Expframe").attr("src", url);
+    }
+</script>
