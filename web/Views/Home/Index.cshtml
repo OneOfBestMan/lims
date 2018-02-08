@@ -1,7 +1,7 @@
 ﻿@model Model.Default.E_Default
 @using System.Data;
 @using Model;
-
+@using Model.ExpePlan;
 @{
     ViewBag.Title = "实验室管理系统";
     Layout = "~/Views/Share/_LayOut.cshtml";
@@ -152,7 +152,7 @@
 
                 <div class="clear"></div>
                 <div class="hy_yp"  style="min-height:270px;">
-                    <h3><span>易耗品</span><a href="/Drug/Index">More>></a></h3>
+                    <h3><span>药品管理</span><a href="/Drug/Index">More>></a></h3>
                     <ul>
 
                         @{
@@ -172,23 +172,21 @@
                     </ul>
                 </div>
                 <div class="hy_jl" style="min-height:270px;">
-                    <h3><span>计量检定</span><a href="/Measure/MeasureCheck">More>></a></h3>
+                    <h3><span>工作任务</span><a href="/Task/List">More>></a></h3>
                     <ul>
                         @{
-                            List<tb_Measure> measurelist = ViewData["measurelist"] as List<tb_Measure>;
-                            if (measurelist != null && measurelist.Count > 0)
+                            var tasklist = ViewBag.tasklist as List<E_Task>;
+                            if (tasklist != null)
                             {
-                                foreach (var item in measurelist)
+                                foreach (var item in tasklist)
                                 {
-
                                     <li>
-                                        <span>检定日期：@item.nextVerification.Value.ToShortDateString()</span>
-                                        <a href="#">@item.deviceName</a>
+                                        <span>发布时间：@item.publishtime</span>
+                                        <a href="#">@item.taskname</a>
                                     </li>
                                 }
                             }
                         }
-
                     </ul>
                 </div>
                 <div class="clear"></div>
@@ -213,47 +211,31 @@
                 </div>
                 <div class="hy_jh">
                     <h3><span>实验计划</span><a href="/ExpePlan/ExpePlanList">More>></a></h3>
-                    @{DataSet expList = ViewData["_expList"] as DataSet;
-                        if (expList != null && expList.Tables != null && expList.Tables.Count > 0)
+                    @{
+                        var timeoutplan = ViewBag.timeoutplan as List<E_tb_ExpePlan>;
+                        int sum = 0;
+                        foreach (var item in timeoutplan)
                         {
-                            int sum = 0;
-                            foreach (DataRow item in expList.Tables[0].Rows)
-                            {
-                                var m = new BLL.tb_SampleBLL().GetModel(Convert.ToInt32(item["SampleID"]));
-                                sum++;
-                                if (sum < 3 && m != null)
-                                {
-                                    <div class="tw">
-                                        <div class="tp"><a href="/ExpePlan/ExpePlanList?planid=@item["PlanID"]"><img src="/skins/images/a@(sum+1).jpg" width="150" height="140" /></a></div>
-                                        <div class="wz">
-                                            <a href="/ExpePlan/ExpePlanList?planid=@item["PlanID"]">@m.name </a>
-                                            <span class="nr">@item["UpdateTime"]</span>
-                                        </div>
-                                        <div class="clear"></div>
-                                    </div>
-                                }
-
-
-                            }
-                            sum = 0;
-                            <ul>
-                                @foreach (DataRow item in expList.Tables[0].Rows)
-                                {
-                                    var m = new BLL.tb_SampleBLL().GetModel(Convert.ToInt32(item["SampleID"]));
-
-                                    sum++;
-                                    if (sum >= 3 && m != null)
-                                    {
-
-                                        <li><a href="/ExpePlan/ExpePlanList?planid=@item["PlanID"]">@m.name</a></li>
-
-                                    }
-
-
-                                }
-                            </ul>
+                            sum++;
+                            <div class="tw">
+                                <div class="tp"><a href="/ExpePlan/ExpePlanList?planid=@item.PlanID"><img src="/skins/images/a@(sum+1).jpg" width="150" height="140" /></a></div>
+                                <div class="wz">
+                                    <a href="/ExpePlan/ExpePlanList?planid=@item.PlanID"><span style="color:red" title="超时时间（天）">【@(item.diffdate)天】</span>@item.samplename </a>
+                                    <span class="nr">@item.UpdateTime</span>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
                         }
                     }
+                    <ul>
+                        @{
+                            var notimeoutplan = ViewBag.notimeoutplan as List<E_tb_ExpePlan>;
+                            foreach (var item in notimeoutplan)
+                            {
+                                <li><a href="/ExpePlan/ExpePlanList?planid=@item.PlanID"><span>【@(item.diffdate)天】</span>@item.samplename</a></li>
+                            }
+                        }
+                    </ul>
                     <div style="clear:both;"></div>
                 </div>
 

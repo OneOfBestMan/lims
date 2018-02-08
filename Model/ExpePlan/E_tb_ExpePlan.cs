@@ -141,8 +141,7 @@ namespace Model.ExpePlan
             get { return _updatetime; }
         }
         #endregion Model
-
-        #region 数据接口
+        
         /// <summary>
         /// 编辑类型
         /// </summary>
@@ -157,7 +156,16 @@ namespace Model.ExpePlan
         /// 负责人名称
         /// </summary>
         public string HeadPersonnelName { get; set; }
-        #endregion
+        
+        /// <summary>
+        /// 超时时间（天）
+        /// </summary>
+        public int diffdate { get; set; }
+
+        /// <summary>
+        /// 样品名称
+        /// </summary>
+        public string samplename { get; set; }
 
     }
 }

@@ -13,6 +13,8 @@ using Web.Attribute;
 using BLL;
 using BLL.TestReport;
 using BLL.ExpePlan;
+using DAL.ExpePlan;
+using DAL;
 
 namespace Web.Controllers
 {
@@ -22,7 +24,9 @@ namespace Web.Controllers
         T_tb_ShowImages tShowImages = new T_tb_ShowImages(); //图片数据
         T_tb_News tNews = new T_tb_News(); //公告管理
         T_tb_ElectronicsMagazine tElectronicsMagazine = new T_tb_ElectronicsMagazine(); //电子杂志
-        
+        D_tb_ExpePlan dExpePlan = new D_tb_ExpePlan(); //实验计划
+        D_Task dTask = new D_Task();//工作任务
+
         // GET: /Home/
         public ActionResult Index()
         {
@@ -36,90 +40,39 @@ namespace Web.Controllers
             ViewData["MaxImgDt"] = MaxImgDt;
 
             //获取小图数据列表
-            //DataTable MinImgDt = tShowImages.GetList(16, "ImgTypeID=2 and AreaID=" + CurrentUserInfo.AreaID, "OrderID").Tables[0];
-            //ViewData["MinImgDt"] = MinImgDt;
             DataTable MinImgDt = tShowImages.GetList(16, "ImgTypeID=2 ", "OrderID").Tables[0];
             ViewData["MinImgDt"] = MinImgDt;
 
             //获取电子杂志数据列表
-            //DataTable MagazineDt = tElectronicsMagazine.GetList(6, "AreaID=" + CurrentUserInfo.AreaID, "AddTime Desc").Tables[0];
-            //ViewData["MagazineDt"] = MagazineDt;
             DataTable MagazineDt = tElectronicsMagazine.GetList(6, "", "AddTime Desc").Tables[0];
             ViewData["MagazineDt"] = MagazineDt;
 
             //公告 公告通知
-            //DataTable News2Dt = tNews.GetList(6, "NewTypeID=2 and AreaID=" + CurrentUserInfo.AreaID, "UpdateTime Desc").Tables[0];
-            //DataTable News2Dt = tNews.GetList(6, "AreaID=" + CurrentUserInfo.AreaID, "UpdateTime Desc").Tables[0];
-            //ViewData["News2Dt"] = News2Dt;
             DataTable News2Dt = tNews.GetList(6, "", "UpdateTime Desc").Tables[0];
             ViewData["News2Dt"] = News2Dt;
 
             E_Default eDefault = new E_Default();
             eDefault.MaxImgCount = MaxImgDt.Rows.Count + 1;
 
+            //超时实验计划
+            ViewBag.timeoutplan = dExpePlan.GetTimeOutPlan();
 
-            #region 药品、易耗品、计量管理、实验计划首页提醒
-            try
-            {
-                //ViewData["expList"] = new List<Model.ExpePlan.E_tb_ExpePlan>();
-                //string expwhere = " (InspectTime - getdate()) <= 2 and (InspectTime - getdate()) > 0 ";
-                //expwhere += string.Format(" and AreaID = {0} ", CurrentUserInfo.AreaID);
-                //List<Model.ExpePlan.E_tb_ExpePlan> expList = new BLL.ExpePlan.T_tb_ExpePlan().GetModelList(expwhere);
-                //ViewData["expList"] = expList;
+            //未超时实验计划
+            ViewBag.notimeoutplan = dExpePlan.GetNoTimeOutPlan();
 
-                ////ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetUNFinishList();
-                ////张伟修改，增加统计委外未完成的数据
-                //ViewData["_expList"] = new BLL.ExpePlan.T_tb_ExpePlan().GetAllUNFinishList();
-                ViewData["_expList"] = new T_tb_ExpePlan().GetList(10, "status=0", "InspectTime desc");
-            }
-            catch
-            {
+            //工作任务
+            ViewBag.tasklist = dTask.GetIndexTaskList();
 
-            }
-            //try
-            //{
-            //    ViewData["drugList"] = new List<Model.tb_DrugIN>();
-            //    string durgwhere = " (validDate - getdate()) <= 9 and (validDate - getdate()) > 0 ";
-            //    durgwhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID);
-            //    List<Model.tb_DrugIN> druglist = new BLL.tb_DrugINBLL().GetModelList(durgwhere);
-            //    ViewData["drugList"] = druglist;
-            //}
-            //catch
-            //{
+            ViewData["easyConsumelist"] = new List<Model.tb_EasyConsumeIN>();
+            string easyConsumewhere = " (validDate - getdate()) <= 9 and (validDate - getdate()) > 0 ";
+            easyConsumewhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", CurrentUserInfo.AreaID);
+            List<Model.tb_EasyConsumeIN> easyConsumelist = new BLL.tb_EasyConsumeINBLL().GetModelList(easyConsumewhere);
+            ViewData["easyConsumelist"] = easyConsumelist;
 
-            //}
+            //ViewData["measurelist"] = new tb_MeasureBLL().GetList(7, string.Format("  createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID), " nextVerification desc");
+            ViewData["testreportlist"] = new T_tb_TestReport().GetList(3, " examinePersonnelID >0 and issecrecy=0", " UpdateTime desc");
 
-            try
-            {
-                ViewData["easyConsumelist"] = new List<Model.tb_EasyConsumeIN>();
-                string easyConsumewhere = " (validDate - getdate()) <= 9 and (validDate - getdate()) > 0 ";
-                easyConsumewhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0}) ", CurrentUserInfo.AreaID);
-                List<Model.tb_EasyConsumeIN> easyConsumelist = new BLL.tb_EasyConsumeINBLL().GetModelList(easyConsumewhere);
-                ViewData["easyConsumelist"] = easyConsumelist;
-            }
-            catch
-            {
-            }
-
-            //try
-            //{
-            //    ViewData["booklist"] = new List<Model.tb_BookBorrow>();
-            //    string bookwhere = " (convert(datetime,temp2) - getdate()) <= 9 and (convert(datetime,temp2) - getdate()) > 0 ";
-            //    bookwhere += string.Format(" and createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID);
-            //    List<Model.tb_BookBorrow> booklist = new BLL.tb_BookBorrowBLL().GetModelList(bookwhere);
-            //    ViewData["booklist"] = booklist;
-            //}
-            //catch
-            //{
-            //}
-
-            ViewData["measurelist"] =new tb_MeasureBLL().GetList(7, string.Format("  createUser in (select PersonnelID from tb_InPersonnel where AreaID = {0})", CurrentUserInfo.AreaID), " nextVerification desc");
-            ViewData["testreportlist"] = new T_tb_TestReport().GetList(3, " examinePersonnelID >0", " UpdateTime desc");
-
-            #endregion
             return View(eDefault);
-
-            //return View();
         }
 
         public ActionResult Top()

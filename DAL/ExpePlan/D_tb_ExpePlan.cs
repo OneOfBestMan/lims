@@ -31,7 +31,7 @@ namespace DAL.ExpePlan
             {
                 strwhere.AddWhere($"SampleID={eExpePlan.SampleID}");
             }
-           
+
             //主查询Sql
             StringBuilder search = new StringBuilder();
             search.AppendFormat(@"select A.*,B.ProjectName from tb_ExpePlan as A left join tb_Project as B on A.ProjectID=B.ProjectID {0} ", strwhere.ToString());
@@ -69,11 +69,11 @@ namespace DAL.ExpePlan
             strSql.Append($@"select top 1 * from tb_ExpePlan {strWhere.ToString()}");
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
-                model = conn.Query <E_tb_ExpePlan> (strSql.ToString(), model)?.FirstOrDefault();
+                model = conn.Query<E_tb_ExpePlan>(strSql.ToString(), model)?.FirstOrDefault();
             }
             return model;
         }
-        
+
         /// <summary>
         /// 是否存在该记录
         /// </summary>
@@ -83,13 +83,13 @@ namespace DAL.ExpePlan
             strSql.Append("select count(1) from tb_ExpePlan");
             strSql.Append(" where PlanID=@PlanID");
             SqlParameter[] parameters = {
-					new SqlParameter("@PlanID", SqlDbType.Int,4)
+                    new SqlParameter("@PlanID", SqlDbType.Int,4)
 };
             parameters[0].Value = PlanID;
 
             return DbHelperSQL.Exists(strSql.ToString(), parameters);
         }
-        
+
         /// <summary>
         /// 增加一条数据
         /// </summary>
@@ -102,19 +102,19 @@ namespace DAL.ExpePlan
             strSql.Append("@PlanTypeID,@ProjectID,@SampleID,@InspectTime,@InspectPlace,@InspectMethod,@HeadPersonnelID,@TaskNo,@Status,@Remark,@AreaID,@EditPersonnelID,@UpdateTime)");
             strSql.Append(";select @@IDENTITY");
             SqlParameter[] parameters = {
-					new SqlParameter("@PlanTypeID", SqlDbType.Int,4),
-					new SqlParameter("@ProjectID", SqlDbType.Int,4),
-					new SqlParameter("@SampleID", SqlDbType.Int,4),
-					new SqlParameter("@InspectTime", SqlDbType.DateTime),
-					new SqlParameter("@InspectPlace", SqlDbType.NVarChar,100),
-					new SqlParameter("@InspectMethod", SqlDbType.NVarChar),
-					new SqlParameter("@HeadPersonnelID", SqlDbType.Int,4),
-					new SqlParameter("@TaskNo", SqlDbType.NVarChar,50),
-					new SqlParameter("@Status", SqlDbType.Int,4),
-					new SqlParameter("@Remark", SqlDbType.Text),
-					new SqlParameter("@AreaID", SqlDbType.Int,4),
-					new SqlParameter("@EditPersonnelID", SqlDbType.Int,4),
-					new SqlParameter("@UpdateTime", SqlDbType.DateTime)};
+                    new SqlParameter("@PlanTypeID", SqlDbType.Int,4),
+                    new SqlParameter("@ProjectID", SqlDbType.Int,4),
+                    new SqlParameter("@SampleID", SqlDbType.Int,4),
+                    new SqlParameter("@InspectTime", SqlDbType.DateTime),
+                    new SqlParameter("@InspectPlace", SqlDbType.NVarChar,100),
+                    new SqlParameter("@InspectMethod", SqlDbType.NVarChar),
+                    new SqlParameter("@HeadPersonnelID", SqlDbType.Int,4),
+                    new SqlParameter("@TaskNo", SqlDbType.NVarChar,50),
+                    new SqlParameter("@Status", SqlDbType.Int,4),
+                    new SqlParameter("@Remark", SqlDbType.Text),
+                    new SqlParameter("@AreaID", SqlDbType.Int,4),
+                    new SqlParameter("@EditPersonnelID", SqlDbType.Int,4),
+                    new SqlParameter("@UpdateTime", SqlDbType.DateTime)};
             parameters[0].Value = model.PlanTypeID;
             parameters[1].Value = model.ProjectID;
             parameters[2].Value = model.SampleID;
@@ -161,20 +161,20 @@ namespace DAL.ExpePlan
             strSql.Append("UpdateTime=@UpdateTime");
             strSql.Append(" where PlanID=@PlanID");
             SqlParameter[] parameters = {
-					new SqlParameter("@PlanTypeID", SqlDbType.Int,4),
-					new SqlParameter("@ProjectID", SqlDbType.Int,4),
-					new SqlParameter("@SampleID", SqlDbType.Int,4),
-					new SqlParameter("@InspectTime", SqlDbType.DateTime),
-					new SqlParameter("@InspectPlace", SqlDbType.NVarChar,100),
-					new SqlParameter("@InspectMethod", SqlDbType.NVarChar),
-					new SqlParameter("@HeadPersonnelID", SqlDbType.Int,4),
-					new SqlParameter("@TaskNo", SqlDbType.NVarChar,50),
-					new SqlParameter("@Status", SqlDbType.Int,4),
-					new SqlParameter("@Remark", SqlDbType.Text),
-					new SqlParameter("@AreaID", SqlDbType.Int,4),
-					new SqlParameter("@EditPersonnelID", SqlDbType.Int,4),
-					new SqlParameter("@UpdateTime", SqlDbType.DateTime),
-					new SqlParameter("@PlanID", SqlDbType.Int,4)};
+                    new SqlParameter("@PlanTypeID", SqlDbType.Int,4),
+                    new SqlParameter("@ProjectID", SqlDbType.Int,4),
+                    new SqlParameter("@SampleID", SqlDbType.Int,4),
+                    new SqlParameter("@InspectTime", SqlDbType.DateTime),
+                    new SqlParameter("@InspectPlace", SqlDbType.NVarChar,100),
+                    new SqlParameter("@InspectMethod", SqlDbType.NVarChar),
+                    new SqlParameter("@HeadPersonnelID", SqlDbType.Int,4),
+                    new SqlParameter("@TaskNo", SqlDbType.NVarChar,50),
+                    new SqlParameter("@Status", SqlDbType.Int,4),
+                    new SqlParameter("@Remark", SqlDbType.Text),
+                    new SqlParameter("@AreaID", SqlDbType.Int,4),
+                    new SqlParameter("@EditPersonnelID", SqlDbType.Int,4),
+                    new SqlParameter("@UpdateTime", SqlDbType.DateTime),
+                    new SqlParameter("@PlanID", SqlDbType.Int,4)};
             parameters[0].Value = model.PlanTypeID;
             parameters[1].Value = model.ProjectID;
             parameters[2].Value = model.SampleID;
@@ -211,7 +211,7 @@ namespace DAL.ExpePlan
             strSql.Append("delete from tb_ExpePlan ");
             strSql.Append(" where PlanID=@PlanID");
             SqlParameter[] parameters = {
-					new SqlParameter("@PlanID", SqlDbType.Int,4)
+                    new SqlParameter("@PlanID", SqlDbType.Int,4)
 };
             parameters[0].Value = PlanID;
 
@@ -243,7 +243,7 @@ namespace DAL.ExpePlan
                 return false;
             }
         }
-        
+
         /// <summary>
         /// 得到一个对象实体
         /// </summary>
@@ -254,7 +254,7 @@ namespace DAL.ExpePlan
             strSql.Append("select  top 1 PlanID,PlanTypeID,ProjectID,SampleID,InspectTime,InspectPlace,InspectMethod,HeadPersonnelID,TaskNo,Status,Remark,AreaID,EditPersonnelID,UpdateTime from tb_ExpePlan ");
             strSql.Append(" where PlanID=@PlanID");
             SqlParameter[] parameters = {
-					new SqlParameter("@PlanID", SqlDbType.Int,4)
+                    new SqlParameter("@PlanID", SqlDbType.Int,4)
 };
             parameters[0].Value = PlanID;
 
@@ -361,7 +361,7 @@ namespace DAL.ExpePlan
             strSql.Append(" order by " + filedOrder);
             return DbHelperSQL.Query(strSql.ToString());
         }
-        
+
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -390,7 +390,7 @@ namespace DAL.ExpePlan
             strSql.AppendFormat(" WHERE TT.Row between {0} and {1}", startIndex, endIndex);
             return DbHelperSQL.Query(strSql.ToString());
         }
-        
+
         /// <summary>
         /// 检查是已存在该任务单号
         /// </summary>
@@ -410,7 +410,7 @@ namespace DAL.ExpePlan
                 return Convert.ToInt32(obj);
             }
         }
-        
+
         /// <summary>
         /// 获得实验计划超出检验时间内容
         /// 作者：章建国
@@ -434,7 +434,7 @@ dbo.tb_ExpePlan.HeadPersonnelID,dbo.tb_InPersonnel.PersonnelName
    ORDER BY unfinish desc");
             return DbHelperSQL.Query(strSql.ToString());
         }
-        
+
         public DataSet GetAllUNFinishList()
         {
             StringBuilder strSql = new StringBuilder();
@@ -449,5 +449,41 @@ HeadPersonnelID,PersonnelName
    ORDER BY unfinish desc");
             return DbHelperSQL.Query(strSql.ToString());
         }
+
+
+        /// <summary>
+        /// 获取超时计划
+        /// </summary>
+        public List<E_tb_ExpePlan> GetTimeOutPlan()
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"select top 3 A.planID,A.SampleID,A.updatetime,B.name as samplename,DATEDIFF(day,B.createdate,getdate()) as DiffDate
+                        from tb_ExpePlan as A inner join tb_Sample as B on A.SampleID=B.id
+                        where A.status=2 and DATEDIFF(day,B.createdate,getdate())>=5 order by DATEDIFF(day,B.createdate,getdate()) desc");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                List<E_tb_ExpePlan> result = conn.Query<E_tb_ExpePlan>(strSql.ToString()).ToList();
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 获取未超时计划
+        /// </summary>
+        public List<E_tb_ExpePlan> GetNoTimeOutPlan()
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append($@"select top 7 A.planID,A.SampleID,A.updatetime,B.name as samplename,DATEDIFF(day,B.createdate,getdate()) as DiffDate
+                        from tb_ExpePlan as A inner join tb_Sample as B on A.SampleID=B.id
+                        where A.status=2 and DATEDIFF(day,B.createdate,getdate())<5 order by DATEDIFF(day,B.createdate,getdate()) desc");
+
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                List<E_tb_ExpePlan> result = conn.Query<E_tb_ExpePlan>(strSql.ToString()).ToList();
+                return result;
+            }
+        }
+
     }
 }

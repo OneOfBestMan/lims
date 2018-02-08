@@ -159,18 +159,9 @@ namespace BLL.ExpePlan
         {
             return GetList("");
         }
-
-        /// <summary>
-        /// 分页获取数据列表
-        /// </summary>
-        //public DataSet GetList(int PageSize,int PageIndex,string strWhere)
-        //{
-        //return dal.GetList(PageSize,PageIndex,strWhere);
-        //}
-
+        
         #endregion  Method
-
-        #region 扩展方法
+        
         /// <summary>
         /// 分页获取数据列表
         /// </summary>
@@ -178,17 +169,7 @@ namespace BLL.ExpePlan
         {
             return dal.GetListByPage(strWhere, orderby, startIndex, endIndex, ref total);
         }
-
-        /// <summary>
-        /// 根据实验计划ID集合更新计划完成状态
-        /// </summary>
-        /// <param name="PlanIDS"></param>
-        /// <returns></returns>
-        //public int UpdateStatusByPlanIDS(string PlanIDS, int ReportID)
-        //{
-        //    return dal.UpdateStatusByPlanIDS(PlanIDS, ReportID);
-        //}
-
+        
         /// <summary>
         /// 检查是已存在该任务单号
         /// </summary>
@@ -215,6 +196,5 @@ namespace BLL.ExpePlan
         {
             return dal.GetAllUNFinishList();
         }
-        #endregion
     }
 }

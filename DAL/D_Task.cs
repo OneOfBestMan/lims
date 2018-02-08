@@ -130,7 +130,18 @@ namespace DAL
             }
         }
 
- 
+        /// <summary>
+        /// 获取首页任务列表
+        /// </summary>
+        public List<E_Task> GetIndexTaskList()
+        {
+            StringBuilder strSql = new StringBuilder();
+            strSql.Append("select top 7 * from task order by publishtime desc");
+            using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
+            {
+                return conn.Query<E_Task>(strSql.ToString())?.ToList();
+            }
+        }
        
     }
 }
