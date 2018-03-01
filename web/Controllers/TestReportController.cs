@@ -396,6 +396,11 @@ namespace Web.Controllers
             ViewBag.DetectPersonnelID = CurrentUserInfo.PersonnelID;
             ViewBag.DetectPersonnelName = CurrentUserInfo.PersonnelName;
 
+            if (string.IsNullOrEmpty(eTestReport.Remarks))
+            {
+                eTestReport.Remarks = "无";
+            }
+
             eTestReport.EditType = EditType;
             return View(eTestReport);
         }

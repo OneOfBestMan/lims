@@ -55,10 +55,10 @@ namespace Web.Controllers
             eDefault.MaxImgCount = MaxImgDt.Rows.Count + 1;
 
             //超时实验计划
-            ViewBag.timeoutplan = dExpePlan.GetTimeOutPlan();
+            ViewBag.timeoutplan = dExpePlan.GetTimeOutPlan(Convert.ToInt32(CurrentUserInfo.AreaID));
 
             //未超时实验计划
-            ViewBag.notimeoutplan = dExpePlan.GetNoTimeOutPlan();
+            ViewBag.notimeoutplan = dExpePlan.GetNoTimeOutPlan(Convert.ToInt32(CurrentUserInfo.AreaID));
 
             //工作任务
             ViewBag.tasklist = dTask.GetIndexTaskList();

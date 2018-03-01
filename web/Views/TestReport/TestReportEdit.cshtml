@@ -294,6 +294,7 @@
                                         <td align="center">
                                             <input type="button" value="合格" onclick="Qualified('@TempRow["ReportDataID"].ToString()    ')" />&nbsp;&nbsp;
                                             <input type="button" value="不合格" onclick="UnQualified('@TempRow["ReportDataID"].ToString()    ')" />&nbsp;&nbsp;
+                                            <input type="button" value="不判定" onclick="NoQualified('@TempRow["ReportDataID"].ToString()    ')" />&nbsp;&nbsp;
                                             @*<input type="button" value="检查" onclick="Check('@TempRow["ReportDataID"].ToString()')"/>*@
                                         </td>
                                     </tr>
@@ -400,6 +401,13 @@
             //不合格
             function UnQualified(TempID) {
                 $("#ReportData_" + TempID).find("td").eq(3).html("不合格");
+                $("#ReportData_" + TempID).find("td").eq(4).html($("#HidTestPersonnelName").val());
+            }
+
+            //不判定
+            function NoQualified(TempID)
+            {
+                $("#ReportData_" + TempID).find("td").eq(3).html("/");
                 $("#ReportData_" + TempID).find("td").eq(4).html($("#HidTestPersonnelName").val());
             }
 

@@ -454,12 +454,12 @@ HeadPersonnelID,PersonnelName
         /// <summary>
         /// 获取超时计划
         /// </summary>
-        public List<E_tb_ExpePlan> GetTimeOutPlan()
+        public List<E_tb_ExpePlan> GetTimeOutPlan(int areaid)
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append($@"select top 3 A.planID,A.SampleID,A.updatetime,B.name as samplename,DATEDIFF(day,B.createdate,getdate()) as DiffDate
                         from tb_ExpePlan as A inner join tb_Sample as B on A.SampleID=B.id
-                        where A.status=2 and DATEDIFF(day,B.createdate,getdate())>=5 order by DATEDIFF(day,B.createdate,getdate()) desc");
+                        where A.status=2 and A.areaID={areaid} and DATEDIFF(day,B.createdate,getdate())>=5 order by DATEDIFF(day,B.createdate,getdate()) desc");
 
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
@@ -471,12 +471,12 @@ HeadPersonnelID,PersonnelName
         /// <summary>
         /// 获取未超时计划
         /// </summary>
-        public List<E_tb_ExpePlan> GetNoTimeOutPlan()
+        public List<E_tb_ExpePlan> GetNoTimeOutPlan(int areaid)
         {
             StringBuilder strSql = new StringBuilder();
             strSql.Append($@"select top 7 A.planID,A.SampleID,A.updatetime,B.name as samplename,DATEDIFF(day,B.createdate,getdate()) as DiffDate
                         from tb_ExpePlan as A inner join tb_Sample as B on A.SampleID=B.id
-                        where A.status=2 and DATEDIFF(day,B.createdate,getdate())<5 order by DATEDIFF(day,B.createdate,getdate()) desc");
+                        where A.status=2 and A.areaID={areaid} and DATEDIFF(day,B.createdate,getdate())<5 order by DATEDIFF(day,B.createdate,getdate()) desc");
 
             using (IDbConnection conn = new SqlConnection(PubConstant.GetConnectionString()))
             {
