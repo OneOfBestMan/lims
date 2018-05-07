@@ -64,6 +64,10 @@ namespace Web.Controllers
             {
                 eTestReport.SampleName = eTestReport.SampleName.ToString().Substring(0, eTestReport.SampleName.ToString().IndexOf('）') + 1);
             }
+            else if(eTestReport.SampleName.ToString().IndexOf(')') > -1)
+            {
+                eTestReport.SampleName = eTestReport.SampleName.ToString().Substring(0, eTestReport.SampleName.ToString().IndexOf(')') + 1);
+            }
             else
             {
                 eTestReport.SampleName = Regex.Replace(eTestReport.SampleName, @"[^\u4e00-\u9fa5|（|）]", "");
