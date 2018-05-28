@@ -418,7 +418,7 @@ namespace Web.Controllers
             string strJson = eTestReport.TestReportDataJson;
             if (!string.IsNullOrEmpty(strJson))
             {
-                strJson = strJson.Replace("\r\n", "");
+                strJson = strJson.Replace("\r\n", "").Replace("\n", "");
                 ReportDataList = JsonHelper.JsonDeserialize<List<E_ReportData>>(strJson);
             }
             //删除原有检验数据
