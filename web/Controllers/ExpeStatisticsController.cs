@@ -56,25 +56,33 @@ namespace Web.Controllers
             ViewBag.SumQualifiedLevel = dt.Compute("sum(QualifiedLevel)", "");
             ViewBag.SumQualifiedLevelA = dt.Compute("sum(QualifiedLevelA)", "");
             ViewBag.SumQualifiedLevelB = dt.Compute("sum(QualifiedLevelB)", "");
+            ViewBag.SumQualifiedLevelC = dt.Compute("sum(QualifiedLevelC)", "");
 
             //总查询合计
             DataRow row = dDetectProject.GetAllListCountForReport(strWhere.ToString());
             ViewBag.TotalQualifiedLevel = row["QualifiedLevel"].ToString() == "" ? "0" : row["QualifiedLevel"].ToString();
             ViewBag.TotalQualifiedLevelA = row["QualifiedLevelA"].ToString() == "" ? "0" : row["QualifiedLevelA"].ToString();
             ViewBag.TotalQualifiedLevelB = row["QualifiedLevelB"].ToString() == "" ? "0" : row["QualifiedLevelB"].ToString();
-
+            ViewBag.TotalQualifiedLevelC = row["QualifiedLevelC"].ToString() == "" ? "0" : row["QualifiedLevelC"].ToString();
 
             //列表统计
             string[] echarts_samplename = new string[dt.Rows.Count];
             int[] echarts_QualifiedLevelA = new int[dt.Rows.Count];
             int[] echarts_QualifiedLevelB = new int[dt.Rows.Count];
+            int[] echarts_QualifiedLevelC = new int[dt.Rows.Count];
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 echarts_samplename[i] = dt.Rows[i]["name"].ToString();
                 echarts_QualifiedLevelA[i] = int.Parse(dt.Rows[i]["QualifiedLevelA"].ToString());
                 echarts_QualifiedLevelB[i] = int.Parse(dt.Rows[i]["QualifiedLevelB"].ToString());
+                echarts_QualifiedLevelC[i] = int.Parse(dt.Rows[i]["QualifiedLevelC"].ToString());
             }
-            ViewBag.Echarts_SampleListJson = JsonConvert.SerializeObject(new { samplename = echarts_samplename, QualifiedLevelA = echarts_QualifiedLevelA, QualifiedLevelB = echarts_QualifiedLevelB });
+            ViewBag.Echarts_SampleListJson = JsonConvert.SerializeObject(new {
+                samplename = echarts_samplename,
+                QualifiedLevelA = echarts_QualifiedLevelA,
+                QualifiedLevelB = echarts_QualifiedLevelB,
+                QualifiedLevelC = echarts_QualifiedLevelC
+            });
             
             return View();
         }

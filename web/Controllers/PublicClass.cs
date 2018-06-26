@@ -440,6 +440,7 @@ namespace Web.Controllers
                 sh.SetColumnWidth(8, 10 * 256);
                 sh.SetColumnWidth(9, 10 * 256);
                 sh.SetColumnWidth(10, 10 * 256);
+                sh.SetColumnWidth(11, 10 * 256);
                 #endregion
 
                 #region 设置表头
@@ -490,6 +491,10 @@ namespace Web.Controllers
                 ICell icell10top = row0.CreateCell(9);
                 icell10top.CellStyle = cellStyle;
                 icell10top.SetCellValue("不合格");
+
+                ICell icell11top = row0.CreateCell(10);
+                icell11top.CellStyle = cellStyle;
+                icell11top.SetCellValue("不判定");
                 #endregion
 
                 #region 读取数据库写入表
@@ -505,6 +510,7 @@ namespace Web.Controllers
                     string QualifiedLevel = dt.Rows[i]["QualifiedLevel"].ToString();
                     string QualifiedLevelA = dt.Rows[i]["QualifiedLevelA"].ToString();
                     string QualifiedLevelB = dt.Rows[i]["QualifiedLevelB"].ToString();
+                    string QualifiedLevelC = dt.Rows[i]["QualifiedLevelC"].ToString();
 
                     //创建行  
                     IRow row = sh.CreateRow(i + 1);
@@ -524,6 +530,7 @@ namespace Web.Controllers
                     row.Cells[7].SetCellValue(QualifiedLevel);
                     row.Cells[8].SetCellValue(QualifiedLevelA);
                     row.Cells[9].SetCellValue(QualifiedLevelB);
+                    row.Cells[10].SetCellValue(QualifiedLevelC);
                 }
                 #endregion
                 sh.ForceFormulaRecalculation = true;

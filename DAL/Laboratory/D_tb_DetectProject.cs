@@ -310,8 +310,9 @@ namespace DAL.Laboratory
 			                            name,        --样品名称
 			                            ProjectName, --项目名称
 			                            count(QualifiedLevel) as QualifiedLevel,  --检验次数
-			                            sum(case when QualifiedLevel =  '合格' then 1 else 0 end) as QualifiedLevelA, --合格个数
-			                            sum(case when QualifiedLevel != '合格' then 1 else 0 end) as QualifiedLevelB, --非合格个数
+			                            sum(case when QualifiedLevel = '合格' then 1 else 0 end) as QualifiedLevelA, --合格个数
+			                            sum(case when QualifiedLevel = '不合格' then 1 else 0 end) as QualifiedLevelB, --非合格个数
+                                        sum(case when QualifiedLevel = '/' or QualifiedLevel = '' then 1 else 0 end) as QualifiedLevelC, --不判定
 			                            TestPersonnelName,  --检验人名称
 			                            DetectTime,   --检验日期
 			                            Department,	  --送/抽检单位
@@ -363,7 +364,12 @@ namespace DAL.Laboratory
         {
             string order = "order by DetectTime desc";
             StringBuilder strSql = new StringBuilder();
-            strSql.Append($@"select sum(QualifiedLevel) as QualifiedLevel,sum(QualifiedLevelA) as QualifiedLevelA,sum(QualifiedLevelB) as QualifiedLevelB from 
+            strSql.Append($@"select 
+                                sum(QualifiedLevel) as QualifiedLevel,
+                                sum(QualifiedLevelA) as QualifiedLevelA,
+                                sum(QualifiedLevelB) as QualifiedLevelB,
+                                sum(QualifiedLevelC) as QualifiedLevelC
+                            from 
                             (
 	                            {this.GetSearchSql(order,strWhere)}
                             ) as T");

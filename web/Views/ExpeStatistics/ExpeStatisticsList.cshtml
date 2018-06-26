@@ -165,6 +165,7 @@
                                 <th style="width:75px;">检验次数</th>
                                 <th style="width:75px;">合格</th>
                                 <th style="width:75px;">不合格</th>
+                                <th style="width:75px;">不判定</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -172,21 +173,34 @@
                                 var TestReportList = ViewBag.ReportListDt as DataTable;
                                 foreach (DataRow item in TestReportList.Rows)
                                 {
-                                    <tr>
-                                        <td>@(item["DetectTime"] == null || string.IsNullOrEmpty(item["DetectTime"].ToString()) ? "" : Convert.ToDateTime(item["DetectTime"].ToString()).ToShortDateString())</td>
-                                        <td title="@item["name"].ToString()">@item["name"].ToString()</td>
-                                        <td>@item["GHS"].ToString()</td>
-                                        <td>@item["Department"].ToString()</td>
-                                        <td>@item["ProjectName"].ToString()</td>
-                                        <td>@item["TestPersonnelName"].ToString()</td>
-                                        <td align="center">@item["QualifiedLevel"].ToString()</td>
-                                        <td align="center">@item["QualifiedLevelA"].ToString()</td>
-                                        <td align="center">@item["QualifiedLevelB"].ToString()</td>
-                                    </tr>
+                            <tr>
+                                <td>@(item["DetectTime"] == null || string.IsNullOrEmpty(item["DetectTime"].ToString()) ? "" : Convert.ToDateTime(item["DetectTime"].ToString()).ToShortDateString())</td>
+                                <td title="@item["name"].ToString()">@item["name"].ToString()</td>
+                                <td>@item["GHS"].ToString()</td>
+                                <td>@item["Department"].ToString()</td>
+                                <td>@item["ProjectName"].ToString()</td>
+                                <td>@item["TestPersonnelName"].ToString()</td>
+                                <td align="center">@item["QualifiedLevel"].ToString()</td>
+                                <td align="center">@item["QualifiedLevelA"].ToString()</td>
+                                <td align="center">@item["QualifiedLevelB"].ToString()</td>
+                                <td align="center">@item["QualifiedLevelC"].ToString()</td>
+                            </tr>
                                 }
                             }
-                            <tr style="font-weight:bold;color:red;"><td colspan="6" align="right">本页合计</td><td align="center">@ViewBag.SumQualifiedLevel</td><td align="center">@ViewBag.SumQualifiedLevelA</td><td align="center">@ViewBag.SumQualifiedLevelB</td></tr>
-                            <tr style="font-weight:bold;color:red;"><td colspan="6" align="right">总合计</td><td align="center">@ViewBag.TotalQualifiedLevel</td><td align="center">@ViewBag.TotalQualifiedLevelA</td><td align="center">@ViewBag.TotalQualifiedLevelB</td></tr>
+                            <tr style="font-weight:bold;color:red;">
+                                <td colspan="6" align="right">本页合计</td>
+                                <td align="center">@ViewBag.SumQualifiedLevel</td>
+                                <td align="center">@ViewBag.SumQualifiedLevelA</td>
+                                <td align="center">@ViewBag.SumQualifiedLevelB</td>
+                                <td align="center">@ViewBag.SumQualifiedLevelC</td>
+                            </tr>
+                            <tr style="font-weight:bold;color:red;">
+                                <td colspan="6" align="right">总合计</td>
+                                <td align="center">@ViewBag.TotalQualifiedLevel</td>
+                                <td align="center">@ViewBag.TotalQualifiedLevelA</td>
+                                <td align="center">@ViewBag.TotalQualifiedLevelB</td>
+                                <td align="center">@ViewBag.TotalQualifiedLevelC</td>
+                            </tr>
                         </tbody>
                     </table>
 
@@ -248,7 +262,7 @@
                 }
             },
             legend: {
-                data: ['合格', '不合格']
+                data: ['合格', '不合格','不判定']
             },
             grid: {
                 left: '3%',
@@ -274,6 +288,11 @@
                     name: '不合格',
                     type: 'bar',
                     data: jsondata.QualifiedLevelB
+                },
+                {
+                    name: '不判定',
+                    type: 'bar',
+                    data: jsondata.QualifiedLevelC
                 }
             ]
         };
@@ -298,7 +317,7 @@
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data: ['合格', '不合格']
+                data: ['合格', '不合格', '不判定']
             },
             series: [
                 {
@@ -308,7 +327,8 @@
                     center: ['50%', '60%'],
                     data: [
                         { value: @ViewBag.SumQualifiedLevelA, name: '合格' },
-                        { value: @ViewBag.SumQualifiedLevelB, name: '不合格' }
+                        { value: @ViewBag.SumQualifiedLevelB, name: '不合格' },
+                        { value: @ViewBag.SumQualifiedLevelC, name: '不判定' }
                     ],
                     itemStyle: {
                         emphasis: {
@@ -341,7 +361,7 @@
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data: ['合格', '不合格']
+                data: ['合格', '不合格', '不判定']
             },
             series: [
                 {
@@ -351,7 +371,8 @@
                     center: ['50%', '60%'],
                     data: [
                         { value: @ViewBag.TotalQualifiedLevelA, name: '合格' },
-                        { value: @ViewBag.TotalQualifiedLevelB, name: '不合格' }
+                        { value: @ViewBag.TotalQualifiedLevelB, name: '不合格' },
+                        { value: @ViewBag.TotalQualifiedLevelC, name: '不判定' }
                     ],
                     itemStyle: {
                         emphasis: {
