@@ -519,6 +519,7 @@ namespace Web.Controllers
                     row.CreateCell(4); row.CreateCell(5);
                     row.CreateCell(6); row.CreateCell(7);
                     row.CreateCell(8); row.CreateCell(9);
+                    row.CreateCell(10);
 
                     row.Cells[0].SetCellValue(Row);
                     row.Cells[1].SetCellValue(DetectTime);
